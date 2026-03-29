@@ -36,11 +36,12 @@
     background: rgba(255,255,255,0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 64px;
+    padding: 0 16px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
   }
 
   .logo {
@@ -101,7 +102,7 @@
 
   /* HERO */
   .hero {
-    margin-top: 64px;
+    margin-top: 60px;
     padding: 80px 24px 60px;
     text-align: center;
     position: relative;
@@ -818,6 +819,18 @@
   }
   .city-indicator:hover { background: rgba(0,165,80,0.15); }
 
+
+  @media (max-width: 900px) {
+    .logo-text { font-size: 16px; }
+    .logo-icon { width: 32px; height: 32px; font-size: 16px; }
+    .city-indicator { padding: 5px 8px; font-size: 12px; max-width: 110px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    nav { padding: 0 12px; }
+  }
+  @media (max-width: 380px) {
+    .logo-text { font-size: 14px; }
+    .city-indicator { max-width: 85px; font-size: 11px; }
+  }
+
 </style>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -831,6 +844,18 @@
     .hamburger { display: flex !important; }
     .nav-links { display: none !important; }
   }
+
+  @media (max-width: 900px) {
+    .logo-text { font-size: 16px; }
+    .logo-icon { width: 32px; height: 32px; font-size: 16px; }
+    .city-indicator { padding: 5px 8px; font-size: 12px; max-width: 110px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    nav { padding: 0 12px; }
+  }
+  @media (max-width: 380px) {
+    .logo-text { font-size: 14px; }
+    .city-indicator { max-width: 85px; font-size: 11px; }
+  }
+
 </style>
 </head>
 <body>
