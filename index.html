@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Expat Brazza - Tout acheter, tout vendre à Brazzaville</title>
+<title>ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites</title>
+<meta name="description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta name="keywords" content="annonces Congo, vendre Brazzaville, acheter Congo, immobilier Brazzaville, emploi Congo, voiture Brazzaville, petites annonces Congo">
+<meta name="author" content="ExpatBrazza — Djels & Joe">
+<meta name="robots" content="index, follow">
+<meta name="language" content="French">
+
+<!-- Open Graph (WhatsApp, Facebook) -->
+<meta property="og:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
+<meta property="og:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta property="og:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
+<meta property="og:url" content="https://djels-tech.github.io/expat-brazza/expat-brazza.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_CG">
+<meta property="og:site_name" content="ExpatBrazza">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
+<meta name="twitter:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://djels-tech.github.io/expat-brazza/expat-brazza.html">
+
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -1134,10 +1158,10 @@
     </div>
     <div style="display:flex;gap:12px;margin-top:8px">
       <a id="detailWhatsapp" href="#" target="_blank" class="btn-primary" style="flex:1;text-align:center;background:#25D366">
-        💬 WhatsApp
+        💬 Contacter
       </a>
-      <button onclick="shareAnnonce()" class="btn-primary" style="flex:1;background:#3498DB">
-        🔗 Partager
+      <button onclick="shareAnnonce()" class="btn-primary" style="flex:1;background:#128C7E">
+        📤 Partager sur WhatsApp
       </button>
     </div>
   </div>
@@ -1551,11 +1575,15 @@
   function shareAnnonce() {
     const titre = document.getElementById('detailTitre').textContent;
     const prix = document.getElementById('detailPrix').textContent;
-    const text = `${titre} - ${prix} | ExpatBrazza\nhttps://expat-brazza.netlify.app`;
+    const quartier = document.getElementById('detailQuartier').textContent;
+    const siteUrl = 'https://djels-tech.github.io/expat-brazza';
+    const text = `🔥 *${titre}*\n💰 ${prix}\n${quartier}\n\n👉 Voir sur ExpatBrazza : ${siteUrl}\n\n_Trouvé sur ExpatBrazza — La plateforme d'annonces N°1 au Congo 🇨🇬_`;
+    
     if (navigator.share) {
-      navigator.share({ title: titre, text: text, url: 'https://expat-brazza.netlify.app' });
+      navigator.share({ title: titre, text: text, url: siteUrl });
     } else {
-      navigator.clipboard.writeText(text).then(() => showToast('✅ Lien copié !'));
+      const waUrl = 'https://wa.me/?text=' + encodeURIComponent(text);
+      window.open(waUrl, '_blank');
     }
   }
 
