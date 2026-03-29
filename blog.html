@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog | ExpatBrazza</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-text span { color:var(--green); }
+  .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
+  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.1),rgba(0,165,80,0.03)); padding:60px 24px; text-align:center; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:40px; font-weight:800; margin-bottom:16px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { color:var(--muted); font-size:18px; max-width:600px; margin:0 auto; }
+  .section { max-width:1100px; margin:0 auto; padding:60px 24px; }
+  .featured { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; margin-bottom:40px; display:grid; grid-template-columns:1fr 1fr; }
+  @media(max-width:768px){ .featured { grid-template-columns:1fr; } .blog-grid { grid-template-columns:1fr !important; } }
+  .featured-img { background:linear-gradient(135deg,#00A550,#00c764); display:flex; align-items:center; justify-content:center; font-size:80px; min-height:280px; }
+  .featured-body { padding:40px; display:flex; flex-direction:column; justify-content:center; }
+  .featured-tag { background:rgba(0,165,80,0.1); color:var(--green); font-size:12px; font-weight:600; padding:4px 12px; border-radius:6px; display:inline-block; margin-bottom:16px; text-transform:uppercase; letter-spacing:0.5px; }
+  .featured-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; margin-bottom:12px; line-height:1.3; }
+  .featured-desc { color:var(--muted); line-height:1.7; margin-bottom:24px; }
+  .featured-meta { display:flex; align-items:center; gap:16px; color:var(--muted); font-size:13px; margin-bottom:20px; }
+  .btn-read { background:var(--green); color:#fff; border:none; padding:12px 24px; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; transition:all 0.2s; }
+  .btn-read:hover { background:#00c764; transform:translateY(-2px); }
+  .blog-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .blog-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer; transition:all 0.25s; }
+  .blog-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,0.1); border-color:var(--green); }
+  .blog-card-img { height:160px; display:flex; align-items:center; justify-content:center; font-size:48px; }
+  .blog-card-body { padding:20px; }
+  .blog-tag { background:rgba(0,165,80,0.1); color:var(--green); font-size:11px; font-weight:600; padding:3px 10px; border-radius:5px; display:inline-block; margin-bottom:10px; text-transform:uppercase; }
+  .blog-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:8px; line-height:1.4; }
+  .blog-desc { color:var(--muted); font-size:13px; line-height:1.6; margin-bottom:16px; }
+  .blog-meta { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--muted); padding-top:12px; border-top:1px solid var(--border); }
+  .blog-author { display:flex; align-items:center; gap:6px; }
+  .author-avatar { width:24px; height:24px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; font-weight:700; }
+
+  /* MODAL ARTICLE */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); z-index:1000; display:none; align-items:flex-start; justify-content:center; padding:24px; overflow-y:auto; }
+  .modal-overlay.active { display:flex; }
+  .modal-article { background:var(--card); border-radius:20px; max-width:700px; width:100%; margin:auto; overflow:hidden; animation:modalIn 0.3s ease; }
+  @keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .modal-article-img { height:240px; display:flex; align-items:center; justify-content:center; font-size:80px; }
+  .modal-article-body { padding:32px; }
+  .modal-article-body h2 { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; margin-bottom:16px; }
+  .modal-article-body p { color:var(--muted); line-height:1.8; margin-bottom:16px; font-size:15px; }
+  .modal-article-body h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin:24px 0 12px; color:var(--green); }
+  .modal-close-btn { background:var(--border); border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; margin-top:8px; }
+
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
+  footer a { color:var(--green); text-decoration:none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">Expat<span>Brazza</span></div>
+  </a>
+  <a href="index.html" class="btn-back">← Retour</a>
+</nav>
+
+<div class="hero">
+  <h1>Notre <span>Blog</span></h1>
+  <p>Conseils, actualités et guides pratiques pour vivre, travailler et entreprendre au Congo</p>
+</div>
+
+<div class="section">
+  <!-- ARTICLE FEATURED -->
+  <div class="featured">
+    <div class="featured-img">🏙️</div>
+    <div class="featured-body">
+      <span class="featured-tag">Guide pratique</span>
+      <div class="featured-title">S'installer à Brazzaville : le guide complet 2026</div>
+      <div class="featured-meta">
+        <span>👤 Djels</span>
+        <span>📅 Mars 2026</span>
+        <span>⏱️ 5 min</span>
+      </div>
+      <p class="featured-desc">Tout ce que vous devez savoir avant d'arriver à Brazzaville — logement, transport, quartiers, démarches administratives et bons plans.</p>
+      <a href="javascript:void(0)" class="btn-read" onclick="openArticle(0)">Lire l'article →</a>
+    </div>
+  </div>
+
+  <!-- BLOG GRID -->
+  <div class="blog-grid">
+    <div class="blog-card" onclick="openArticle(1)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#FFF3CD,#FFF8E1)">🏠</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Immobilier</span>
+        <div class="blog-title">Trouver un appartement à Brazzaville : nos conseils</div>
+        <div class="blog-desc">Les quartiers les plus prisés, les prix moyens et comment éviter les arnaques immobilières.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>4 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card" onclick="openArticle(2)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#E8F5E9,#F1F8E9)">🚗</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Transport</span>
+        <div class="blog-title">Se déplacer à Brazzaville : taxi, moto et bus</div>
+        <div class="blog-desc">Comment circuler efficacement dans la capitale congolaise sans se faire arnaquer.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>3 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card" onclick="openArticle(3)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#FCE4EC,#FFF0F3)">💼</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Emploi</span>
+        <div class="blog-title">Trouver un emploi au Congo en 2026</div>
+        <div class="blog-desc">Les secteurs qui recrutent, comment postuler et les salaires moyens à Brazzaville.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>5 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card" onclick="openArticle(4)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#E3F2FD,#EEF7FF)">🍽️</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Lifestyle</span>
+        <div class="blog-title">Les meilleurs restaurants de Brazzaville</div>
+        <div class="blog-desc">Notre sélection des meilleures tables de la capitale — du maquis local au restaurant gastronomique.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>3 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card" onclick="openArticle(5)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#F3E5F5,#FDF0FF)">📱</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Tech</span>
+        <div class="blog-title">La tech au Congo : un secteur en plein essor</div>
+        <div class="blog-desc">Comment la jeunesse congolaise est en train de transformer l'économie numérique du pays.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>4 min</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="blog-card" onclick="openArticle(6)">
+      <div class="blog-card-img" style="background:linear-gradient(135deg,#E8F5E9,#F0FFF4)">💰</div>
+      <div class="blog-card-body">
+        <span class="blog-tag">Business</span>
+        <div class="blog-title">Vendre en ligne au Congo : guide du débutant</div>
+        <div class="blog-desc">Comment créer et développer votre activité de vente en ligne à Brazzaville étape par étape.</div>
+        <div class="blog-meta">
+          <div class="blog-author"><div class="author-avatar">D</div> Djels</div>
+          <span>6 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ARTICLE -->
+<div class="modal-overlay" id="modalBlog" onclick="closeBlog(event)">
+  <div class="modal-article">
+    <div class="modal-article-img" id="blogImg"></div>
+    <div class="modal-article-body">
+      <div id="blogTag" class="blog-tag" style="margin-bottom:16px"></div>
+      <h2 id="blogTitle"></h2>
+      <div id="blogContent"></div>
+      <button class="modal-close-btn" onclick="document.getElementById('modalBlog').classList.remove('active')">← Retour au blog</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+</footer>
+
+<script>
+const articles = [
+  {
+    emoji: "🏙️",
+    bg: "linear-gradient(135deg,#00A550,#00c764)",
+    tag: "Guide pratique",
+    title: "S'installer à Brazzaville : le guide complet 2026",
+    content: `
+      <p>Brazzaville, la capitale de la République du Congo, accueille chaque année des milliers de nouveaux résidents et expatriés. Voici tout ce qu'il faut savoir pour bien s'installer.</p>
+      <h3>📍 Les quartiers à connaître</h3>
+      <p><strong>Gombe</strong> — Le quartier résidentiel et diplomatique, prisé par les expatriés. Loyers élevés mais infrastructures de qualité.</p>
+      <p><strong>Poto-Poto</strong> — Quartier populaire et animé, très central. Ideal pour les petits budgets.</p>
+      <p><strong>Bacongo</strong> — Quartier résidentiel calme au sud de la ville. Bon rapport qualité/prix.</p>
+      <p><strong>Moungali</strong> — Quartier dynamique avec beaucoup de commerces et restaurants.</p>
+      <h3>🏠 Le logement</h3>
+      <p>Comptez entre 150 000 et 800 000 FCFA par mois selon le quartier et le standing. La plupart des propriétaires demandent 3 mois d'avance. Utilisez ExpatBrazza pour trouver votre logement en toute confiance.</p>
+      <h3>📱 Téléphone et internet</h3>
+      <p>MTN Congo et Airtel Congo sont les deux opérateurs principaux. Prenez une SIM dès votre arrivée à l'aéroport Maya-Maya.</p>
+      <h3>💰 Le coût de la vie</h3>
+      <p>Le coût de la vie est modéré. Un repas dans un maquis coûte entre 1 000 et 3 000 FCFA. Les courses au marché Total sont abordables.</p>
+    `
+  },
+  {
+    emoji: "🏠",
+    bg: "linear-gradient(135deg,#FFF3CD,#FFF8E1)",
+    tag: "Immobilier",
+    title: "Trouver un appartement à Brazzaville : nos conseils",
+    content: `
+      <p>Le marché immobilier à Brazzaville peut sembler complexe pour les nouveaux arrivants. Voici nos conseils pour trouver le bon logement.</p>
+      <h3>💡 Les prix moyens</h3>
+      <p><strong>Studio</strong> : 80 000 – 150 000 FCFA/mois<br><strong>F2</strong> : 150 000 – 300 000 FCFA/mois<br><strong>F3 meublé</strong> : 250 000 – 600 000 FCFA/mois<br><strong>Villa</strong> : 500 000 – 2 000 000 FCFA/mois</p>
+      <h3>⚠️ Éviter les arnaques</h3>
+      <p>Ne payez jamais sans visiter le logement en personne. Méfiez-vous des prix trop bas. Exigez un contrat de bail écrit et signé. Utilisez une plateforme de confiance comme ExpatBrazza pour vos recherches.</p>
+      <h3>📝 Les documents nécessaires</h3>
+      <p>Pièce d'identité, justificatif de revenus ou garant, et généralement 3 mois de loyer d'avance.</p>
+    `
+  },
+  {
+    emoji: "🚗",
+    bg: "linear-gradient(135deg,#E8F5E9,#F1F8E9)",
+    tag: "Transport",
+    title: "Se déplacer à Brazzaville : taxi, moto et bus",
+    content: `
+      <p>Se déplacer à Brazzaville demande un peu d'adaptation mais devient vite facile une fois qu'on connaît les options.</p>
+      <h3>🚕 Les taxis</h3>
+      <p>Les taxis sont le moyen de transport le plus courant. Négociez toujours le prix avant de monter — comptez entre 500 et 2 000 FCFA selon la distance. Les taxis collectifs (taxi-bus) sont moins chers.</p>
+      <h3>🏍️ Les motos-taxis</h3>
+      <p>Rapides et pratiques pour les petits trajets. Prix : 200 à 500 FCFA. Demandez toujours un casque.</p>
+      <h3>📱 Les applis</h3>
+      <p>Des services comme Yango commencent à se développer à Brazzaville. Plus sécurisé car le prix est fixé à l'avance.</p>
+      <h3>🚗 Avoir sa voiture</h3>
+      <p>Si vous prévoyez de rester longtemps, avoir sa propre voiture est recommandé. Trouvez votre véhicule sur ExpatBrazza !</p>
+    `
+  },
+  {
+    emoji: "💼",
+    bg: "linear-gradient(135deg,#FCE4EC,#FFF0F3)",
+    tag: "Emploi",
+    title: "Trouver un emploi au Congo en 2026",
+    content: `
+      <p>Le marché de l'emploi au Congo offre des opportunités dans plusieurs secteurs clés.</p>
+      <h3>🔥 Les secteurs qui recrutent</h3>
+      <p><strong>Pétrole et gaz</strong> — Le Congo est un pays pétrolier. TotalEnergies et d'autres compagnies recrutent régulièrement.<br><strong>Télécommunications</strong> — MTN, Airtel, Azur recrutent des techniciens et commerciaux.<br><strong>BTP</strong> — De nombreux chantiers sont en cours à Brazzaville.<br><strong>Tech et numérique</strong> — Secteur en plein essor, peu de compétition locale.</p>
+      <h3>💰 Salaires moyens</h3>
+      <p>Le SMIG au Congo est d'environ 90 000 FCFA/mois. Les cadres peuvent espérer entre 300 000 et 1 500 000 FCFA selon le secteur.</p>
+      <h3>📋 Comment postuler</h3>
+      <p>LinkedIn est de plus en plus utilisé. Les offres d'emploi sur ExpatBrazza sont également une bonne source. Le réseau reste essentiel au Congo.</p>
+    `
+  },
+  {
+    emoji: "🍽️",
+    bg: "linear-gradient(135deg,#E3F2FD,#EEF7FF)",
+    tag: "Lifestyle",
+    title: "Les meilleurs restaurants de Brazzaville",
+    content: `
+      <p>Brazzaville offre une scène culinaire riche, mêlant cuisine congolaise traditionnelle et influences internationales.</p>
+      <h3>🇨🇬 Cuisine locale à essayer</h3>
+      <p><strong>Le saka-saka</strong> — feuilles de manioc pilées, plat national incontournable.<br><strong>Le poulet nyembwe</strong> — poulet à la sauce huile de palme.<br><strong>Le poisson fumé</strong> — avec du foufou ou du riz.</p>
+      <h3>🍕 Pour les expatriés</h3>
+      <p>Le quartier de Gombe concentre la plupart des restaurants internationaux. Vous y trouverez des cuisines française, libanaise, asiatique et italienne.</p>
+      <h3>🍺 Les maquis</h3>
+      <p>Les maquis sont les restaurants populaires congolais. Ambiance locale garantie, bonne nourriture et prix très abordables. Une expérience à vivre absolument !</p>
+    `
+  },
+  {
+    emoji: "📱",
+    bg: "linear-gradient(135deg,#F3E5F5,#FDF0FF)",
+    tag: "Tech",
+    title: "La tech au Congo : un secteur en plein essor",
+    content: `
+      <p>La jeunesse congolaise est en train de transformer le paysage numérique du pays. Voici pourquoi le Congo est le prochain hub tech d'Afrique centrale.</p>
+      <h3>🚀 Les startups qui émergent</h3>
+      <p>Des solutions de paiement mobile, des plateformes e-commerce, des apps de livraison... Les entrepreneurs congolais innovent dans tous les secteurs.</p>
+      <h3>📡 La connectivité</h3>
+      <p>La 4G couvre désormais les grandes villes. La fibre optique se développe. Les prix d'internet baissent progressivement.</p>
+      <h3>👨‍💻 Les opportunités</h3>
+      <p>Les développeurs, designers et marketeurs digitaux sont très demandés. C'est le bon moment pour se positionner dans ce secteur au Congo.</p>
+      <h3>🌍 L'avenir</h3>
+      <p>Avec une population jeune et connectée, le Congo a tous les atouts pour devenir un acteur majeur de la tech africaine dans les 10 prochaines années.</p>
+    `
+  },
+  {
+    emoji: "💰",
+    bg: "linear-gradient(135deg,#E8F5E9,#F0FFF4)",
+    tag: "Business",
+    title: "Vendre en ligne au Congo : guide du débutant",
+    content: `
+      <p>Le commerce en ligne au Congo est encore peu développé — c'est une énorme opportunité pour ceux qui se lancent maintenant.</p>
+      <h3>📦 Que vendre ?</h3>
+      <p>Les produits électroniques, vêtements, équipements de maison et véhicules se vendent très bien en ligne à Brazzaville. Identifiez ce dont les gens ont besoin autour de vous.</p>
+      <h3>📱 Comment commencer ?</h3>
+      <p>1. Déposez vos premières annonces sur ExpatBrazza — c'est gratuit.<br>2. Prenez de bonnes photos avec votre smartphone.<br>3. Répondez rapidement aux messages WhatsApp.<br>4. Construisez votre réputation avec des avis positifs.</p>
+      <h3>💡 Conseils pour réussir</h3>
+      <p>La confiance est essentielle. Soyez honnête sur l'état des produits. Proposez de voir l'article en personne avant l'achat. Prix compétitifs mais ne bradez pas.</p>
+      <h3>🚀 Passer au niveau supérieur</h3>
+      <p>Une fois que vous avez vos premiers clients, créez une boutique ExpatBrazza pour une meilleure visibilité. Le bouche-à-oreille fera le reste !</p>
+    `
+  }
+];
+
+function openArticle(idx) {
+  const a = articles[idx];
+  document.getElementById('blogImg').style.background = a.bg;
+  document.getElementById('blogImg').textContent = a.emoji;
+  document.getElementById('blogTag').textContent = a.tag;
+  document.getElementById('blogTitle').textContent = a.title;
+  document.getElementById('blogContent').innerHTML = a.content;
+  document.getElementById('modalBlog').classList.add('active');
+  document.getElementById('modalBlog').scrollTop = 0;
+}
+
+function closeBlog(e) {
+  if (e.target === document.getElementById('modalBlog')) {
+    document.getElementById('modalBlog').classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

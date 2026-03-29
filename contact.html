@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | ExpatBrazza</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-text span { color:var(--green); }
+  .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
+  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.1),rgba(0,165,80,0.03)); padding:60px 24px; text-align:center; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:40px; font-weight:800; margin-bottom:16px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { color:var(--muted); font-size:18px; max-width:600px; margin:0 auto; }
+  .section { max-width:900px; margin:0 auto; padding:60px 24px; display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+  @media(max-width:768px){.section{grid-template-columns:1fr;}}
+  .contact-info { display:flex; flex-direction:column; gap:20px; }
+  .info-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; align-items:center; gap:16px; }
+  .info-icon { width:48px; height:48px; background:rgba(0,165,80,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+  .info-label { font-size:12px; color:var(--muted); margin-bottom:4px; }
+  .info-value { font-weight:600; color:var(--text); }
+  .form-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; }
+  .form-card h2 { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:24px; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .form-group input, .form-group textarea, .form-group select { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--green); }
+  .form-group textarea { resize:vertical; min-height:100px; }
+  .btn-submit { background:var(--green); color:#fff; border:none; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
+  .btn-submit:hover { background:#00c764; }
+  .success-msg { display:none; background:rgba(0,165,80,0.1); border:1px solid var(--green); border-radius:10px; padding:16px; text-align:center; color:var(--green); font-weight:600; margin-top:16px; }
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
+  footer a { color:var(--green); text-decoration:none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">Expat<span>Brazza</span></div>
+  </a>
+  <a href="index.html" class="btn-back">← Retour</a>
+</nav>
+
+<div class="hero">
+  <h1>Nous <span>contacter</span></h1>
+  <p>Une question, un problème, un partenariat ? Notre équipe vous répond sous 24h.</p>
+</div>
+
+<div class="section">
+  <div class="contact-info">
+    <div class="info-card">
+      <div class="info-icon">📧</div>
+      <div>
+        <div class="info-label">Email</div>
+        <div class="info-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3d58454d5c495f4f5c47475c7d5a505c5451135e5250">[email&#160;protected]</a></div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">💬</div>
+      <div>
+        <div class="info-label">WhatsApp</div>
+        <div class="info-value">+242 06 ...</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📍</div>
+      <div>
+        <div class="info-label">Localisation</div>
+        <div class="info-value">Brazzaville, République du Congo</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🕐</div>
+      <div>
+        <div class="info-label">Disponibilité</div>
+        <div class="info-value">Lun–Sam, 8h–20h</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h2>✉️ Envoyer un message</h2>
+    <div class="form-group">
+      <label>Votre nom</label>
+      <input type="text" id="contactNom" placeholder="Ex: Jean Dupont">
+    </div>
+    <div class="form-group">
+      <label>Email ou WhatsApp</label>
+      <input type="text" id="contactEmail" placeholder="Ex: jean@email.com ou +242...">
+    </div>
+    <div class="form-group">
+      <label>Sujet</label>
+      <select id="contactSujet">
+        <option>Question générale</option>
+        <option>Signaler une annonce</option>
+        <option>Partenariat / Publicité</option>
+        <option>Problème technique</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea id="contactMsg" placeholder="Décrivez votre demande..."></textarea>
+    </div>
+    <button class="btn-submit" onclick="sendContact()">Envoyer le message 📨</button>
+    <div class="success-msg" id="successMsg">✅ Message envoyé ! Nous vous répondrons sous 24h.</div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+async function sendContact() {
+  const nom = document.getElementById('contactNom').value;
+  const email = document.getElementById('contactEmail').value;
+  const sujet = document.getElementById('contactSujet').value;
+  const msg = document.getElementById('contactMsg').value;
+  
+  if (!nom || !email || !msg) {
+    alert('Veuillez remplir tous les champs !');
+    return;
+  }
+
+  try {
+    await fetch('https://formspree.io/f/mlgoeabd', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ nom, email, sujet, message: msg, type: 'CONTACT' })
+    });
+    document.getElementById('successMsg').style.display = 'block';
+    document.

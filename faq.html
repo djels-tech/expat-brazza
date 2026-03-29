@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ | ExpatBrazza</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-text span { color:var(--green); }
+  .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
+  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.1),rgba(0,165,80,0.03)); padding:60px 24px; text-align:center; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:40px; font-weight:800; margin-bottom:16px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { color:var(--muted); font-size:18px; }
+  .content { max-width:800px; margin:0 auto; padding:60px 24px; }
+  .faq-item { background:var(--card); border:1px solid var(--border); border-radius:14px; margin-bottom:12px; overflow:hidden; }
+  .faq-q { padding:20px 24px; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background 0.2s; }
+  .faq-q:hover { background:rgba(0,165,80,0.05); }
+  .faq-q span { color:var(--green); font-size:20px; transition:transform 0.3s; }
+  .faq-a { padding:0 24px; max-height:0; overflow:hidden; transition:all 0.3s; color:var(--muted); line-height:1.8; font-size:14px; }
+  .faq-item.open .faq-a { max-height:200px; padding:0 24px 20px; }
+  .faq-item.open .faq-q span { transform:rotate(45deg); }
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
+  footer a { color:var(--green); text-decoration:none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">Expat<span>Brazza</span></div>
+  </a>
+  <a href="index.html" class="btn-back">← Retour</a>
+</nav>
+
+<div class="hero">
+  <h1>Questions <span>fréquentes</span></h1>
+  <p>Tout ce que vous devez savoir pour acheter et vendre sur ExpatBrazza</p>
+</div>
+
+<div class="content">
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Comment déposer une annonce ? <span>+</span></div>
+    <div class="faq-a">Cliquez sur le bouton "Déposer une annonce" en haut de la page, remplissez le formulaire avec le titre, la catégorie, le prix, votre quartier, une description et votre numéro WhatsApp. Votre annonce sera visible après validation par notre équipe.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Combien coûte une annonce ? <span>+</span></div>
+    <div class="faq-a">Les annonces standards sont gratuites ! Nous proposons également des annonces "À la une" payantes pour une meilleure visibilité. Contactez-nous pour connaître nos tarifs.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Combien de temps met une annonce à être publiée ? <span>+</span></div>
+    <div class="faq-a">Nos équipes valident les annonces dans un délai de 24h maximum. Vous serez contacté si votre annonce nécessite des modifications.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Comment contacter un vendeur ? <span>+</span></div>
+    <div class="faq-a">Cliquez sur une annonce pour voir les détails, puis appuyez sur le bouton "Contacter sur WhatsApp". Vous serez redirigé directement vers la conversation WhatsApp du vendeur.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Puis-je modifier ou supprimer mon annonce ? <span>+</span></div>
+    <div class="faq-a">Oui ! Contactez-nous via la page Contact avec le titre de votre annonce et votre numéro WhatsApp. Nous effectuerons les modifications dans les 24h.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">ExpatBrazza est-il disponible à Pointe-Noire ? <span>+</span></div>
+    <div class="faq-a">Actuellement, ExpatBrazza couvre déjà Brazzaville et Pointe-Noire. D'autres villes comme Dolisie, Ouesso et Nkayi arrivent très bientôt !</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Comment signaler une annonce frauduleuse ? <span>+</span></div>
+    <div class="faq-a">Contactez-nous immédiatement via la page Contact ou directement sur WhatsApp. Nous supprimerons l'annonce et bloquerons l'utilisateur dans les plus brefs délais.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Comment faire de la publicité sur ExpatBrazza ? <span>+</span></div>
+    <div class="faq-a">Nous proposons des bannières publicitaires et des annonces sponsorisées pour les entreprises. Contactez-nous à <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7e1b060e1f0a1c0c1f04041f3e19131f1712501d1113">[email&#160;protected]</a> pour un devis personnalisé.</div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+</footer>
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
