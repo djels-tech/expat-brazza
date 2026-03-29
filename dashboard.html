@@ -24,7 +24,7 @@
   .dashboard-header { margin-bottom:32px; }
   .dashboard-header h1 { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; margin-bottom:4px; }
   .dashboard-header p { color:var(--muted); }
-  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
   @media(max-width:600px){ .stats-row { grid-template-columns:1fr; } }
   .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; }
   .stat-card .num { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--green); }
@@ -84,6 +84,10 @@
       <div class="num" id="statAttente">0</div>
       <div class="label">En attente</div>
     </div>
+    <div class="stat-card">
+      <div class="num" id="statVues">0</div>
+      <div class="label">👁️ Vues totales</div>
+    </div>
   </div>
 
   <div class="section-title">
@@ -123,6 +127,8 @@
     document.getElementById('statTotal').textContent = annonces.length;
     document.getElementById('statActif').textContent = annonces.filter(a => a.statut === 'actif').length;
     document.getElementById('statAttente').textContent = annonces.filter(a => a.statut === 'en_attente').length;
+    const totalVues = annonces.reduce((sum, a) => sum + (a.vues || 0), 0);
+    if (document.getElementById('statVues')) document.getElementById('statVues').textContent = totalVues;
 
     if (annonces.length === 0) {
       document.getElementById('annoncesList').innerHTML = `
@@ -148,6 +154,7 @@
             <span>${a.prix} FCFA</span>
             <span>📍 ${a.quartier || a.ville || 'Brazzaville'}</span>
             <span>${a.categorie}</span>
+            <span>👁️ ${a.vues || 0} vue${(a.vues||0) > 1 ? 's' : ''}</span>
             <span class="badge ${a.statut === 'actif' ? 'badge-actif' : a.statut === 'en_attente' ? 'badge-attente' : 'badge-refuse'}">
               ${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : '❌ Refusé'}
             </span>
