@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | ExpatBrazza</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; --red:#CE1126; --yellow:#F9C003; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  
+  /* SIDEBAR */
+  .sidebar { position:fixed; left:0; top:0; bottom:0; width:240px; background:#1A1F2E; padding:24px 0; z-index:100; }
+  .sidebar-logo { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
+  .sidebar-logo .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; }
+  .sidebar-logo .logo-text span { color:var(--green); }
+  .sidebar-logo small { color:rgba(255,255,255,0.4); font-size:11px; display:block; margin-top:2px; }
+  .nav-item { display:flex; align-items:center; gap:12px; padding:12px 20px; color:rgba(255,255,255,0.6); cursor:pointer; transition:all 0.2s; font-size:14px; font-weight:500; border:none; background:none; width:100%; text-align:left; font-family:'DM Sans',sans-serif; }
+  .nav-item:hover, .nav-item.active { background:rgba(0,165,80,0.15); color:#fff; }
+  .nav-item.active { border-right:3px solid var(--green); }
+  .nav-item span { font-size:18px; }
+  .nav-section { padding:8px 20px; font-size:11px; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1px; margin-top:8px; }
+  .btn-logout-sidebar { margin:16px; padding:10px; background:rgba(206,17,38,0.15); color:#ff6b6b; border:none; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; width:calc(100% - 32px); transition:all 0.2s; }
+  .btn-logout-sidebar:hover { background:rgba(206,17,38,0.3); }
+
+  /* MAIN */
+  .main { margin-left:240px; padding:32px; min-height:100vh; }
+  .page { display:none; }
+  .page.active { display:block; }
+  .page-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; margin-bottom:4px; }
+  .page-subtitle { color:var(--muted); font-size:14px; margin-bottom:28px; }
+
+  /* STATS */
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; }
+  .stat-box .icon { font-size:28px; margin-bottom:8px; }
+  .stat-box .num { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; }
+  .stat-box .label { color:var(--muted); font-size:13px; margin-top:2px; }
+  .stat-box.green .num { color:var(--green); }
+  .stat-box.yellow .num { color:#B8860B; }
+  .stat-box.red .num { color:var(--red); }
+  .stat-box.blue .num { color:#3498DB; }
+
+  /* TABLE */
+  .table-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+  .table-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .table-header h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; }
+  .filter-btns { display:flex; gap:8px; }
+  .filter-btn { padding:6px 14px; border-radius:8px; border:1px solid var(--border); background:none; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; }
+  .filter-btn.active, .filter-btn:hover { background:var(--green); color:#fff; border-color:var(--green); }
+  table { width:100%; border-collapse:collapse; }
+  th { padding:12px 16px; text-align:left; font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--bg); }
+  td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(0,165,80,0.03); }
+  .annonce-thumb { width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; display:inline-block; }
+  .badge-actif { background:rgba(0,165,80,0.1); color:var(--green); }
+  .badge-attente { background:rgba(249,192,3,0.15); color:#B8860B; }
+  .badge-refuse { background:rgba(206,17,38,0.1); color:var(--red); }
+  .action-btns { display:flex; gap:6px; }
+  .btn-approve { background:rgba(0,165,80,0.1); color:var(--green); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-approve:hover { background:var(--green); color:#fff; }
+  .btn-reject { background:rgba(249,192,3,0.1); color:#B8860B; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-reject:hover { background:#F9C003; color:#000; }
+  .btn-del { background:rgba(206,17,38,0.1); color:var(--red); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-del:hover { background:var(--red); color:#fff; }
+
+  /* LOGIN */
+  .admin-login { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); }
+  .login-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:40px; width:100%; max-width:380px; text-align:center; }
+  .login-card h2 { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:6px; }
+  .login-card p { color:var(--muted); font-size:14px; margin-bottom:24px; }
+  .form-group { margin-bottom:16px; text-align:left; }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  .form-group input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
+  .form-group input:focus { border-color:var(--green); }
+  .btn-login { background:var(--green); color:#fff; border:none; padding:14px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
+  .btn-login:hover { background:#00c764; }
+  .error-msg { background:rgba(206,17,38,0.1); border:1px solid rgba(206,17,38,0.3); border-radius:8px; padding:10px; color:var(--red); font-size:13px; margin-bottom:16px; display:none; }
+
+  /* USERS TABLE */
+  .user-row td { font-size:13px; }
+
+  /* RESPONSIVE */
+  @media(max-width:768px) {
+    .sidebar { display:none; }
+    .main { margin-left:0; padding:16px; }
+    .stats-grid { grid-template-columns:repeat(2,1fr); }
+  }
+
+  .loading { text-align:center; padding:40px; color:var(--muted); }
+  .empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="admin-login" id="loginScreen">
+  <div class="login-card">
+    <div style="font-size:48px;margin-bottom:16px">🔐</div>
+    <h2>Admin Panel</h2>
+    <p>Accès réservé à l'administrateur</p>
+    <div class="error-msg" id="loginError">Email ou mot de passe incorrect</div>
+    <div class="form-group">
+      <label>Email admin</label>
+      <input type="email" id="adminEmail" placeholder="admin@expatbrazza.com">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="adminPassword" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="adminLogin()">Accéder au panel</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" style="display:none">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">Expat<span>Brazza</span></div>
+      <small>Panel d'administration</small>
+    </div>
+    <div class="nav-section">Principal</div>
+    <button class="nav-item active" onclick="showPage('dashboard')"><span>📊</span> Tableau de bord</button>
+    <button class="nav-item" onclick="showPage('annonces')"><span>📋</span> Annonces</button>
+    <button class="nav-item" onclick="showPage('users')"><span>👥</span> Utilisateurs</button>
+    <div class="nav-section">Actions</div>
+    <button class="nav-item" onclick="window.open('index.html','_blank')"><span>🌐</span> Voir le site</button>
+    <div style="position:absolute;bottom:16px;width:100%">
+      <button class="btn-logout-sidebar" onclick="adminLogout()">🚪 Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">Tableau de bord</div>
+      <div class="page-subtitle">Vue d'ensemble de votre plateforme</div>
+      <div class="stats-grid">
+        <div class="stat-box green"><div class="icon">✅</div><div class="num" id="s-actif">0</div><div class="label">Annonces actives</div></div>
+        <div class="stat-box yellow"><div class="icon">⏳</div><div class="num" id="s-attente">0</div><div class="label">En attente</div></div>
+        <div class="stat-box blue"><div class="icon">👥</div><div class="num" id="s-users">0</div><div class="label">Utilisateurs</div></div>
+        <div class="stat-box red"><div class="icon">📋</div><div class="num" id="s-total">0</div><div class="label">Total annonces</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>⏳ Annonces en attente de validation</h3></div>
+        <div id="pendingList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- ANNONCES -->
+    <div class="page" id="page-annonces">
+      <div class="page-title">Toutes les annonces</div>
+      <div class="page-subtitle">Gérez et modérez toutes les annonces</div>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Annonces</h3>
+          <div class="filter-btns">
+            <button class="filter-btn active" onclick="filterAnnonces('all', this)">Toutes</button>
+            <button class="filter-btn" onclick="filterAnnonces('actif', this)">Actives</button>
+            <button class="filter-btn" onclick="filterAnnonces('en_attente', this)">En attente</button>
+          </div>
+        </div>
+        <div id="allAnnoncesList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="page" id="page-users">
+      <div class="page-title">Utilisateurs</div>
+      <div class="page-subtitle">Tous les comptes inscrits</div>
+      <div class="table-card">
+        <div class="table-header"><h3>👥 Comptes inscrits</h3></div>
+        <div id="usersList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const ADMIN_EMAIL = 'mahouka.djels@gmail.com';
+  let allAnnonces = [];
+
+  async function adminLogin() {
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    if (!email || !password) return;
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error || data.user.email !== ADMIN_EMAIL) {
+      document.getElementById('loginError').style.display = 'block';
+      await sb.auth.signOut();
+      return;
+    }
+    showPanel();
+  }
+
+  function showPanel() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    loadStats();
+    loadPending();
+    loadAllAnnonces();
+  }
+
+  async function loadStats() {
+    const { data } = await sb.from('annonces').select('statut');
+    if (!data) return;
+    document.getElementById('s-total').textContent = data.length;
+    document.getElementById('s-actif').textContent = data.filter(a => a.statut === 'actif').length;
+    document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
+  }
+
+  async function loadPending() {
+    const { data } = await sb.from('annonces').select('*').eq('statut', 'en_attente').order('created_at', { ascending: false });
+    const el = document.getElementById('pendingList');
+    if (!data || data.length === 0) { el.innerHTML = '<div class="empty">✅ Aucune annonce en attente</div>'; return; }
+    el.innerHTML = renderTable(data);
+  }
+
+  async function loadAllAnnonces(filter = 'all') {
+    let query = sb.from('annonces').select('*').order('created_at', { ascending: false });
+    if (filter !== 'all') query = query.eq('statut', filter);
+    const { data } = await query;
+    allAnnonces = data || [];
+    document.getElementById('allAnnoncesList').innerHTML = data && data.length ? renderTable(data) : '<div class="empty">Aucune annonce</div>';
+  }
+
+  function filterAnnonces(filter, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadAllAnnonces(filter);
+  }
+
+  function renderTable(data) {
+    const emojis = { 'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮' };
+    return `<table>
+      <thead><tr>
+        <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        ${data.map(a => `
+          <tr id="row-${a.id}">
+            <td>
+              <div style="display:flex;align-items:center;gap:12px">
+                ${a.image_url ? `<img src="${a.image_url}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">` : `<div style="width:44px;height:44px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px">${emojis[a.categorie]||'📦'}</div>`}
+                <div>
+                  <div style="font-weight:600;font-size:13px">${a.titre || '-'}</div>
+                  <div style="color:var(--muted);font-size:12px">📍 ${a.quartier || a.ville || '-'}</div>
+                </div>
+              </div>
+            </td>
+            <td><span style="font-size:13px">${a.categorie || '-'}</span></td>
+            <td><strong style="color:var(--green)">${a.prix || '-'} FCFA</strong></td>
+            <td>${a.ville || 'Brazzaville'}</td>
+            <td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td>
+            <td>
+              <div class="action-btns">
+                ${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}
+                ${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}
+                <button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button>
+              </div>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  async function updateStatus(id, statut) {
+    const { error } = await sb.from('annonces').update({ statut }).eq('id', id);
+    if (!error) {
+      loadStats();
+      loadPending();
+      loadAllAnnonces();
+      alert(statut === 'actif' ? '✅ Annonce approuvée !' : '❌ Annonce refusée');
+    }
+  }
+
+  async function deleteAnnonce(id) {
+    if (!confirm('Supprimer définitivement cette annonce ?')) return;
+    const { error } = await sb.from('annonces').delete().eq('id', id);
+    if (!error) {
+      document.getElementById('row-' + id)?.remove();
+      loadStats();
+    }
+  }
+
+  async function loadUsers() {
+    const { data } = await sb.from('annonces').select('user_id, whatsapp, ville, created_at').not('user_id', 'is', null);
+    const el = document.getElementById('usersList');
+    if (!data || data.length === 0) { el.innerHTML = '<div class="empty">Aucun utilisateur inscrit</div>'; return; }
+    const unique = [...new Map(data.map(d => [d.user_id, d])).values()];
+    document.getElementById('s-users').textContent = unique.length;
+    el.innerHTML = `<table>
+      <thead><tr><th>ID Utilisateur</th><th>WhatsApp</th><th>Ville</th><th>Inscrit le</th></tr></thead>
+      <tbody>
+        ${unique.map(u => `<tr class="user-row">
+          <td style="font-family:monospace;font-size:11px;color:var(--muted)">${u.user_id.substring(0,16)}...</td>
+          <td>${u.whatsapp || '-'}</td>
+          <td>${u.ville || 'Brazzaville'}</td>
+          <td>${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if (page === 'users') loadUsers();
+    if (page === 'annonces') loadAllAnnonces();
+  }
+
+  async function adminLogout() {
+    await sb.auth.signOut();
+    window.location.reload();
+  }
+
+  window.onload = async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session && session.user.email === ADMIN_EMAIL) showPanel();
+  };
+
+  document.addEventListener('keypress', e => {
+    if (e.key === 'Enter') adminLogin();
+  });
+</script>
+</body>
+</html>
