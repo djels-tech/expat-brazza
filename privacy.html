@@ -14,7 +14,7 @@
   .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
   .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
   .logo-text span { color:var(--green); }
-  .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
+  .btn-back { color:var(--muted); text-decoration:none; font-size:13px; display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); transition:all 0.2s; } .btn-back:hover { color:var(--green); border-color:var(--green); }
   .content { max-width:800px; margin:0 auto; padding:60px 24px; }
   .content h1 { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; margin-bottom:8px; }
   .content h1 span { color:var(--green); }
@@ -25,6 +25,17 @@
   .section ul { padding-left:20px; }
   footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
   footer a { color:var(--green); text-decoration:none; }
+
+  @media(max-width:768px){
+    .section, .content, .content-wrap { padding-left:16px; padding-right:16px; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    h1 { font-size:28px !important; }
+  }
+  @media(max-width:480px){
+    .footer-grid { grid-template-columns:1fr; }
+    .section-grid, .values-grid, .team-grid { grid-template-columns:1fr !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -33,7 +44,7 @@
     <div class="logo-icon">🌍</div>
     <div class="logo-text">Expat<span>Brazza</span></div>
   </a>
-  <a href="index.html" class="btn-back">← Retour</a>
+  <a href="index.html" class="btn-back">← Accueil</a>
 </nav>
 
 <div class="content">

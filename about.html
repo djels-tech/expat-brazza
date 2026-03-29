@@ -40,7 +40,7 @@
   .logo-text span { color:var(--green); }
   .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
   .hero { background:linear-gradient(135deg,rgba(0,165,80,0.1),rgba(0,165,80,0.03)); padding:60px 24px; text-align:center; }
-  .hero h1 { font-family:'Syne',sans-serif; font-size:40px; font-weight:800; margin-bottom:16px; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(24px,5vw,40px); font-weight:800; margin-bottom:16px; }
   .hero h1 span { color:var(--green); }
   .hero p { color:var(--muted); font-size:18px; max-width:600px; margin:0 auto; line-height:1.6; }
   .section { max-width:900px; margin:0 auto; padding:60px 24px; }
@@ -59,6 +59,17 @@
   .value-desc { color:var(--muted); font-size:14px; line-height:1.6; }
   footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
   footer a { color:var(--green); text-decoration:none; }
+
+  @media(max-width:768px){
+    .section, .content, .content-wrap { padding-left:16px; padding-right:16px; }
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    h1 { font-size:28px !important; }
+  }
+  @media(max-width:480px){
+    .footer-grid { grid-template-columns:1fr; }
+    .section-grid, .values-grid, .team-grid { grid-template-columns:1fr !important; }
+  }
+
 </style>
 </head>
 <body>
@@ -67,7 +78,7 @@
     <div class="logo-icon">🌍</div>
     <div class="logo-text">Expat<span>Brazza</span></div>
   </a>
-  <a href="index.html" class="btn-back">← Retour</a>
+  <a href="index.html" class="btn-back">← Accueil</a>
 </nav>
 
 <div class="hero">
