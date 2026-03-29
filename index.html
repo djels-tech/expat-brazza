@@ -645,6 +645,8 @@
     border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .hamburger span {
     width: 22px;
@@ -685,7 +687,7 @@
     margin-top: 8px;
     border-radius: 10px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     .hamburger { display: flex; }
     .nav-links { display: none; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -816,6 +818,19 @@
   }
   .city-indicator:hover { background: rgba(0,165,80,0.15); }
 
+</style>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+  /* Safari fixes */
+  * { -webkit-tap-highlight-color: transparent; }
+  input, select, textarea, button { -webkit-appearance: none; border-radius: inherit; }
+  .btn-post { -webkit-appearance: none; }
+  @supports (-webkit-touch-callout: none) {
+    .hamburger { display: flex !important; }
+    .nav-links { display: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -1428,7 +1443,7 @@
 
   function confirmCity() {
     if (!selectedCity) return;
-    localStorage.setItem('expatbrazza_city', selectedCity);
+    try { localStorage.setItem('expatbrazza_city', selectedCity); } catch(e) {}
     document.getElementById('cityOverlay').style.display = 'none';
     document.getElementById('currentCityLabel').textContent = selectedCity === 'Toute le Congo' ? 'Congo 🇨🇬' : selectedCity;
     loadFromSupabase('all');
@@ -1444,7 +1459,8 @@
   }
 
   function initCity() {
-    const saved = localStorage.getItem('expatbrazza_city');
+    let saved = null;
+    try { saved = localStorage.getItem('expatbrazza_city'); } catch(e) {}
     if (saved) {
       document.getElementById('cityOverlay').style.display = 'none';
       document.getElementById('currentCityLabel').textContent = saved === 'Toute le Congo' ? 'Congo 🇨🇬' : saved;
@@ -1455,7 +1471,7 @@
   }
 
   function getCurrentCity() {
-    return localStorage.getItem('expatbrazza_city') || null;
+    try { return localStorage.getItem('expatbrazza_city') || null; } catch(e) { return null; }
   }
 
 
