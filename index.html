@@ -853,6 +853,7 @@
   <a href="faq.html">❓ FAQ</a>
   <a href="about.html">👥 Qui sommes-nous</a>
   <a href="contact.html">✉️ Contact</a>
+  <a href="javascript:void(0)" onclick="handleAuthNav();toggleMenu()" id="authMobileBtn">👤 Connexion</a>
   <a href="javascript:void(0)" onclick="openModal('post');toggleMenu()" class="btn-post-mobile">+ Déposer une annonce</a>
 </div>
 
@@ -1343,6 +1344,7 @@
         whatsapp: data.whatsapp,
         image_url: image_url,
         ville: data.ville,
+        user_id: await getUserId(),
         statut: 'en_attente'
       }]);
 
@@ -1456,6 +1458,39 @@
     return localStorage.getItem('expatbrazza_city') || null;
   }
 
+
+  // AUTH CHECK
+  async function checkAuthState() {
+    try {
+      const { data: { session } } = await _sb.auth.getSession();
+      const btn = document.getElementById('authNavBtn');
+      const mobileBtn = document.getElementById('authMobileBtn');
+      if (session) {
+        const name = session.user.user_metadata?.name || session.user.email.split('@')[0];
+        if (btn) { btn.textContent = '👤 ' + name; }
+        if (mobileBtn) { mobileBtn.textContent = '👤 Mon espace'; }
+      } else {
+        if (btn) btn.textContent = 'Connexion';
+        if (mobileBtn) mobileBtn.textContent = '👤 Connexion';
+      }
+    } catch(e) {}
+  }
+
+  async function handleAuthNav() {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      window.location.href = 'dashboard.html';
+    } else {
+      window.location.href = 'auth.html';
+    }
+  }
+
+  // Link user_id when submitting annonce
+  async function getUserId() {
+    const { data: { session } } = await _sb.auth.getSession();
+    return session ? session.user.id : null;
+  }
+
   function toggleMenu() {
     const menu = document.getElementById('mobileMenu');
     const ham = document.getElementById('hamburger');
@@ -1528,6 +1563,7 @@
     // Init Supabase after page load
     _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     initCity();
+    checkAuthState();
     loadFromSupabase('all');
     loadCategoryCounts();
     // Real-time counters from Supabase

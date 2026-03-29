@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion | ExpatBrazza</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-icon { width:38px; height:38px; background:linear-gradient(135deg,#00A550,#00c764); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 12px rgba(0,165,80,0.3); }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-text span { color:var(--green); }
+  .main { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px; }
+  .auth-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:40px; width:100%; max-width:420px; }
+  .auth-tabs { display:flex; background:var(--bg); border-radius:10px; padding:4px; margin-bottom:28px; }
+  .auth-tab { flex:1; padding:10px; text-align:center; border-radius:8px; cursor:pointer; font-weight:600; font-size:14px; color:var(--muted); transition:all 0.2s; border:none; background:none; font-family:'DM Sans',sans-serif; }
+  .auth-tab.active { background:white; color:var(--green); box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+  .auth-title { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:6px; }
+  .auth-subtitle { color:var(--muted); font-size:14px; margin-bottom:24px; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .form-group input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .form-group input:focus { border-color:var(--green); }
+  .btn-auth { background:var(--green); color:#fff; border:none; padding:14px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; margin-top:8px; }
+  .btn-auth:hover { background:#00c764; transform:translateY(-1px); }
+  .btn-auth:disabled { background:var(--muted); cursor:not-allowed; transform:none; }
+  .divider { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--muted); font-size:13px; }
+  .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+  .btn-google { background:white; color:var(--text); border:1px solid var(--border); padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.2s; }
+  .btn-google:hover { border-color:var(--green); background:rgba(0,165,80,0.04); }
+  .error-msg { background:rgba(206,17,38,0.1); border:1px solid rgba(206,17,38,0.3); border-radius:8px; padding:12px; color:#CE1126; font-size:13px; margin-bottom:16px; display:none; }
+  .success-msg { background:rgba(0,165,80,0.1); border:1px solid rgba(0,165,80,0.3); border-radius:8px; padding:12px; color:var(--green); font-size:13px; margin-bottom:16px; display:none; }
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:20px; font-size:13px; }
+  footer a { color:var(--green); text-decoration:none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">Expat<span>Brazza</span></div>
+  </a>
+  <a href="index.html" style="color:var(--muted);text-decoration:none;font-size:14px">← Retour à l'accueil</a>
+</nav>
+
+<div class="main">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showTab('login')" id="tab-login">Connexion</button>
+      <button class="auth-tab" onclick="showTab('register')" id="tab-register">Inscription</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="form-login">
+      <div class="auth-title">Bon retour ! 👋</div>
+      <div class="auth-subtitle">Connectez-vous pour gérer vos annonces</div>
+      <div class="error-msg" id="login-error"></div>
+      <div class="success-msg" id="login-success"></div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn-auth" onclick="handleLogin()" id="btn-login">Se connecter</button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        Pas encore de compte ? <a href="javascript:void(0)" onclick="showTab('register')" style="color:var(--green);font-weight:600">S'inscrire</a>
+      </p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="form-register" style="display:none">
+      <div class="auth-title">Créer un compte 🚀</div>
+      <div class="auth-subtitle">Rejoignez ExpatBrazza gratuitement</div>
+      <div class="error-msg" id="register-error"></div>
+      <div class="success-msg" id="register-success"></div>
+      <div class="form-group">
+        <label>Prénom</label>
+        <input type="text" id="register-name" placeholder="Ex: Jean">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="register-email" placeholder="votre@email.com">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="register-password" placeholder="Minimum 6 caractères">
+      </div>
+      <div class="form-group">
+        <label>Ville</label>
+        <select id="register-ville" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:DM Sans,sans-serif;font-size:14px;outline:none">
+          <option>Brazzaville</option>
+          <option>Pointe-Noire</option>
+          <option>Dolisie</option>
+          <option>Nkayi</option>
+          <option>Ouesso</option>
+          <option>Owando</option>
+          <option>Impfondo</option>
+        </select>
+      </div>
+      <button class="btn-auth" onclick="handleRegister()" id="btn-register">Créer mon compte</button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        Déjà un compte ? <a href="javascript:void(0)" onclick="showTab('login')" style="color:var(--green);font-weight:600">Se connecter</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function showTab(tab) {
+    document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  }
+
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 5000);
+  }
+
+  function showSuccess(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  async function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) return showError('login-error', 'Remplis tous les champs !');
+
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.textContent = 'Connexion...';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      showError('login-error', 'Email ou mot de passe incorrect.');
+      btn.disabled = false;
+      btn.textContent = 'Se connecter';
+    } else {
+      showSuccess('login-success', '✅ Connecté ! Redirection...');
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    }
+  }
+
+  async function handleRegister() {
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+    const ville = document.getElementById('register-ville').value;
+
+    if (!name || !email || !password) return showError('register-error', 'Remplis tous les champs !');
+    if (password.length < 6) return showError('register-error', 'Mot de passe trop court (min 6 caractères)');
+
+    const btn = document.getElementById('btn-register');
+    btn.disabled = true;
+    btn.textContent = 'Création...';
+
+    const { error } = await sb.auth.signUp({
+      email, password,
+      options: { data: { name, ville } }
+    });
+
+    if (error) {
+      showError('register-error', error.message);
+      btn.disabled = false;
+      btn.textContent = 'Créer mon compte';
+    } else {
+      showSuccess('register-success', '✅ Compte créé ! Vérifiez votre email pour confirmer.');
+      btn.textContent = 'Compte créé !';
+    }
+  }
+
+  // Check if already logged in
+  window.onload = async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) window.location.href = 'dashboard.html';
+  };
+
+  // Enter key support
+  document.addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      const loginVisible = document.getElementById('form-login').style.display !== 'none';
+      if (loginVisible) handleLogin();
+      else handleRegister();
+    }
+  });
+</script>
+</body>
+</html>
