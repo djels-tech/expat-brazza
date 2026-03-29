@@ -267,6 +267,9 @@
               <div class="action-btns">
                 ${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}
                 ${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}
+                <button class="${a.une ? 'btn-approve' : 'btn-reject'}" onclick="toggleUne('${a.id}', ${!a.une})">
+                  ${a.une ? '⭐ Une' : '☆ Une'}
+                </button>
                 <button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button>
               </div>
             </td>
@@ -284,6 +287,22 @@
       loadAllAnnonces();
       alert(statut === 'actif' ? '✅ Annonce approuvée !' : '❌ Annonce refusée');
     }
+  }
+
+  async function toggleUne(id, value) {
+    const { error } = await sb.from('annonces').update({ une: value }).eq('id', id);
+    if (!error) {
+      loadAllAnnonces();
+      showToastAdmin(value ? '⭐ Annonce mise À la une !' : 'Annonce retirée de la une');
+    }
+  }
+
+  function showToastAdmin(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#00A550;color:#fff;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 8px 24px rgba(0,165,80,0.4)';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
   }
 
   async function deleteAnnonce(id) {

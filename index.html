@@ -1528,7 +1528,7 @@
 
 <!-- TOP ANNONCES -->
 <div class="section">
-  <div class="section-header">
+  <div class="section-header" id="featuredTitle">
     <h2 class="section-title">⭐ À la une</h2>
   </div>
   <div class="featured-annonces" id="featuredGrid"></div>
@@ -1776,7 +1776,7 @@
     
     try {
       const city = getCurrentCity();
-      let query = _sb.from('annonces').select('*').eq('statut', 'actif').order('created_at', { ascending: false });
+      let query = _sb.from('annonces').select('*').eq('statut', 'actif').order('une', { ascending: false }).order('created_at', { ascending: false });
       if (filter && filter !== 'all') query = query.eq('categorie', filter);
       if (city && city !== 'Toute le Congo') query = query.eq('ville', city);
       
