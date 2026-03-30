@@ -78,7 +78,7 @@
 
 <div class="section">
   <!-- ARTICLE FEATURED -->
-  <div class="featured" onclick="open(0)">
+  <div class="featured" onclick="openArticle(0)">
     <div class="featured-img">🏙️</div>
     <div class="featured-body">
       <span class="tag">Guide complet</span>
@@ -91,7 +91,7 @@
   </div>
 
   <div class="grid">
-    <div class="card" onclick="open(1)">
+    <div class="card" onclick="openArticle(1)">
       <div class="card-img" style="background:linear-gradient(135deg,#E8F5E9,#F1F8E9)">🏠</div>
       <div class="card-body">
         <span class="tag">Immobilier</span>
@@ -100,7 +100,7 @@
         <div class="card-meta"><span>✍️ ExpatBrazza</span><span>5 min</span></div>
       </div>
     </div>
-    <div class="card" onclick="open(2)">
+    <div class="card" onclick="openArticle(2)">
       <div class="card-img" style="background:linear-gradient(135deg,#FCE4EC,#FFF0F3)">💼</div>
       <div class="card-body">
         <span class="tag">Emploi</span>
@@ -109,7 +109,7 @@
         <div class="card-meta"><span>✍️ ExpatBrazza</span><span>6 min</span></div>
       </div>
     </div>
-    <div class="card" onclick="open(3)">
+    <div class="card" onclick="openArticle(3)">
       <div class="card-img" style="background:linear-gradient(135deg,#E3F2FD,#EEF7FF)">🚗</div>
       <div class="card-body">
         <span class="tag">Transport</span>
@@ -118,7 +118,7 @@
         <div class="card-meta"><span>✍️ ExpatBrazza</span><span>4 min</span></div>
       </div>
     </div>
-    <div class="card" onclick="open(4)">
+    <div class="card" onclick="openArticle(4)">
       <div class="card-img" style="background:linear-gradient(135deg,#F3E5F5,#FDF0FF)">🏥</div>
       <div class="card-body">
         <span class="tag">Santé</span>
@@ -127,7 +127,7 @@
         <div class="card-meta"><span>✍️ ExpatBrazza</span><span>5 min</span></div>
       </div>
     </div>
-    <div class="card" onclick="open(5)">
+    <div class="card" onclick="openArticle(5)">
       <div class="card-img" style="background:linear-gradient(135deg,#FFF3CD,#FFF8E1)">🎓</div>
       <div class="card-body">
         <span class="tag">Éducation</span>
@@ -136,7 +136,7 @@
         <div class="card-meta"><span>✍️ ExpatBrazza</span><span>4 min</span></div>
       </div>
     </div>
-    <div class="card" onclick="open(6)">
+    <div class="card" onclick="openArticle(6)">
       <div class="card-img" style="background:linear-gradient(135deg,#E8F5E9,#F0FFF4)">💰</div>
       <div class="card-body">
         <span class="tag">Finance</span>
@@ -329,7 +329,7 @@ const articles = [
   }
 ];
 
-function open(idx) {
+function openArticle(idx) {
   const a = articles[idx];
   document.getElementById('aEmoji').textContent = a.emoji;
   document.getElementById('aTag').textContent = a.tag;
