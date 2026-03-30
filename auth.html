@@ -64,8 +64,8 @@
 
     <!-- LOGIN -->
     <div id="form-login">
-      <div class="auth-title">Bon retour ! 👋</div>
-      <div class="auth-subtitle">Connectez-vous pour gérer vos annonces</div>
+      <div class="auth-title">Heureux de vous revoir ! 👋</div>
+      <div class="auth-subtitle">Accédez à votre espace et gérez vos annonces</div>
       <div class="error-msg" id="login-error"></div>
       <div class="success-msg" id="login-success"></div>
 
@@ -105,8 +105,8 @@
 
     <!-- REGISTER -->
     <div id="form-register" style="display:none">
-      <div class="auth-title">Créer un compte 🚀</div>
-      <div class="auth-subtitle">Rejoignez ExpatBrazza gratuitement</div>
+      <div class="auth-title">Rejoignez ExpatBrazza 🚀</div>
+      <div class="auth-subtitle">Publiez vos annonces et trouvez ce qu'il vous faut au Congo</div>
       <div class="error-msg" id="register-error"></div>
       <div class="success-msg" id="register-success"></div>
 
@@ -211,9 +211,13 @@
   }
 
   function formatPhone(phone) {
-    // Convert phone to email format for Supabase
-    const clean = phone.replace(/\s/g, '').replace(/^0/, '');
-    return '+242' + clean + '@expatbrazza.phone';
+    const clean = phone.replace(/[^0-9]/g, '').replace(/^0/, '').replace(/^242/, '');
+    return 'phone242' + clean + '@expatbrazza.com';
+  }
+  
+  function displayPhone(phone) {
+    const clean = phone.replace(/[^0-9]/g, '').replace(/^0/, '').replace(/^242/, '');
+    return '+242 ' + clean;
   }
 
   async function handleLogin() {
@@ -275,15 +279,17 @@
     });
 
     if (error) {
-      showError('register-error', error.message === 'User already registered' ? 'Ce compte existe déjà. Connectez-vous !' : error.message);
+      let errMsg = 'Une erreur est survenue. Réessayez.';
+      if (error.message.includes('already registered') || error.message.includes('already been registered')) errMsg = 'Ce numéro/email est déjà utilisé. Connectez-vous !';
+      showError('register-error', errMsg);
       btn.disabled = false;
       btn.textContent = 'Créer mon compte';
     } else {
       if (regMethod === 'email') {
         showSuccess('register-success', '✅ Compte créé ! Vérifiez votre email pour confirmer.');
       } else {
-        showSuccess('register-success', '✅ Compte créé ! Vous pouvez vous connecter.');
-        setTimeout(() => { showTab('login'); switchLoginMethod('phone', document.querySelector('#form-login .method-tab:last-child')); }, 2000);
+        showSuccess('register-success', '✅ Compte créé ! Connectez-vous avec votre numéro.');
+        setTimeout(() => { showTab('login'); }, 2000);
       }
       btn.textContent = 'Compte créé !';
     }

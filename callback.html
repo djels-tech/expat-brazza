@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Confirmation | ExpatBrazza</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F5F7FA;margin:0">
+  <div style="text-align:center;padding:40px;background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,0.1);max-width:400px;width:90%">
+    <div style="font-size:48px;margin-bottom:16px" id="icon">⏳</div>
+    <h2 style="font-family:sans-serif;margin-bottom:8px" id="title">Confirmation en cours...</h2>
+    <p style="color:#6B7280;font-size:14px" id="msg">Veuillez patienter</p>
+    <a href="index.html" style="display:inline-block;margin-top:20px;background:#00A550;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px" id="btn" hidden>Retour à l'accueil</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    window.onload = async () => {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      
+      // Handle email confirmation
+      if (hash.includes('access_token') || params.get('token_hash')) {
+        try {
+          const { data, error } = await sb.auth.getSession();
+          if (data.session) {
+            document.getElementById('icon').textContent = '✅';
+            document.getElementById('title').textContent = 'Email confirmé !';
+            document.getElementById('msg').textContent = 'Votre compte est actif. Bienvenue sur ExpatBrazza !';
+            document.getElementById('btn').hidden = false;
+            setTimeout(() => window.location.href = 'dashboard.html', 2000);
+          } else {
+            document.getElementById('icon').textContent = '✅';
+            document.getElementById('title').textContent = 'Compte confirmé !';
+            document.getElementById('msg').textContent = 'Vous pouvez maintenant vous connecter.';
+            document.getElementById('btn').hidden = false;
+            setTimeout(() => window.location.href = 'auth.html', 2000);
+          }
+        } catch(e) {
+          document.getElementById('icon').textContent = '✅';
+          document.getElementById('title').textContent = 'Confirmation réussie !';
+          document.getElementById('btn').hidden = false;
+        }
+      } else {
+        document.getElementById('icon').textContent = '🏠';
+        document.getElementById('title').textContent = 'Redirection...';
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
+    };
+  </script>
+</body>
+</html>

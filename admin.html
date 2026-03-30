@@ -32,7 +32,7 @@
   .page-subtitle { color:var(--muted); font-size:14px; margin-bottom:28px; }
 
   /* STATS */
-  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
   .stat-box { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; }
   .stat-box .icon { font-size:28px; margin-bottom:8px; }
   .stat-box .num { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; }
@@ -145,6 +145,8 @@
         <div class="stat-box yellow"><div class="icon">⏳</div><div class="num" id="s-attente">0</div><div class="label">En attente</div></div>
         <div class="stat-box blue"><div class="icon">👥</div><div class="num" id="s-users">0</div><div class="label">Utilisateurs</div></div>
         <div class="stat-box red"><div class="icon">📋</div><div class="num" id="s-total">0</div><div class="label">Total annonces</div></div>
+        <div class="stat-box green"><div class="icon">👁️</div><div class="num" id="s-vues">0</div><div class="label">Vues totales</div></div>
+        <div class="stat-box yellow"><div class="icon">⭐</div><div class="num" id="s-une">0</div><div class="label">À la une</div></div>
       </div>
       <div class="table-card">
         <div class="table-header"><h3>⏳ Annonces en attente de validation</h3></div>
@@ -213,11 +215,13 @@
   }
 
   async function loadStats() {
-    const { data } = await sb.from('annonces').select('statut');
+    const { data } = await sb.from('annonces').select('statut, vues, une');
     if (!data) return;
     document.getElementById('s-total').textContent = data.length;
     document.getElementById('s-actif').textContent = data.filter(a => a.statut === 'actif').length;
     document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
+    document.getElementById('s-vues').textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
+    document.getElementById('s-une').textContent = data.filter(a => a.une).length;
   }
 
   async function loadPending() {
@@ -245,7 +249,7 @@
     const emojis = { 'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮' };
     return `<table>
       <thead><tr>
-        <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Statut</th><th>Actions</th>
+        <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Actions</th>
       </tr></thead>
       <tbody>
         ${data.map(a => `
@@ -262,6 +266,8 @@
             <td><span style="font-size:13px">${a.categorie || '-'}</span></td>
             <td><strong style="color:var(--green)">${a.prix || '-'} FCFA</strong></td>
             <td>${a.ville || 'Brazzaville'}</td>
+            <td style="font-size:11px;color:var(--muted)">${new Date(a.created_at).toLocaleDateString('fr-FR')}</td>
+            <td style="font-size:12px">👁️ ${a.vues || 0}</td>
             <td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td>
             <td>
               <div class="action-btns">
@@ -285,15 +291,23 @@
       loadStats();
       loadPending();
       loadAllAnnonces();
-      alert(statut === 'actif' ? '✅ Annonce approuvée !' : '❌ Annonce refusée');
+      showToastAdmin(statut === 'actif' ? '✅ Annonce approuvée et publiée !' : '❌ Annonce refusée');
+      // Remove row immediately for better UX
+      const row = document.getElementById('row-' + id);
+      if (row && statut !== 'actif') row.style.opacity = '0.3';
+    } else {
+      showToastAdmin('❌ Erreur : ' + error.message);
     }
   }
 
   async function toggleUne(id, value) {
     const { error } = await sb.from('annonces').update({ une: value }).eq('id', id);
     if (!error) {
+      loadStats();
       loadAllAnnonces();
-      showToastAdmin(value ? '⭐ Annonce mise À la une !' : 'Annonce retirée de la une');
+      showToastAdmin(value ? '⭐ Annonce mise À la une sur le site !' : 'Annonce retirée de la une');
+    } else {
+      showToastAdmin('❌ Erreur: ' + error.message);
     }
   }
 
