@@ -1451,7 +1451,7 @@
     <div class="flag-stripe" style="background:#DC241F"></div>
   </div>
   <h1>Tout acheter, tout vendre<br><span>à Brazzaville</span></h1>
-  <p>La plateforme d'annonces N°1 au Congo — pour acheter, vendre et trouver ce dont vous avez besoin.</p>
+  <p>Achetez, vendez et trouvez ce qu'il vous faut au Congo. Simple, rapide, gratuit.</p>
 
   <div class="search-container">
     <div class="search-bar">
@@ -1584,7 +1584,7 @@
 <div class="section">
   <div class="banner">
     <h2>Vendez ce que vous n'utilisez plus 🚀</h2>
-    <p>Des milliers de Congolais consultent nos annonces chaque jour. Rejoignez-nous !</p>
+    <p>Rejoignez des milliers de Congolais qui achètent et vendent sur ExpatBrazza chaque jour.</p>
     <a href="javascript:void(0)" class="btn-primary" onclick="openModal('post')">Déposer mon annonce gratuitement</a>
   </div>
 </div>
@@ -1661,11 +1661,16 @@
       <input type="number" id="inputPrix" placeholder="Ex: 150000">
     </div>
     <div class="form-group">
-      <label>Photo du produit</label>
-      <input type="file" id="photoInput" accept="image/*" style="padding:8px">
-      <div id="photoPreview" style="margin-top:8px;display:none">
-        <img id="previewImg" style="width:100%;height:150px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+      <label>Photo du produit <span style="color:var(--muted);font-weight:400">(optionnel)</span></label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <label for="photoInput" style="flex:1;background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s" id="photoLabel">
+          📷 Choisir une photo
+        </label>
+        <div id="photoPreview" style="display:none;width:60px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0">
+          <img id="previewImg" style="width:100%;height:100%;object-fit:cover">
+        </div>
       </div>
+      <input type="file" id="photoInput" accept="image/*" style="display:none">
     </div>
     <div class="form-group">
       <label>Quartier / Zone</label>
@@ -1713,12 +1718,22 @@
       <p style="font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600">DESCRIPTION</p>
       <p id="detailDesc" style="font-size:14px;line-height:1.6;color:var(--text)"></p>
     </div>
+    <div id="detailVendeur" style="background:#f5f7fa;border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px" id="vendeurInitial">?</div>
+        <div>
+          <div style="font-size:13px;font-weight:600" id="vendeurNom">Vendeur</div>
+          <div style="font-size:11px;color:var(--muted)" id="vendeurBadge"></div>
+        </div>
+      </div>
+      <button onclick="reportAnnonce()" style="background:none;border:1px solid #DDE1E7;color:#6B7280;padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:DM Sans,sans-serif">🚩 Signaler</button>
+    </div>
     <div style="display:flex;gap:12px;margin-top:8px">
       <a id="detailWhatsapp" href="#" target="_blank" class="btn-primary" style="flex:1;text-align:center;background:#25D366">
         💬 Contacter
       </a>
       <button onclick="shareAnnonce()" class="btn-primary" style="flex:1;background:#128C7E">
-        📤 Partager sur WhatsApp
+        📤 Partager
       </button>
     </div>
   </div>
@@ -1816,6 +1831,21 @@
     }
   }
 
+
+  function isNew(dateStr) {
+    if (!dateStr) return false;
+    const diff = (new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24);
+    return diff < 3; // Nouveau si moins de 3 jours
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    const diff = Math.floor((new Date() - new Date(dateStr)) / (1000 * 60));
+    if (diff < 60) return diff + ' min';
+    if (diff < 1440) return Math.floor(diff/60) + 'h';
+    return Math.floor(diff/1440) + 'j';
+  }
+
   function getCatEmoji(cat) {
     const emojis = { 'Immobilier': '🏠', 'Véhicules': '🚗', 'Emploi': '💼', 'Électronique': '📱', 'Services': '🛠️', 'Mode': '👗', 'Alimentation': '🍽️', 'Loisirs': '🎮' };
     return emojis[cat] || '📦';
@@ -1910,7 +1940,15 @@
   });
 
   // MODAL
-  function openModal(type) {
+  async function openModal(type) {
+    if (type === 'post') {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (!session) {
+        showToast("⚠️ Connectez-vous d'abord pour déposer une annonce !");
+        setTimeout(() => window.location.href = 'auth.html', 1500);
+        return;
+      }
+    }
     document.getElementById('modal' + type.charAt(0).toUpperCase() + type.slice(1)).classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -2131,6 +2169,14 @@
     }
   });
 
+
+  function reportAnnonce() {
+    const titre = document.getElementById('detailTitre').textContent;
+    const waUrl = 'https://wa.me/242' + '?text=' + encodeURIComponent('🚩 Signalement annonce ExpatBrazza\n\nAnnonce : ' + titre + '\nMotif : (décrivez le problème)');
+    window.open(waUrl, '_blank');
+    showToast('Merci pour votre signalement !');
+  }
+
   function shareAnnonce() {
     const titre = document.getElementById('detailTitre').textContent;
     const prix = document.getElementById('detailPrix').textContent;
@@ -2174,6 +2220,17 @@
     const wa = document.getElementById('detailWhatsapp');
     wa.href = a.whatsapp ? `https://wa.me/${a.whatsapp.replace(/[^0-9]/g, '')}` : '#';
     
+    // Show vendor info
+    const vendeurNom = document.getElementById('vendeurNom');
+    const vendeurInitial = document.getElementById('vendeurInitial');
+    const vendeurBadge = document.getElementById('vendeurBadge');
+    if (vendeurNom) {
+      const nom = a.whatsapp ? '+242 ' + a.whatsapp.replace(/[^0-9]/g,'').slice(-8) : 'Vendeur';
+      vendeurNom.textContent = nom;
+      vendeurInitial.textContent = nom.charAt(0).toUpperCase();
+      vendeurBadge.innerHTML = a.verified ? '✅ Vendeur vérifié' : '⚪ Non vérifié';
+    }
+    
     openModal('detail');
   }
 
@@ -2188,6 +2245,7 @@
           reader.onload = e => {
             document.getElementById('previewImg').src = e.target.result;
             document.getElementById('photoPreview').style.display = 'block';
+            document.getElementById('photoLabel').textContent = '✅ ' + file.name.substring(0,20);
           };
           reader.readAsDataURL(file);
         }
