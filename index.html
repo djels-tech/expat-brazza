@@ -1804,28 +1804,71 @@
         return;
       }
 
-      // Store annonces globally for detail view
-        window._annoncesData = data;
-        grid.innerHTML = data.map((a, idx) => `
-        <div class="annonce-card fade-up" onclick="openDetail(${idx})">
-          ${a.image_url 
-            ? `<img src="${a.image_url}" class="annonce-card-img" alt="${a.titre || ''}">`
-            : `<div class="annonce-img">${getCatEmoji(a.categorie)}</div>`
-          }
-          <div class="annonce-body">
-            <div class="annonce-cat">${a.categorie || 'Autre'}</div>
-            <div class="annonce-title">${a.titre}</div>
-            <div class="annonce-price">${a.prix} FCFA</div>
-            <div class="annonce-footer">
-              <div class="annonce-location">📍 ${a.quartier || 'Brazzaville'}</div>
-              <div class="annonce-actions">
-                <a class="action-btn whatsapp" href="https://wa.me/${a.whatsapp}" target="_blank">💬</a>
-                <a class="action-btn" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Annonce sauvegardée !')">🔖</a>
+      window._annoncesData = data;
+
+      // Split: une=true → featured, rest → normal
+      const featured = data.filter(a => a.une === true);
+      const normal = data.filter(a => !a.une);
+
+      // Render featured horizontal
+      if (featuredGrid) {
+        if (featured.length > 0 && filter === 'all') {
+          featuredGrid.innerHTML = featured.map((a, idx) => `
+            <div class="annonce-card-featured fade-up" onclick="openDetail(${data.indexOf(a)})">
+              <div class="badge-une-top">⭐ À la une</div>
+              ${a.image_url
+                ? `<img src="${a.image_url}" class="feat-img" style="object-fit:cover" alt="${a.titre || ''}">`
+                : `<div class="feat-img">${getCatEmoji(a.categorie)}</div>`
+              }
+              <div class="feat-body">
+                <div class="feat-title">${a.titre}</div>
+                <div class="feat-price">${a.prix} FCFA</div>
+                <div class="feat-meta">
+                  <span>📍 ${a.quartier || a.ville || 'Brazzaville'}</span>
+                  <span>👁️ ${a.vues || 0}</span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+          const featTitle = document.getElementById('featuredTitle');
+          if (featTitle) featTitle.style.display = 'flex';
+        } else {
+          featuredGrid.innerHTML = '';
+          const featTitle = document.getElementById('featuredTitle');
+          if (featTitle) featTitle.style.display = 'none';
+        }
+      }
+
+      // Render normal cards
+      const displayData = (filter === 'all') ? normal : data;
+      grid.innerHTML = displayData.length > 0 ? displayData.map((a) => {
+        const realIdx = data.indexOf(a);
+        const newBadge = isNew(a.created_at) ? '<span style="background:#00A550;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px">Nouveau</span>' : '';
+        return `
+          <div class="annonce-card fade-up" onclick="openDetail(${realIdx})">
+            ${a.image_url
+              ? `<img src="${a.image_url}" class="annonce-card-img" alt="${a.titre || ''}">`
+              : `<div class="annonce-img">${getCatEmoji(a.categorie)}</div>`
+            }
+            <div class="annonce-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                <div class="annonce-cat">${a.categorie || 'Autre'}</div>
+                ${newBadge}
+              </div>
+              <div class="annonce-title">${a.titre}</div>
+              <div class="annonce-price">${a.prix} FCFA</div>
+              <div class="annonce-footer">
+                <div class="annonce-location">📍 ${a.quartier || a.ville || 'Brazzaville'}</div>
+                <div style="display:flex;align-items:center;gap:4px">
+                  <span style="font-size:10px;color:var(--muted)">👁️ ${a.vues || 0}</span>
+                  <a class="action-btn whatsapp" href="https://wa.me/${a.whatsapp}" target="_blank" onclick="event.stopPropagation()">💬</a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('') : '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px">Aucune annonce dans cette catégorie.</p>';
+
     } catch(e) {
       renderAnnonces(filter);
     }
@@ -2006,6 +2049,7 @@
         image_url: image_url,
         ville: data.ville,
         user_id: await getUserId(),
+        vendor_name: await getVendorName(),
         statut: 'en_attente'
       }]);
 
@@ -2148,6 +2192,17 @@
   }
 
   // Link user_id when submitting annonce
+
+  async function getVendorName() {
+    try {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session && session.user.user_metadata?.name) {
+        return session.user.user_metadata.name;
+      }
+      return null;
+    } catch(e) { return null; }
+  }
+
   async function getUserId() {
     const { data: { session } } = await _sb.auth.getSession();
     return session ? session.user.id : null;
@@ -2220,12 +2275,15 @@
     const wa = document.getElementById('detailWhatsapp');
     wa.href = a.whatsapp ? `https://wa.me/${a.whatsapp.replace(/[^0-9]/g, '')}` : '#';
     
-    // Show vendor info
+    // Show vendor info - name only
     const vendeurNom = document.getElementById('vendeurNom');
     const vendeurInitial = document.getElementById('vendeurInitial');
     const vendeurBadge = document.getElementById('vendeurBadge');
     if (vendeurNom) {
-      const nom = a.whatsapp ? '+242 ' + a.whatsapp.replace(/[^0-9]/g,'').slice(-8) : 'Vendeur';
+      // Get name from Supabase user metadata if available
+      let nom = 'Vendeur';
+      if (a.vendor_name) nom = a.vendor_name;
+      else if (a.quartier) nom = 'Vendeur de ' + (a.ville || 'Brazzaville');
       vendeurNom.textContent = nom;
       vendeurInitial.textContent = nom.charAt(0).toUpperCase();
       vendeurBadge.innerHTML = a.verified ? '✅ Vendeur vérifié' : '⚪ Non vérifié';

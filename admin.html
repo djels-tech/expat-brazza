@@ -220,6 +220,10 @@
     document.getElementById('s-total').textContent = data.length;
     document.getElementById('s-actif').textContent = data.filter(a => a.statut === 'actif').length;
     document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
+    const vuesEl = document.getElementById('s-vues');
+    const uneEl = document.getElementById('s-une');
+    if (vuesEl) vuesEl.textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
+    if (uneEl) uneEl.textContent = data.filter(a => a.une === true).length;
     document.getElementById('s-vues').textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
     document.getElementById('s-une').textContent = data.filter(a => a.une).length;
   }
@@ -273,8 +277,8 @@
               <div class="action-btns">
                 ${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}
                 ${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}
-                <button class="${a.une ? 'btn-approve' : 'btn-reject'}" onclick="toggleUne('${a.id}', ${!a.une})">
-                  ${a.une ? '⭐ Une' : '☆ Une'}
+                <button class="${a.une ? 'btn-approve' : 'btn-reject'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})" title="${a.une ? 'Retirer de la une' : 'Mettre à la une'}">
+                  ${a.une ? '⭐ À la une' : '☆ Mettre une'}
                 </button>
                 <button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button>
               </div>
