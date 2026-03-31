@@ -211,13 +211,13 @@
   }
 
   function formatPhone(phone) {
-    const clean = phone.replace(/[^0-9]/g, '').replace(/^0/, '').replace(/^242/, '');
-    return 'phone242' + clean + '@expatbrazza.com';
-  }
-  
-  function displayPhone(phone) {
-    const clean = phone.replace(/[^0-9]/g, '').replace(/^0/, '').replace(/^242/, '');
-    return '+242 ' + clean;
+    // Clean number - remove spaces, dashes, +242, leading 0
+    let clean = phone.replace(/[^0-9]/g, '');
+    if (clean.startsWith('242')) clean = clean.substring(3);
+    if (clean.startsWith('0')) clean = clean.substring(1);
+    // Must be 8-9 digits
+    if (clean.length < 6) return null;
+    return 'eb242' + clean + '@expatbrazza.com';
   }
 
   async function handleLogin() {
@@ -231,10 +231,11 @@
       email = document.getElementById('login-email').value.trim();
       password = document.getElementById('login-password').value;
     } else {
-      const phone = document.getElementById('login-phone').value.trim();
+      const phoneVal2 = document.getElementById('login-phone').value.trim();
       password = document.getElementById('login-password-phone').value;
-      if (!phone) { showError('login-error', 'Entrez votre numéro !'); btn.disabled=false; btn.textContent='Se connecter'; return; }
-      email = formatPhone(phone);
+      if (!phoneVal2) { showError('login-error', 'Entrez votre numéro !'); btn.disabled=false; btn.textContent='Se connecter'; return; }
+      email = formatPhone(phoneVal2);
+      if (!email) { showError('login-error', 'Numéro invalide. Ex: 06 123 45 67'); btn.disabled=false; btn.textContent='Se connecter'; return; }
     }
 
     if (!email || !password) { showError('login-error', 'Remplis tous les champs !'); btn.disabled=false; btn.textContent='Se connecter'; return; }
@@ -263,7 +264,8 @@
       const phoneVal = document.getElementById('reg-phone').value.trim();
       if (!phoneVal) { showError('register-error', 'Entrez votre numéro !'); return; }
       email = formatPhone(phoneVal);
-      phone = '+242' + phoneVal.replace(/\s/g, '').replace(/^0/, '');
+      if (!email) { showError('register-error', 'Numéro invalide. Ex: 06 123 45 67'); return; }
+      phone = '+242' + phoneVal.replace(/[^0-9]/g, '').replace(/^0/, '');
     }
 
     if (!name || !email || !password) { showError('register-error', 'Remplis tous les champs !'); return; }

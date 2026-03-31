@@ -5,66 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact | ExpatBrazza</title>
 <meta name="description" content="Contactez l'équipe ExpatBrazza pour toute question, partenariat ou signalement.">
-<meta name="keywords" content="contact ExpatBrazza, support Congo, partenariat annonces Congo">
-<meta name="author" content="ExpatBrazza — Djels & Joe">
-<meta name="robots" content="index, follow">
-<meta name="language" content="French">
-
-<!-- Open Graph (WhatsApp, Facebook) -->
-<meta property="og:title" content="Contact | ExpatBrazza">
-<meta property="og:description" content="Contactez l'équipe ExpatBrazza pour toute question, partenariat ou signalement.">
-<meta property="og:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
-<meta property="og:url" content="https://djels-tech.github.io/expat-brazza/contact.html">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_CG">
-<meta property="og:site_name" content="ExpatBrazza">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Contact | ExpatBrazza">
-<meta name="twitter:description" content="Contactez l'équipe ExpatBrazza pour toute question, partenariat ou signalement.">
-<meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
-
-<!-- Canonical -->
-<link rel="canonical" href="https://djels-tech.github.io/expat-brazza/contact.html">
-
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
-  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 20px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
   .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-icon { width:34px; height:34px; background:linear-gradient(135deg,#00A550,#00c764); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--text); }
   .logo-text span { color:var(--green); }
-  .btn-back { background:var(--green); color:#fff; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; text-decoration:none; }
-  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.1),rgba(0,165,80,0.03)); padding:60px 24px; text-align:center; }
-  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(24px,5vw,40px); font-weight:800; margin-bottom:16px; }
+  .btn-back { color:var(--muted); text-decoration:none; font-size:13px; display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); transition:all 0.2s; }
+  .btn-back:hover { color:var(--green); border-color:var(--green); }
+  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.08),rgba(0,165,80,0.02)); padding:48px 20px; text-align:center; }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(26px,5vw,40px); font-weight:800; margin-bottom:12px; }
   .hero h1 span { color:var(--green); }
-  .hero p { color:var(--muted); font-size:18px; max-width:600px; margin:0 auto; }
-  .section { max-width:900px; margin:0 auto; padding:60px 24px; display:grid; grid-template-columns:1fr 1fr; gap:40px; }
-  @media(max-width:768px){.section{grid-template-columns:1fr;}}
-  .contact-info { display:flex; flex-direction:column; gap:20px; }
-  .info-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; align-items:center; gap:16px; }
-  .info-icon { width:48px; height:48px; background:rgba(0,165,80,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-  .info-label { font-size:12px; color:var(--muted); margin-bottom:4px; }
-  .info-value { font-weight:600; color:var(--text); }
-  .form-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; }
-  .form-card h2 { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; margin-bottom:24px; }
-  .form-group { margin-bottom:16px; }
-  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .hero p { color:var(--muted); font-size:15px; max-width:500px; margin:0 auto; }
+  .section { max-width:900px; margin:0 auto; padding:48px 20px; display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+  @media(max-width:700px){ .section { grid-template-columns:1fr; gap:20px; padding:24px 16px; } }
+  .contact-info { display:flex; flex-direction:column; gap:16px; }
+  .info-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; align-items:center; gap:14px; }
+  .info-icon { width:44px; height:44px; background:rgba(0,165,80,0.1); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .info-label { font-size:11px; color:var(--muted); margin-bottom:3px; text-transform:uppercase; letter-spacing:0.5px; }
+  .info-value { font-weight:600; color:var(--text); font-size:14px; }
+  .form-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; }
+  .form-card h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:20px; }
+  .form-group { margin-bottom:14px; }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:5px; font-weight:500; }
   .form-group input, .form-group textarea, .form-group select { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
   .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--green); }
-  .form-group textarea { resize:vertical; min-height:100px; }
-  .btn-submit { background:var(--green); color:#fff; border:none; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
+  .form-group textarea { resize:vertical; min-height:90px; }
+  .btn-submit { background:var(--green); color:#fff; border:none; padding:13px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; margin-top:4px; display:block; }
   .btn-submit:hover { background:#00c764; }
-  .success-msg { display:none; background:rgba(0,165,80,0.1); border:1px solid var(--green); border-radius:10px; padding:16px; text-align:center; color:var(--green); font-weight:600; margin-top:16px; }
-  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
+  .btn-submit:disabled { background:var(--muted); cursor:not-allowed; }
+  .msg { border-radius:8px; padding:12px 14px; font-size:13px; margin-bottom:14px; display:none; }
+  .msg.error { background:rgba(206,17,38,0.08); border:1px solid rgba(206,17,38,0.2); color:#CE1126; }
+  .msg.success { background:rgba(0,165,80,0.08); border:1px solid rgba(0,165,80,0.2); color:var(--green); }
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:20px; font-size:13px; margin-top:48px; }
   footer a { color:var(--green); text-decoration:none; }
 </style>
 </head>
 <body>
+
 <nav>
   <a href="index.html" class="logo">
     <div class="logo-icon">🌍</div>
@@ -75,7 +57,7 @@
 
 <div class="hero">
   <h1>Nous <span>contacter</span></h1>
-  <p>Une question, un problème, un partenariat ? Notre équipe vous répond sous 24h.</p>
+  <p>Une question, un partenariat ou un problème ? On vous répond sous 24h.</p>
 </div>
 
 <div class="section">
@@ -84,7 +66,7 @@
       <div class="info-icon">📧</div>
       <div>
         <div class="info-label">Email</div>
-        <div class="info-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3d58454d5c495f4f5c47475c7d5a505c5451135e5250">[email&#160;protected]</a></div>
+        <div class="info-value">expatbrazza@gmail.com</div>
       </div>
     </div>
     <div class="info-card">
@@ -98,7 +80,7 @@
       <div class="info-icon">📍</div>
       <div>
         <div class="info-label">Localisation</div>
-        <div class="info-value">Brazzaville, République du Congo</div>
+        <div class="info-value">Brazzaville, Congo</div>
       </div>
     </div>
     <div class="info-card">
@@ -112,30 +94,32 @@
 
   <div class="form-card">
     <h2>✉️ Envoyer un message</h2>
+    <div class="msg error" id="msgError"></div>
+    <div class="msg success" id="msgSuccess"></div>
     <div class="form-group">
       <label>Votre nom</label>
-      <input type="text" id="contactNom" placeholder="Ex: Jean Dupont">
+      <input type="text" id="cNom" placeholder="Ex: Jean Moukala">
     </div>
     <div class="form-group">
       <label>Email ou WhatsApp</label>
-      <input type="text" id="contactEmail" placeholder="Ex: jean@email.com ou +242...">
+      <input type="text" id="cContact" placeholder="email@exemple.com ou +242...">
     </div>
     <div class="form-group">
       <label>Sujet</label>
-      <select id="contactSujet">
+      <select id="cSujet">
         <option>Question générale</option>
         <option>Signaler une annonce</option>
         <option>Partenariat / Publicité</option>
         <option>Problème technique</option>
+        <option>Demande de vérification</option>
         <option>Autre</option>
       </select>
     </div>
     <div class="form-group">
       <label>Message</label>
-      <textarea id="contactMsg" placeholder="Décrivez votre demande..."></textarea>
+      <textarea id="cMsg" placeholder="Décrivez votre demande..."></textarea>
     </div>
-    <button class="btn-submit" onclick="sendContact()">Envoyer le message 📨</button>
-    <div class="success-msg" id="successMsg">✅ Message envoyé ! Nous vous répondrons sous 24h.</div>
+    <button class="btn-submit" id="btnSend" onclick="sendContact()">Envoyer le message 📨</button>
   </div>
 </div>
 
@@ -143,23 +127,52 @@
   <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 async function sendContact() {
-  const nom = document.getElementById('contactNom').value;
-  const email = document.getElementById('contactEmail').value;
-  const sujet = document.getElementById('contactSujet').value;
-  const msg = document.getElementById('contactMsg').value;
-  
-  if (!nom || !email || !msg) {
-    alert('Veuillez remplir tous les champs !');
+  const nom = document.getElementById('cNom').value.trim();
+  const contact = document.getElementById('cContact').value.trim();
+  const sujet = document.getElementById('cSujet').value;
+  const msg = document.getElementById('cMsg').value.trim();
+  const btn = document.getElementById('btnSend');
+  const errEl = document.getElementById('msgError');
+  const okEl = document.getElementById('msgSuccess');
+
+  errEl.style.display = 'none';
+  okEl.style.display = 'none';
+
+  if (!nom || !contact || !msg) {
+    errEl.textContent = '⚠️ Remplis ton nom, ton contact et ton message !';
+    errEl.style.display = 'block';
     return;
   }
 
+  btn.textContent = 'Envoi en cours...';
+  btn.disabled = true;
+
   try {
-    await fetch('https://formspree.io/f/mlgoeabd', {
+    const res = await fetch('https://formspree.io/f/mlgoeabd', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ nom, email, sujet, message: msg, type: 'CONTACT' })
+      body: JSON.stringify({ nom, contact, sujet, message: msg, source: 'ExpatBrazza Contact' })
     });
-    document.getElementById('successMsg').style.display = 'block';
-    document.
+
+    if (res.ok) {
+      okEl.textContent = '✅ Message envoyé ! On vous répond sous 24h.';
+      okEl.style.display = 'block';
+      document.getElementById('cNom').value = '';
+      document.getElementById('cContact').value = '';
+      document.getElementById('cMsg').value = '';
+      btn.textContent = 'Message envoyé ✓';
+    } else {
+      throw new Error('Erreur serveur');
+    }
+  } catch(e) {
+    errEl.textContent = '❌ Erreur réseau. Réessayez dans un moment.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Envoyer le message 📨';
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

@@ -49,6 +49,25 @@
   .empty-state h3 { font-family:'Syne',sans-serif; font-size:18px; color:var(--text); margin-bottom:8px; }
   .loading { text-align:center; padding:40px; color:var(--muted); }
   @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+  .verified-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:#1DA1F2; border-radius:50%; margin-left:4px; }
+  .verified-badge svg { width:10px; height:10px; fill:#fff; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; overflow-y:auto; }
+  .modal-overlay.active { display:flex; }
+  .modal-box { background:#fff; border-radius:20px; padding:28px; max-width:480px; width:100%; margin:auto; animation:slideIn 0.3s ease; max-height:90vh; overflow-y:auto; }
+  .modal-box h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:20px; }
+  .form-group { margin-bottom:14px; }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:5px; font-weight:500; }
+  .form-group input, .form-group select, .form-group textarea { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:14px; outline:none; color:var(--text); transition:border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--green); }
+  .form-group textarea { resize:vertical; min-height:70px; }
+  .btn-green { background:var(--green); color:#fff; border:none; padding:12px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
+  .btn-green:hover { background:#00c764; }
+  .btn-green:disabled { background:var(--muted); cursor:not-allowed; }
+  .btn-cancel { background:none; border:1px solid var(--border); color:var(--muted); padding:10px; border-radius:10px; font-size:14px; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; margin-top:8px; }
+  .phone-wrap { display:flex; }
+  .phone-prefix { background:var(--bg); border:1px solid var(--border); border-right:none; border-radius:8px 0 0 8px; padding:10px 12px; font-size:13px; color:var(--muted); white-space:nowrap; }
+  .phone-wrap input { border-radius:0 8px 8px 0; }
+  .photo-label { display:block; background:var(--bg); border:1px dashed var(--border); border-radius:8px; padding:10px; text-align:center; cursor:pointer; font-size:13px; color:var(--muted); }
 </style>
 </head>
 <body>
@@ -78,9 +97,13 @@
       <div style="font-size:24px;margin-bottom:6px">🏠</div>
       <div style="font-size:13px;font-weight:600">Accueil</div>
     </a>
-    <a href="index.html" onclick="event.preventDefault();window.location.href='index.html#post'" style="background:#00A550;border:1px solid #00A550;border-radius:12px;padding:16px;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s">
+    <a href="javascript:void(0)" onclick="openModal('Annonce')" style="background:#00A550;border:1px solid #00A550;border-radius:12px;padding:16px;text-align:center;text-decoration:none;color:#fff;transition:all 0.2s">
       <div style="font-size:24px;margin-bottom:6px">➕</div>
       <div style="font-size:13px;font-weight:600">Nouvelle annonce</div>
+    </a>
+    <a href="javascript:void(0)" onclick="openModal('Verif')" style="background:#fff;border:1px solid #1DA1F2;border-radius:12px;padding:16px;text-align:center;text-decoration:none;color:#1DA1F2;transition:all 0.2s">
+      <div style="font-size:24px;margin-bottom:6px">✅</div>
+      <div style="font-size:13px;font-weight:600">Certification</div>
     </a>
     <a href="index.html" style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;text-decoration:none;color:var(--text);transition:all 0.2s" onmouseover="this.style.borderColor='#00A550'" onmouseout="this.style.borderColor='#DDE1E7'">
       <div style="font-size:24px;margin-bottom:6px">🔍</div>
@@ -118,6 +141,89 @@
 
   <div id="annoncesList">
     <div class="loading">⏳ Chargement de vos annonces...</div>
+  </div>
+</div>
+
+<!-- MODAL DEPOSER ANNONCE -->
+<div class="modal-overlay" id="modalAnnonce">
+  <div class="modal-box">
+    <h2>📝 Déposer une annonce</h2>
+    <div class="form-group">
+      <label>Titre</label>
+      <input type="text" id="dTitre" placeholder="Ex: iPhone 14 Pro neuf">
+    </div>
+    <div class="form-group">
+      <label>Catégorie</label>
+      <select id="dCat">
+        <option>Immobilier</option><option>Véhicules</option><option>Emploi</option>
+        <option>Électronique</option><option>Services</option><option>Mode</option>
+        <option>Alimentation</option><option>Loisirs</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Prix (FCFA)</label>
+      <input type="number" id="dPrix" placeholder="Ex: 150000">
+    </div>
+    <div class="form-group">
+      <label>Ville</label>
+      <select id="dVille">
+        <option>Brazzaville</option><option>Pointe-Noire</option><option>Dolisie</option>
+        <option>Nkayi</option><option>Ouesso</option><option>Owando</option><option>Impfondo</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Quartier</label>
+      <input type="text" id="dQuartier" placeholder="Ex: Poto-Poto, Bacongo...">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="dDesc" placeholder="Décrivez votre annonce..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>WhatsApp</label>
+      <div class="phone-wrap">
+        <span class="phone-prefix">🇨🇬 +242</span>
+        <input type="tel" id="dPhone" placeholder="06 123 45 67">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Photo <span style="color:var(--muted);font-weight:400">(optionnel)</span></label>
+      <label class="photo-label" for="dPhoto" id="dPhotoLabel">📷 Choisir une photo</label>
+      <input type="file" id="dPhoto" accept="image/*" style="display:none">
+    </div>
+    <div id="annonceMsg" style="display:none;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px"></div>
+    <button class="btn-green" id="btnSubmitAnnonce" onclick="submitAnnonceFromDash()">Publier l'annonce</button>
+    <button class="btn-cancel" onclick="closeModal('Annonce')">Annuler</button>
+  </div>
+</div>
+
+<!-- MODAL VERIFICATION -->
+<div class="modal-overlay" id="modalVerif">
+  <div class="modal-box">
+    <h2>✅ Demander la certification</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.6">La certification ExpatBrazza confirme votre identité et inspire confiance aux acheteurs. Un badge <span style="background:#1DA1F2;color:#fff;border-radius:50%;padding:1px 5px;font-size:11px">✓</span> apparaîtra sur vos annonces.</p>
+    <div class="form-group">
+      <label>Votre nom complet</label>
+      <input type="text" id="vNom" placeholder="Ex: Jean Moukala">
+    </div>
+    <div class="form-group">
+      <label>Numéro CNI ou passeport</label>
+      <input type="text" id="vCNI" placeholder="Ex: 1234567890">
+    </div>
+    <div class="form-group">
+      <label>WhatsApp pour vous contacter</label>
+      <div class="phone-wrap">
+        <span class="phone-prefix">🇨🇬 +242</span>
+        <input type="tel" id="vPhone" placeholder="06 123 45 67">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Pourquoi voulez-vous être certifié ?</label>
+      <textarea id="vRaison" placeholder="Ex: Je vends régulièrement, je veux inspirer confiance..."></textarea>
+    </div>
+    <div id="verifMsg" style="display:none;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px"></div>
+    <button class="btn-green" id="btnVerif" onclick="submitVerif()">Envoyer la demande</button>
+    <button class="btn-cancel" onclick="closeModal('Verif')">Annuler</button>
   </div>
 </div>
 
@@ -195,6 +301,7 @@
             <span class="badge ${a.statut === 'actif' ? 'badge-actif' : a.statut === 'en_attente' ? 'badge-attente' : 'badge-refuse'}">
               ${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : '❌ Refusé'}
             </span>
+            ${a.verified ? '<span class="verified-badge" title="Vendeur certifié"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></span>' : ''}
           </div>
         </div>
         <div class="annonce-row-actions">
@@ -216,6 +323,150 @@
   async function handleLogout() {
     await sb.auth.signOut();
     window.location.href = 'index.html';
+  }
+
+  function openModal(name) {
+    document.getElementById('modal' + name).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(name) {
+    document.getElementById('modal' + name).classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Close modal on overlay click
+  document.addEventListener('click', function(e) {
+    ['modalAnnonce', 'modalVerif'].forEach(id => {
+      const el = document.getElementById(id);
+      if (e.target === el) closeModal(id.replace('modal', ''));
+    });
+  });
+
+  // Photo preview in dashboard form
+  document.addEventListener('DOMContentLoaded', () => {
+    const photoInput = document.getElementById('dPhoto');
+    if (photoInput) {
+      photoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          document.getElementById('dPhotoLabel').textContent = '✅ ' + file.name.substring(0, 25);
+        }
+      });
+    }
+  });
+
+  async function submitAnnonceFromDash() {
+    const titre = document.getElementById('dTitre').value.trim();
+    const prix = document.getElementById('dPrix').value.trim();
+    const phone = document.getElementById('dPhone').value.trim();
+    const btn = document.getElementById('btnSubmitAnnonce');
+    const msgEl = document.getElementById('annonceMsg');
+
+    if (!titre || !prix || !phone) {
+      msgEl.style.background = 'rgba(206,17,38,0.08)';
+      msgEl.style.color = '#CE1126';
+      msgEl.textContent = '⚠️ Titre, prix et WhatsApp sont obligatoires !';
+      msgEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Publication...';
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) { window.location.href = 'auth.html'; return; }
+
+      // Upload image if provided
+      let image_url = null;
+      const photoFile = document.getElementById('dPhoto').files[0];
+      if (photoFile) {
+        const fileName = Date.now() + '_' + photoFile.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const { data: uploadData, error: uploadError } = await sb.storage
+          .from('annonces-images')
+          .upload(fileName, photoFile, { cacheControl: '3600', upsert: true });
+        if (!uploadError) {
+          const { data: urlData } = sb.storage.from('annonces-images').getPublicUrl(fileName);
+          image_url = urlData.publicUrl;
+        }
+      }
+
+      const { error } = await sb.from('annonces').insert([{
+        titre,
+        categorie: document.getElementById('dCat').value,
+        prix,
+        ville: document.getElementById('dVille').value,
+        quartier: document.getElementById('dQuartier').value.trim(),
+        description: document.getElementById('dDesc').value.trim(),
+        whatsapp: '+242' + phone.replace(/[^0-9]/g, ''),
+        image_url,
+        user_id: session.user.id,
+        vendor_name: session.user.user_metadata?.name || null,
+        statut: 'en_attente'
+      }]);
+
+      if (error) throw error;
+
+      msgEl.style.background = 'rgba(0,165,80,0.08)';
+      msgEl.style.color = '#00A550';
+      msgEl.textContent = '✅ Annonce soumise ! Elle sera visible après validation.';
+      msgEl.style.display = 'block';
+      btn.textContent = 'Annonce envoyée !';
+      setTimeout(() => { closeModal('Annonce'); loadDashboard(); }, 2000);
+    } catch(e) {
+      msgEl.textContent = '❌ Erreur : ' + e.message;
+      msgEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Publier l'annonce';
+    }
+  }
+
+  async function submitVerif() {
+    const nom = document.getElementById('vNom').value.trim();
+    const cni = document.getElementById('vCNI').value.trim();
+    const phone = document.getElementById('vPhone').value.trim();
+    const raison = document.getElementById('vRaison').value.trim();
+    const btn = document.getElementById('btnVerif');
+    const msgEl = document.getElementById('verifMsg');
+
+    if (!nom || !cni || !phone) {
+      msgEl.style.background = 'rgba(206,17,38,0.08)';
+      msgEl.style.color = '#CE1126';
+      msgEl.textContent = '⚠️ Remplis tous les champs obligatoires !';
+      msgEl.style.display = 'block';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Envoi...';
+
+    try {
+      const res = await fetch('https://formspree.io/f/mlgoeabd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          type: 'DEMANDE CERTIFICATION EXPATBRAZZA',
+          nom, cni,
+          whatsapp: '+242' + phone.replace(/[^0-9]/g, ''),
+          raison,
+          email: (await sb.auth.getSession()).data.session?.user.email || 'inconnu'
+        })
+      });
+
+      if (res.ok) {
+        msgEl.style.background = 'rgba(0,165,80,0.08)';
+        msgEl.style.color = '#00A550';
+        msgEl.textContent = '✅ Demande envoyée ! Nous vous contactons sous 48h.';
+        msgEl.style.display = 'block';
+        btn.textContent = 'Demande envoyée !';
+      } else throw new Error();
+    } catch(e) {
+      msgEl.textContent = '❌ Erreur réseau. Réessayez.';
+      msgEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Envoyer la demande';
+    }
   }
 
   window.onload = loadDashboard;

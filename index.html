@@ -2281,12 +2281,15 @@
     const vendeurBadge = document.getElementById('vendeurBadge');
     if (vendeurNom) {
       // Get name from Supabase user metadata if available
-      let nom = 'Vendeur';
-      if (a.vendor_name) nom = a.vendor_name;
-      else if (a.quartier) nom = 'Vendeur de ' + (a.ville || 'Brazzaville');
+      let nom = 'Vendeur anonyme';
+      if (a.vendor_name && a.vendor_name.trim()) {
+        nom = a.vendor_name.trim();
+      }
       vendeurNom.textContent = nom;
       vendeurInitial.textContent = nom.charAt(0).toUpperCase();
-      vendeurBadge.innerHTML = a.verified ? '✅ Vendeur vérifié' : '⚪ Non vérifié';
+      vendeurBadge.innerHTML = a.verified 
+        ? '<span style="display:inline-flex;align-items:center;gap:4px;color:#1DA1F2;font-size:12px;font-weight:600"><span style="background:#1DA1F2;color:#fff;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px">✓</span> Certifié ExpatBrazza</span>'
+        : '<span style="color:var(--muted);font-size:12px">Non certifié</span>';
     }
     
     openModal('detail');
