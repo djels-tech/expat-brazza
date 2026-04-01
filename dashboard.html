@@ -22,15 +22,15 @@
   .section { max-width:900px; margin:0 auto; padding:24px 16px; }
   h1 { font-family:"Syne",sans-serif; font-size:24px; font-weight:800; margin-bottom:4px; }
   .subtitle { color:var(--muted); font-size:14px; margin-bottom:20px; }
-  .actions-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
-  .action-card { border-radius:12px; padding:16px; text-align:center; text-decoration:none; cursor:pointer; transition:all 0.2s; border:1px solid var(--border); background:var(--card); }
+  .actions-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+  .action-card { border-radius:10px; padding:10px 8px; text-align:center; text-decoration:none; cursor:pointer; transition:all 0.2s; border:1px solid var(--border); background:var(--card); }
   .action-card:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.08); }
-  .action-card .icon { font-size:28px; margin-bottom:6px; }
-  .action-card .label { font-size:13px; font-weight:600; }
+  .action-card .icon { font-size:22px; margin-bottom:4px; }
+  .action-card .label { font-size:12px; font-weight:600; }
   .action-green { background:var(--green) !important; border-color:var(--green) !important; color:#fff !important; }
   .action-blue { border-color:var(--blue) !important; color:var(--blue) !important; }
   .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:24px; }
-  @media(min-width:500px){ .stats-grid { grid-template-columns:repeat(4,1fr); } .actions-grid { grid-template-columns:repeat(4,1fr); } }
+  @media(min-width:500px){ .stats-grid { grid-template-columns:repeat(4,1fr); } }
   .stat-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
   .stat-num { font-family:"Syne",sans-serif; font-size:26px; font-weight:800; color:var(--green); }
   .stat-label { color:var(--muted); font-size:12px; margin-top:2px; }
@@ -109,10 +109,7 @@
       <div class="icon">✅</div>
       <div class="label">Certification</div>
     </a>
-    <a href="index.html" class="action-card">
-      <div class="icon">🔍</div>
-      <div class="label">Rechercher</div>
-    </a>
+
   </div>
 
   <div class="stats-grid">
@@ -322,7 +319,7 @@ async function submitAnn() {
   } catch(e) {
     err.textContent = "Erreur : " + e.message;
     err.style.display = "block";
-    btn.disabled = false; btn.textContent = "Publier l'annonce";
+    btn.disabled = false; btn.textContent = "Publier annonce";
   }
 }
 
@@ -353,7 +350,7 @@ async function submitVerif() {
     } else throw new Error("Erreur réseau");
   } catch(e) {
     err.textContent = "Erreur réseau. Réessayez.";
-    err.style.display = "block"; btn.disabled = false; btn.textContent = "Envoyer la demande";
+    err.style.display = "block"; btn.disabled = false; btn.textContent = "Envoyer";
   }
 }
 
