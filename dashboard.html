@@ -9,7 +9,7 @@
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; --red:#CE1126; --blue:#1DA1F2; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:"DM Sans",sans-serif; background:var(--bg); color:var(--text); }
-  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; gap:8px; }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 16px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
   .logo { display:flex; align-items:center; gap:8px; text-decoration:none; flex-shrink:0; }
   .logo-icon { width:32px; height:32px; background:linear-gradient(135deg,#00A550,#00c764); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
   .logo-text { font-family:"Syne",sans-serif; font-weight:800; font-size:17px; color:var(--text); }
@@ -18,7 +18,8 @@
   .user-badge { display:flex; align-items:center; gap:6px; background:rgba(0,165,80,0.1); border-radius:8px; padding:6px 10px; overflow:hidden; max-width:140px; }
   .user-avatar { width:28px; height:28px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:12px; flex-shrink:0; }
   .user-name { font-size:13px; font-weight:600; color:var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .btn-logout { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 10px; border-radius:8px; cursor:pointer; font-family:"DM Sans",sans-serif; font-size:12px; white-space:nowrap; }
+  .btn-logout { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 10px; border-radius:8px; cursor:pointer; font-family:"DM Sans",sans-serif; font-size:12px; white-space:nowrap; transition:all 0.2s; }
+  .btn-logout:hover { background:rgba(0,0,0,0.05); }
   .section { max-width:900px; margin:0 auto; padding:24px 16px; }
   h1 { font-family:"Syne",sans-serif; font-size:24px; font-weight:800; margin-bottom:4px; }
   .subtitle { color:var(--muted); font-size:14px; margin-bottom:20px; }
@@ -46,7 +47,8 @@
   .badge-refuse { background:rgba(206,17,38,0.1); color:var(--red); }
   .certified { display:inline-flex; align-items:center; gap:3px; color:var(--blue); font-size:11px; font-weight:600; }
   .cert-icon { width:14px; height:14px; background:var(--blue); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:8px; }
-  .btn-del { background:rgba(206,17,38,0.08); color:var(--red); border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-family:"DM Sans",sans-serif; flex-shrink:0; }
+  .btn-del { background:rgba(206,17,38,0.08); color:var(--red); border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-family:"DM Sans",sans-serif; flex-shrink:0; transition:all 0.2s; }
+  .btn-del:hover { background:rgba(206,17,38,0.15); }
   .empty-state { text-align:center; padding:48px 24px; color:var(--muted); }
   .empty-icon { font-size:40px; margin-bottom:12px; }
   .loading { text-align:center; padding:32px; color:var(--muted); font-size:14px; }
@@ -54,25 +56,29 @@
   .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); z-index:1000; display:none; align-items:flex-end; justify-content:center; }
   @media(min-width:600px){ .overlay { align-items:center; } }
   .overlay.active { display:flex; }
-  .modal { background:#fff; border-radius:20px 20px 0 0; padding:24px 20px; width:100%; max-height:90vh; overflow-y:auto; }
+  .modal { background:#fff; border-radius:20px 20px 0 0; padding:24px 20px; width:100%; max-height:90vh; overflow-y:auto; -webkit-overflow-scrolling:touch; }
   @media(min-width:600px){ .modal { border-radius:20px; max-width:480px; } }
   .modal h2 { font-family:"Syne",sans-serif; font-size:18px; font-weight:700; margin-bottom:16px; }
   .fg { margin-bottom:12px; }
   .fg label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; font-weight:500; }
-  .fg input, .fg select, .fg textarea { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-family:"DM Sans",sans-serif; font-size:14px; outline:none; color:var(--text); }
+  .fg input, .fg select, .fg textarea { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-family:"DM Sans",sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
   .fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--green); }
   .fg textarea { resize:vertical; min-height:70px; }
   .phone-row { display:flex; }
   .phone-pre { background:var(--bg); border:1px solid var(--border); border-right:none; border-radius:8px 0 0 8px; padding:10px 10px; font-size:13px; color:var(--muted); white-space:nowrap; }
   .phone-row input { border-radius:0 8px 8px 0; flex:1; }
-  .photo-lbl { display:block; background:var(--bg); border:1px dashed var(--border); border-radius:8px; padding:10px; text-align:center; cursor:pointer; font-size:13px; color:var(--muted); }
-  .btn-primary { background:var(--green); color:#fff; border:none; padding:13px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:"DM Sans",sans-serif; width:100%; display:block; }
-  .btn-secondary { background:none; border:1px solid var(--border); color:var(--muted); padding:11px; border-radius:10px; font-size:14px; cursor:pointer; font-family:"DM Sans",sans-serif; width:100%; margin-top:8px; }
+  .photo-lbl { display:block; background:var(--bg); border:1px dashed var(--border); border-radius:8px; padding:10px; text-align:center; cursor:pointer; font-size:13px; color:var(--muted); transition:all 0.2s; }
+  .photo-lbl:hover { border-color:var(--green); background:rgba(0,165,80,0.05); }
+  .btn-primary { background:var(--green); color:#fff; border:none; padding:13px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:"DM Sans",sans-serif; width:100%; margin-bottom:8px; transition:all 0.2s; }
+  .btn-primary:hover { background:#00c764; }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+  .btn-secondary { background:none; border:1px solid var(--border); color:var(--muted); padding:11px; border-radius:10px; font-size:14px; cursor:pointer; font-family:"DM Sans",sans-serif; width:100%; transition:all 0.2s; }
+  .btn-secondary:hover { background:rgba(0,0,0,0.02); }
   .msg-box { border-radius:8px; padding:10px 12px; font-size:13px; margin-bottom:12px; display:none; }
   .msg-err { background:rgba(206,17,38,0.08); border:1px solid rgba(206,17,38,0.2); color:var(--red); }
   .msg-ok { background:rgba(0,165,80,0.08); border:1px solid rgba(0,165,80,0.2); color:var(--green); }
   /* NOTIF */
-  .notif { position:fixed; top:72px; right:16px; background:var(--green); color:#fff; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,165,80,0.4); transform:translateX(200%); transition:transform 0.3s; max-width:280px; }
+  .notif { position:fixed; top:72px; right:16px; background:var(--green); color:#fff; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,165,80,0.3); transform:translateX(400px); transition:transform 0.3s; }
   .notif.show { transform:translateX(0); }
 </style>
 </head>
@@ -109,7 +115,6 @@
       <div class="icon">✅</div>
       <div class="label">Certification</div>
     </a>
-
   </div>
 
   <div class="stats-grid">
@@ -156,7 +161,7 @@
 <div class="overlay" id="overlayVerif" onclick="overlayClick(event,'verif')">
   <div class="modal">
     <h2>✅ Demander la certification</h2>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.6">La certification confirme votre identité. Un badge <span style="background:var(--blue);color:#fff;border-radius:50%;padding:1px 5px;font-size:10px">✓</span> apparaîtra sur vos annonces.</p>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.6">La certification confirme votre identité. Un badge <span style="background:var(--blue);color:#fff;border-radius:4px;padding:2px 4px;font-size:10px">✓</span> apparaîtra sur vos annonces.</p>
     <div class="msg-box msg-err" id="errVerif"></div>
     <div class="msg-box msg-ok" id="okVerif"></div>
     <div class="fg"><label>Nom complet *</label><input type="text" id="vNom" placeholder="Ex: Jean Moukala"></div>
@@ -175,9 +180,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL = "https://zpoitnronthawiovlnkm.supabase.co";
-const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-V2UYfWjFePa5dCJzKh4PwAJyI0zKHc";
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
-const emojis = {"Immobilier":"🏠","Véhicules":"🚗","Emploi":"💼","Électronique":"📱","Services":"🛠️","Mode":"👗","Alimentation":"🍽️","Loisirs":"🎮"};
+const emojis = {'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮'};
 
 function showNotif(msg) {
   const el = document.getElementById("notif");
@@ -200,66 +205,108 @@ function overlayClick(e, type) {
   if (e.target === e.currentTarget) closeModal(type);
 }
 
-document.getElementById("dPhoto").addEventListener("change", function() {
-  if (this.files[0]) document.getElementById("dPhotoLabel").textContent = "✅ " + this.files[0].name.substring(0, 28);
-});
-
-async function loadDashboard() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) { window.location.href = "auth.html"; return; }
-
-  const user = session.user;
-  const name = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : user.email.split("@")[0];
-  document.getElementById("userName").textContent = name;
-  document.getElementById("userInitial").textContent = name.charAt(0).toUpperCase();
-
-  const { data: annonces, error } = await sb.from("annonces").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-  if (error || !annonces) {
-    document.getElementById("annoncesList").innerHTML = "<div class="loading">Erreur de chargement.</div>";
-    return;
-  }
-
-  document.getElementById("sTotal").textContent = annonces.length;
-  document.getElementById("sActif").textContent = annonces.filter(a => a.statut === "actif").length;
-  document.getElementById("sAttente").textContent = annonces.filter(a => a.statut === "en_attente").length;
-  document.getElementById("sVues").textContent = annonces.reduce((s, a) => s + (a.vues || 0), 0);
-
-  // Check for newly approved
-  annonces.filter(a => a.statut === "actif" && !sessionStorage.getItem("notif_" + a.id)).forEach(a => {
-    sessionStorage.setItem("notif_" + a.id, "1");
-    showNotif("✅ Votre annonce est maintenant active !");
+// ✅ CORRIGÉ - Vérifier que l'élément existe
+const photoInput = document.getElementById("dPhoto");
+if (photoInput) {
+  photoInput.addEventListener("change", function() {
+    if (this.files[0]) {
+      document.getElementById("dPhotoLabel").textContent = "✅ " + this.files[0].name.substring(0, 28);
+    }
   });
+}
 
-  if (!annonces.length) {
-    document.getElementById("annoncesList").innerHTML = "<div class="empty-state"><div class="empty-icon">📋</div><p>Aucune annonce pour le moment.<br>Publiez votre première annonce !</p></div>";
-    return;
+// ✅ COMPLÈTEMENT CORRIGÉE - Gestion d'erreur détaillée
+async function loadDashboard() {
+  try {
+    const { data: { session }, error: sessionError } = await sb.auth.getSession();
+    if (sessionError || !session) {
+      console.error('❌ Erreur session:', sessionError);
+      window.location.href = "auth.html";
+      return;
+    }
+
+    const user = session.user;
+    const name = user.user_metadata && user.user_metadata.name ? user.user_metadata.name : user.email.split("@")[0];
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userInitial").textContent = name.charAt(0).toUpperCase();
+
+    // ✅ CHARGER LES ANNONCES
+    const { data: annonces, error } = await sb
+      .from("annonces")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    
+    // ✅ VÉRIFIER LES ERREURS EN PRIORITÉ
+    if (error) {
+      console.error("❌ Erreur Supabase:", error);
+      document.getElementById("annoncesList").innerHTML = `<div class='empty-state'><div class='empty-icon'>⚠️</div><p><strong>Erreur de chargement</strong><br>${error.message}</p></div>`;
+      return;
+    }
+
+    // ✅ PUIS VÉRIFIER SI VIDE
+    if (!annonces || annonces.length === 0) {
+      document.getElementById("sTotal").textContent = "0";
+      document.getElementById("sActif").textContent = "0";
+      document.getElementById("sAttente").textContent = "0";
+      document.getElementById("sVues").textContent = "0";
+      document.getElementById("annoncesList").innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>Aucune annonce pour le moment.<br>Publiez votre première annonce !</p></div>';
+      return;
+    }
+
+    // ✅ METTRE À JOUR LES STATS
+    document.getElementById("sTotal").textContent = annonces.length;
+    document.getElementById("sActif").textContent = annonces.filter(a => a.statut === "actif").length;
+    document.getElementById("sAttente").textContent = annonces.filter(a => a.statut === "en_attente").length;
+    document.getElementById("sVues").textContent = annonces.reduce((s, a) => s + (a.vues || 0), 0);
+
+    // Check for newly approved
+    annonces.filter(a => a.statut === "actif" && !sessionStorage.getItem("notif_" + a.id)).forEach(a => {
+      sessionStorage.setItem("notif_" + a.id, "1");
+      showNotif("✅ Votre annonce est maintenant active !");
+    });
+
+    // ✅ AFFICHER LES ANNONCES AVEC TEMPLATE STRINGS
+    document.getElementById("annoncesList").innerHTML = annonces.map(a => {
+      const certBadge = a.verified ? '<span class="certified"><span class="cert-icon">✓</span> Certifié</span>' : '';
+      const statusClass = a.statut === "actif" ? "actif" : a.statut === "en_attente" ? "attente" : "refuse";
+      const statusText = a.statut === "actif" ? "✅ Actif" : a.statut === "en_attente" ? "⏳ En attente" : "❌ Refusé";
+      const safeId = a.id.replace(/'/g, "\\'");
+      
+      return `<div class='annonce-row' id='row-${a.id}'>
+        ${a.image_url ? `<img src='${a.image_url}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
+        <div class='annonce-info'>
+          <div class='annonce-title'>${a.titre || '-'}</div>
+          <div class='annonce-meta'>
+            <span>${a.prix || '0'} FCFA</span>
+            <span>📍 ${a.quartier || a.ville || 'Brazzaville'}</span>
+            <span class='badge badge-${statusClass}'>${statusText}</span>
+            <span>👁️ ${a.vues || 0}</span>
+            ${certBadge}
+          </div>
+        </div>
+        <button class='btn-del' onclick="delAnn('${safeId}')">🗑️</button>
+      </div>`;
+    }).join("");
+
+  } catch(e) {
+    console.error("❌ Erreur complète:", e);
+    showNotif(`❌ Erreur: ${e.message}`);
+    document.getElementById("annoncesList").innerHTML = `<div class='empty-state'><div class='empty-icon'>🚨</div><p>Une erreur est survenue.<br>${e.message}</p></div>`;
   }
-
-  document.getElementById("annoncesList").innerHTML = annonces.map(a => {
-    const certBadge = a.verified ? "<span class="certified"><span class="cert-icon">✓</span> Certifié</span>" : "";
-    return "<div class="annonce-row" id="row-" + a.id + "">" +
-      (a.image_url ? "<img src="" + a.image_url + "" class="annonce-img-thumb">" : "<div class="annonce-img-thumb">" + (emojis[a.categorie] || "📦") + "</div>") +
-      "<div class="annonce-info">" +
-        "<div class="annonce-title">" + (a.titre || "-") + "</div>" +
-        "<div class="annonce-meta">" +
-          "<span>" + (a.prix || "0") + " FCFA</span>" +
-          "<span>📍 " + (a.quartier || a.ville || "Brazzaville") + "</span>" +
-          "<span class="badge badge-" + (a.statut === "actif" ? "actif" : a.statut === "en_attente" ? "attente" : "refuse") + "">" +
-            (a.statut === "actif" ? "✅ Actif" : a.statut === "en_attente" ? "⏳ En attente" : "❌ Refusé") +
-          "</span>" +
-          "<span>👁️ " + (a.vues || 0) + "</span>" +
-          certBadge +
-        "</div>" +
-      "</div>" +
-      "<button class="btn-del" onclick="delAnn('" + a.id + "')">🗑️</button>" +
-    "</div>";
-  }).join("");
 }
 
 async function delAnn(id) {
   if (!confirm("Supprimer cette annonce définitivement ?")) return;
-  const { error } = await sb.from("annonces").delete().eq("id", id);
-  if (!error) { document.getElementById("row-" + id).remove(); showNotif("Annonce supprimée."); loadDashboard(); }
+  try {
+    const { error } = await sb.from("annonces").delete().eq("id", id);
+    if (error) throw error;
+    document.getElementById("row-" + id).remove();
+    showNotif("✅ Annonce supprimée.");
+    loadDashboard();
+  } catch(e) {
+    showNotif(`❌ Erreur: ${e.message}`);
+  }
 }
 
 async function handleLogout() {
@@ -277,27 +324,31 @@ async function submitAnn() {
   err.style.display = "none"; ok.style.display = "none";
 
   if (!titre || !prix || !phone) {
-    err.textContent = "Titre, prix et WhatsApp sont obligatoires !";
-    err.style.display = "block"; return;
+    err.textContent = "❌ Titre, prix et WhatsApp sont obligatoires !";
+    err.style.display = "block"; 
+    return;
   }
 
-  btn.disabled = true; btn.textContent = "Envoi...";
+  btn.disabled = true; 
+  btn.textContent = "⏳ Envoi...";
   try {
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.href = "auth.html"; return; }
+    if (!session) { 
+      window.location.href = "auth.html"; 
+      return; 
+    }
 
     let image_url = null;
     const photoFile = document.getElementById("dPhoto").files[0];
     if (photoFile) {
       try {
         const fileName = Date.now() + "_" + photoFile.name.replace(/[^a-zA-Z0-9.]/g, "_");
-        const { data: upData, error: upErr } = await sb.storage.from("annonces-images").upload(fileName, photoFile, { cacheControl: "3600", upsert: true });
+        const { error: upErr } = await sb.storage.from("annonces-images").upload(fileName, photoFile, { cacheControl: "3600", upsert: true });
         if (!upErr) {
           const { data: urlData } = sb.storage.from("annonces-images").getPublicUrl(fileName);
           image_url = urlData.publicUrl;
         }
       } catch(uploadEx) {
-        // Photo upload failed - continue without photo
         console.log("Photo upload skipped:", uploadEx.message);
       }
     }
@@ -305,7 +356,7 @@ async function submitAnn() {
     const { error } = await sb.from("annonces").insert([{
       titre,
       categorie: document.getElementById("dCat").value,
-      prix,
+      prix: parseInt(prix),
       ville: document.getElementById("dVille").value,
       quartier: document.getElementById("dQuartier").value.trim(),
       description: document.getElementById("dDesc").value.trim(),
@@ -313,23 +364,32 @@ async function submitAnn() {
       image_url,
       user_id: session.user.id,
       vendor_name: session.user.user_metadata && session.user.user_metadata.name ? session.user.user_metadata.name : null,
-      statut: "en_attente"
+      statut: "en_attente",
+      vues: 0
     }]);
 
     if (error) throw error;
     ok.textContent = "✅ Annonce soumise ! Elle sera publiée après validation.";
     ok.style.display = "block";
-    btn.textContent = "Annonce envoyée !";
-    setTimeout(() => { closeModal("annonce"); loadDashboard(); }, 2000);
+    btn.textContent = "✅ Annonce envoyée !";
+    setTimeout(() => { 
+      closeModal("annonce");
+      document.getElementById("dTitre").value = '';
+      document.getElementById("dPrix").value = '';
+      document.getElementById("dPhone").value = '';
+      document.getElementById("dDesc").value = '';
+      document.getElementById("dPhoto").value = '';
+      document.getElementById("dPhotoLabel").textContent = '📷 Choisir une photo';
+      btn.disabled = false;
+      btn.textContent = "Publier l'annonce";
+      loadDashboard();
+    }, 2000);
   } catch(e) {
-    let msg = "Erreur lors de la publication.";
-    if (e.message && e.message.includes("api")) msg = "Erreur de connexion. Rechargez la page.";
-    if (e.message && e.message.includes("auth")) msg = "Session expirée. Reconnectez-vous.";
-    if (e.message && e.message.includes("JWT")) msg = "Session expirée. Reconnectez-vous.";
-    err.textContent = msg;
+    err.textContent = `❌ Erreur : ${e.message}`;
     err.style.display = "block";
-    btn.disabled = false; btn.textContent = "Publier annonce";
-    console.error("Insert error:", e.message);
+    btn.disabled = false; 
+    btn.textContent = "Publier annonce";
+    console.error("Insert error:", e);
   }
 }
 
@@ -340,31 +400,56 @@ async function submitVerif() {
   const btn = document.getElementById("btnVerif");
   const err = document.getElementById("errVerif");
   const ok = document.getElementById("okVerif");
-  err.style.display = "none"; ok.style.display = "none";
+  err.style.display = "none"; 
+  ok.style.display = "none";
 
   if (!nom || !cni || !phone) {
-    err.textContent = "Nom, CNI et WhatsApp sont obligatoires !";
-    err.style.display = "block"; return;
+    err.textContent = "❌ Nom, CNI et WhatsApp sont obligatoires !";
+    err.style.display = "block"; 
+    return;
   }
 
-  btn.disabled = true; btn.textContent = "Envoi...";
+  btn.disabled = true; 
+  btn.textContent = "⏳ Envoi...";
   try {
     const res = await fetch("https://formspree.io/f/mlgoeabd", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ type: "CERTIFICATION EXPATBRAZZA", nom, cni, whatsapp: "+242" + phone.replace(/[^0-9]/g, ""), raison: document.getElementById("vRaison").value.trim() })
+      body: JSON.stringify({ 
+        type: "CERTIFICATION EXPATBRAZZA", 
+        nom, 
+        cni, 
+        whatsapp: "+242" + phone.replace(/[^0-9]/g, ""), 
+        raison: document.getElementById("vRaison").value.trim() 
+      })
     });
     if (res.ok) {
       ok.textContent = "✅ Demande envoyée ! Nous vous contactons sous 48h.";
-      ok.style.display = "block"; btn.textContent = "Demande envoyée !";
-    } else throw new Error("Erreur réseau");
+      ok.style.display = "block"; 
+      btn.textContent = "✅ Demande envoyée !";
+      setTimeout(() => {
+        closeModal("verif");
+        document.getElementById("vNom").value = '';
+        document.getElementById("vCNI").value = '';
+        document.getElementById("vPhone").value = '';
+        document.getElementById("vRaison").value = '';
+        btn.disabled = false;
+        btn.textContent = "Envoyer";
+      }, 2000);
+    } else {
+      throw new Error("Erreur réseau");
+    }
   } catch(e) {
-    err.textContent = "Erreur réseau. Réessayez.";
-    err.style.display = "block"; btn.disabled = false; btn.textContent = "Envoyer";
+    err.textContent = `❌ Erreur : ${e.message}`;
+    err.style.display = "block"; 
+    btn.disabled = false; 
+    btn.textContent = "Envoyer";
+    console.error("Verification error:", e);
   }
 }
 
-window.onload = loadDashboard;
+// ✅ CORRIGÉ - Utiliser addEventListener au lieu de onload
+window.addEventListener("load", loadDashboard);
 </script>
 </body>
 </html>
