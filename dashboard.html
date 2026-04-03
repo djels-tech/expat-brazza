@@ -345,10 +345,13 @@ async function submitAnn() {
   }
 }
 
+// ==================== CORRECTION ICI ====================
+// La fonction submitVerif envoie maintenant vers Supabase (table certification_requests)
 async function submitVerif() {
   const nom = document.getElementById("vNom").value.trim();
   const cni = document.getElementById("vCNI").value.trim();
   const phone = document.getElementById("vPhone").value.trim();
+  const raison = document.getElementById("vRaison").value.trim();
   const btn = document.getElementById("btnVerif");
   const err = document.getElementById("errVerif");
   const ok = document.getElementById("okVerif");
@@ -361,20 +364,32 @@ async function submitVerif() {
 
   btn.disabled = true; btn.textContent = "Envoi...";
   try {
-    const res = await fetch("https://formspree.io/f/mlgoeabd", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({ type: "CERTIFICATION EXPATBRAZZA", nom, cni, whatsapp: "+242" + phone.replace(/[^0-9]/g, ""), raison: document.getElementById("vRaison").value.trim() })
-    });
-    if (res.ok) {
-      ok.textContent = "✅ Demande envoyée ! Nous vous contactons sous 48h.";
-      ok.style.display = "block"; btn.textContent = "Demande envoyée !";
-    } else throw new Error("Erreur réseau");
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = "auth.html"; return; }
+
+    // Insertion dans Supabase
+    const { error } = await sb.from("certification_requests").insert([{
+      user_id: session.user.id,
+      full_name: nom,
+      cni_number: cni,
+      whatsapp: "+242" + phone.replace(/[^0-9]/g, ""),
+      reason: raison,
+      status: "en_attente"
+    }]);
+
+    if (error) throw error;
+
+    ok.textContent = "✅ Demande envoyée ! Nous traiterons sous 48h.";
+    ok.style.display = "block";
+    btn.textContent = "Demande envoyée !";
+    setTimeout(() => closeModal("verif"), 2000);
   } catch(e) {
-    err.textContent = "Erreur réseau. Réessayez.";
-    err.style.display = "block"; btn.disabled = false; btn.textContent = "Envoyer";
+    err.textContent = "Erreur : " + e.message;
+    err.style.display = "block";
+    btn.disabled = false; btn.textContent = "Envoyer";
   }
 }
+// =======================================================
 
 window.onload = loadDashboard;
 </script>
