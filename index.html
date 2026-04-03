@@ -1,520 +1,520 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExpatBrazza – Annonces Congo 🇨🇬</title>
-    <meta name="description" content="Petites annonces gratuites au Congo – Brazzaville, Pointe-Noire">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
-            color: #1a1f2e;
-        }
-        :root {
-            --green: #00A550;
-            --yellow: #F9C003;
-            --red: #CE1126;
-        }
-        .navbar {
-            background: white;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--green), var(--yellow));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .city-selector {
-            background: #f0f2f5;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: #2c3e4e;
-            font-weight: 500;
-        }
-        .btn-primary {
-            background: var(--green);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .hero {
-            background: linear-gradient(135deg, #0b2b1f, #1a4a2a);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 16px;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        .search-box {
-            max-width: 500px;
-            margin: 30px auto 0;
-            display: flex;
-        }
-        .search-box input {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 40px 0 0 40px;
-            font-size: 1rem;
-        }
-        .search-box button {
-            background: var(--yellow);
-            border: none;
-            padding: 0 24px;
-            border-radius: 0 40px 40px 0;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .categories {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin: 30px 0;
-        }
-        .cat-btn {
-            background: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .cat-btn:hover { background: var(--yellow); }
-        .une-section, .annonces-section {
-            margin: 40px 0;
-        }
-        .section-title {
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-        }
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-        }
-        .card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-        }
-        .card-content {
-            padding: 16px;
-        }
-        .price {
-            color: var(--green);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            max-width: 500px;
-            width: 90%;
-            border-radius: 24px;
-            padding: 24px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        form input, form select, form textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0 16px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-        }
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: #1a1f2e;
-            color: white;
-            margin-top: 60px;
-        }
-        @media (max-width: 700px) {
-            .navbar { flex-direction: column; gap: 12px; }
-            .nav-links { justify-content: center; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="navbar">
-    <div class="logo">🇨🇬 EXPATBRAZZA</div>
-    <div class="city-selector" id="citySelector">
-        📍 <span id="currentCity">Brazzaville</span> ▼
-    </div>
-    <div class="nav-links">
-        <a href="index.html">Accueil</a>
-        <a href="blog.html">Blog</a>
-        <a href="about.html">À propos</a>
-        <a href="contact.html">Contact</a>
-        <a href="auth.html" id="authLink">Connexion</a>
-        <button class="btn-primary" id="postBtn">+ Publier</button>
-    </div>
-</div>
-
-<div class="hero">
-    <h1>Tout acheter, tout vendre à Brazzaville</h1>
-    <p>La plateforme d'annonces N°1 au Congo — pour acheter, vendre et trouver ce dont vous avez besoin.</p>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Rechercher une annonce...">
-        <button id="searchBtn">🔍</button>
-    </div>
-</div>
-
-<div class="container">
-    <div class="categories" id="categories"></div>
-
-    <div class="une-section">
-        <h2 class="section-title">⭐ À la une</h2>
-        <div class="cards-grid" id="uneGrid"></div>
-    </div>
-
-    <div class="annonces-section">
-        <h2 class="section-title">📢 Dernières annonces</h2>
-        <div class="cards-grid" id="annoncesGrid"></div>
-    </div>
-</div>
-
-<!-- Modal détail -->
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <span style="float:right; font-size:24px; cursor:pointer;" id="closeModal">&times;</span>
-        <div id="modalBody"></div>
-        <div style="display:flex; gap:12px; margin-top:20px;">
-            <button id="whatsappShare" class="btn-primary">📱 WhatsApp</button>
-            <button id="reportBtn" style="background:#ccc;">⚠️ Signaler</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal publication -->
-<div id="postModal" class="modal">
-    <div class="modal-content">
-        <h3>Déposer une annonce</h3>
-        <form id="annonceForm">
-            <input type="text" id="titre" placeholder="Titre" required>
-            <select id="categorie" required>
-                <option>Véhicules</option><option>Immobilier</option><option>Emploi</option>
-                <option>Services</option><option>Mode</option><option>Électronique</option><option>Autre</option>
-            </select>
-            <input type="text" id="prix" placeholder="Prix (FCFA)">
-            <input type="text" id="quartier" placeholder="Quartier">
-            <textarea id="description" rows="3" placeholder="Description"></textarea>
-            <input type="tel" id="whatsapp" placeholder="WhatsApp (+242...)" required>
-            <select id="ville">
-                <option>Brazzaville</option><option>Pointe-Noire</option><option>Dolisie</option>
-                <option>Nkayi</option><option>Impfondo</option><option>Ouesso</option>
-            </select>
-            <input type="file" id="photo" accept="image/*">
-            <button type="submit" class="btn-primary">Publier</button>
-        </form>
-    </div>
-</div>
-
-<footer>
-    <p>© 2026 ExpatBrazza – Djels & Joe ❤️ Congo</p>
-</footer>
-
-<script>
-    // Configuration Supabase
-    const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let currentUser = null;
-    let currentAdId = null;
-    let currentCity = localStorage.getItem('selectedCity') || 'Brazzaville';
-
-    // Éléments DOM
-    const citySpan = document.getElementById('currentCity');
-    const citySelectorDiv = document.getElementById('citySelector');
-    const postBtn = document.getElementById('postBtn');
-    const postModal = document.getElementById('postModal');
-    const authLink = document.getElementById('authLink');
-
-    // Mise à jour affichage ville
-    if (citySpan) citySpan.innerText = currentCity;
-    if (citySelectorDiv) {
-        citySelectorDiv.onclick = () => {
-            let newCity = prompt('Choisissez votre ville : Brazzaville, Pointe-Noire, Dolisie, Nkayi, Impfondo, Ouesso', currentCity);
-            if (newCity && newCity.trim()) {
-                currentCity = newCity.trim();
-                localStorage.setItem('selectedCity', currentCity);
-                citySpan.innerText = currentCity;
-                loadAds();
-                loadUne();
-                loadCategories();
-            }
-        };
-    }
-
-    async function checkUser() {
-        const { data } = await supabase.auth.getUser();
-        currentUser = data.user;
-        if (authLink) {
-            if (currentUser) {
-                authLink.textContent = 'Dashboard';
-                authLink.href = 'dashboard.html';
-            } else {
-                authLink.textContent = 'Connexion';
-                authLink.href = 'auth.html';
-            }
-        }
-    }
-
-    async function loadCategories() {
-        const { data } = await supabase.from('annonces').select('categorie').eq('statut', 'actif').eq('ville', currentCity);
-        const counts = {};
-        data?.forEach(a => counts[a.categorie] = (counts[a.categorie] || 0) + 1);
-        const cats = ['Véhicules','Immobilier','Emploi','Services','Mode','Électronique','Autre'];
-        const container = document.getElementById('categories');
-        if (!container) return;
-        container.innerHTML = cats.map(cat => `<div class="cat-btn" data-cat="${cat}">${cat} (${counts[cat] || 0})</div>`).join('');
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.addEventListener('click', () => loadAds({ categorie: btn.dataset.cat }));
-        });
-    }
-
-    async function loadAds(filters = {}) {
-        let query = supabase.from('annonces').select('*').eq('statut', 'actif').eq('ville', currentCity);
-        if (filters.categorie) query = query.eq('categorie', filters.categorie);
-        if (filters.search) query = query.or(`titre.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
-        query = query.order('created_at', { ascending: false }).limit(30);
-        const { data } = await query;
-        renderCards(data, 'annoncesGrid');
-    }
-
-    async function loadUne() {
-        const { data } = await supabase.from('annonces').select('*').eq('statut', 'actif').eq('une', true).eq('ville', currentCity).limit(6);
-        renderCards(data, 'uneGrid');
-    }
-
-    function renderCards(ads, containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        if (!ads || ads.length === 0) {
-            container.innerHTML = '<p>Aucune annonce pour le moment. Soyez le premier à publier !</p>';
-            return;
-        }
-        container.innerHTML = ads.map(ad => `
-            <div class="card" data-id="${ad.id}">
-                ${ad.image_url ? `<img src="${supabase.storage.from('annonces-images').getPublicUrl(ad.image_url).data.publicUrl}" alt="photo">` : '<img src="https://placehold.co/400x200?text=ExpatBrazza">'}
-                <div class="card-content">
-                    <div class="price">${ad.prix ? ad.prix + ' FCFA' : 'Sur demande'}</div>
-                    <strong>${ad.titre}</strong>
-                    <div>${ad.quartier || ''} • 👁️ ${ad.vues || 0}</div>
-                    ${ad.verified ? '<span style="color:#1DA1F2;">✓ Vérifié</span>' : ''}
-                </div>
-            </div>
-        `).join('');
-        document.querySelectorAll(`#${containerId} .card`).forEach(card => {
-            card.addEventListener('click', () => openModal(parseInt(card.dataset.id)));
-        });
-    }
-
-    async function openModal(id) {
-        currentAdId = id;
-        try {
-            await supabase.rpc('increment_vues', { annonce_id: id });
-        } catch(e) { console.warn("Incrément vues:", e); }
-        const { data: ad } = await supabase.from('annonces').select('*').eq('id', id).single();
-        if (!ad) return;
-        const modalBody = document.getElementById('modalBody');
-        if (modalBody) {
-            modalBody.innerHTML = `
-                <h2>${ad.titre}</h2>
-                <p><strong>Prix :</strong> ${ad.prix || 'Sur demande'} FCFA</p>
-                <p><strong>Quartier :</strong> ${ad.quartier || '-'}</p>
-                <p><strong>Description :</strong> ${ad.description || ''}</p>
-                <p><strong>Vendeur :</strong> ${ad.vendor_name || 'Particulier'} ${ad.verified ? '✓ Certifié' : ''}</p>
-                <p><strong>WhatsApp :</strong> <a href="https://wa.me/${ad.whatsapp?.replace(/[^0-9]/g, '')}" target="_blank">${ad.whatsapp}</a></p>
-                <p><strong>Vues :</strong> ${(ad.vues || 0) + 1}</p>
-            `;
-        }
-        const detailModal = document.getElementById('detailModal');
-        if (detailModal) detailModal.style.display = 'flex';
-    }
-
-    async function uploadImage(file, userId) {
-        const ext = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${ext}`;
-        const filePath = `${userId}/${fileName}`;
-        const { error } = await supabase.storage.from('annonces-images').upload(filePath, file);
-        if (error) throw error;
-        return filePath;
-    }
-
-    // Formulaire d'annonce
-    const annonceForm = document.getElementById('annonceForm');
-    if (annonceForm) {
-        annonceForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser) {
-                alert("Connectez-vous pour publier.");
-                window.location.href = 'auth.html';
-                return;
-            }
-            const titre = document.getElementById('titre').value;
-            const categorie = document.getElementById('categorie').value;
-            const prix = document.getElementById('prix').value;
-            const quartier = document.getElementById('quartier').value;
-            const description = document.getElementById('description').value;
-            const whatsapp = document.getElementById('whatsapp').value;
-            const ville = document.getElementById('ville').value;
-            const photoFile = document.getElementById('photo').files[0];
-            let imageUrl = null;
-            if (photoFile) {
-                try {
-                    imageUrl = await uploadImage(photoFile, currentUser.id);
-                } catch(err) {
-                    alert("Erreur upload image: " + err.message);
-                    return;
-                }
-            }
-            const { error } = await supabase.from('annonces').insert([{
-                titre, categorie, prix, quartier, description, whatsapp, ville,
-                image_url: imageUrl, user_id: currentUser.id, vendor_name: currentUser.email?.split('@')[0] || 'Utilisateur',
-                statut: 'en_attente'
-            }]);
-            if (error) alert("Erreur: " + error.message);
-            else {
-                alert("Annonce soumise (en attente validation).");
-                if (postModal) postModal.style.display = 'none';
-                document.getElementById('annonceForm').reset();
-                loadAds();
-                loadUne();
-                loadCategories();
-            }
-        });
-    }
-
-    // Gestion des modals (fermeture)
-    const closeModalSpan = document.getElementById('closeModal');
-    if (closeModalSpan) {
-        closeModalSpan.onclick = () => {
-            const detailModal = document.getElementById('detailModal');
-            if (detailModal) detailModal.style.display = 'none';
-        };
-    }
-    window.onclick = (e) => {
-        const detailModal = document.getElementById('detailModal');
-        if (e.target === detailModal) detailModal.style.display = 'none';
-        if (e.target === postModal) postModal.style.display = 'none';
-    };
-
-    // Bouton "Publier" : OUVERTURE MODAL
-    if (postBtn) {
-        postBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Bouton Publier cliqué");
-            if (!currentUser) {
-                alert("Connectez-vous d'abord pour déposer une annonce.");
-                return;
-            }
-            if (postModal) {
-                postModal.style.display = 'flex';
-                console.log("Modal postModal ouvert");
-            } else {
-                console.error("postModal introuvable dans le DOM");
-            }
-        });
-    } else {
-        console.error("Bouton #postBtn introuvable");
-    }
-
-    // Recherche
-    const searchBtn = document.getElementById('searchBtn');
-    const searchInput = document.getElementById('searchInput');
-    if (searchBtn) {
-        searchBtn.onclick = () => {
-            loadAds({ search: searchInput.value });
-        };
-    }
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') loadAds({ search: searchInput.value });
-        });
-    }
-
-    // Partage WhatsApp
-    const whatsappShare = document.getElementById('whatsappShare');
-    if (whatsappShare) {
-        whatsappShare.onclick = () => {
-            if (currentAdId) window.open(`https://wa.me/?text=Annonce ExpatBrazza: ${window.location.href}#ad=${currentAdId}`, '_blank');
-        };
-    }
-    const reportBtn = document.getElementById('reportBtn');
-    if (reportBtn) {
-        reportBtn.onclick = () => alert("Signalez à mahouka.djels@gmail.com");
-    }
-
-    // Initialisation
-    window.addEventListener('DOMContentLoaded', async () => {
-        await checkUser();
-        await loadCategories();
-        await loadAds();
-        await loadUne();
-    });
-</script>
-</body>
-</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+‎<head>
+‎    <meta charset="UTF-8">
+‎    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+‎    <title>ExpatBrazza – Annonces Congo 🇨🇬</title>
+‎    <meta name="description" content="Petites annonces gratuites au Congo – Brazzaville, Pointe-Noire">
+‎    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+‎    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+‎    <style>
+‎        * { margin:0; padding:0; box-sizing:border-box; }
+‎        body {
+‎            font-family: 'Inter', sans-serif;
+‎            background: #f5f7fb;
+‎            color: #1a1f2e;
+‎        }
+‎        :root {
+‎            --green: #00A550;
+‎            --yellow: #F9C003;
+‎            --red: #CE1126;
+‎        }
+‎        .navbar {
+‎            background: white;
+‎            padding: 16px 32px;
+‎            display: flex;
+‎            justify-content: space-between;
+‎            align-items: center;
+‎            flex-wrap: wrap;
+‎            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+‎            position: sticky;
+‎            top: 0;
+‎            z-index: 100;
+‎        }
+‎        .logo {
+‎            font-weight: 800;
+‎            font-size: 1.5rem;
+‎            background: linear-gradient(135deg, var(--green), var(--yellow));
+‎            -webkit-background-clip: text;
+‎            background-clip: text;
+‎            color: transparent;
+‎        }
+‎        .city-selector {
+‎            background: #f0f2f5;
+‎            padding: 6px 12px;
+‎            border-radius: 40px;
+‎            font-size: 0.9rem;
+‎            cursor: pointer;
+‎            display: flex;
+‎            align-items: center;
+‎            gap: 6px;
+‎        }
+‎        .nav-links {
+‎            display: flex;
+‎            align-items: center;
+‎            gap: 20px;
+‎            flex-wrap: wrap;
+‎        }
+‎        .nav-links a {
+‎            text-decoration: none;
+‎            color: #2c3e4e;
+‎            font-weight: 500;
+‎        }
+‎        .btn-primary {
+‎            background: var(--green);
+‎            color: white;
+‎            border: none;
+‎            padding: 8px 20px;
+‎            border-radius: 30px;
+‎            font-weight: 600;
+‎            cursor: pointer;
+‎        }
+‎        .hero {
+‎            background: linear-gradient(135deg, #0b2b1f, #1a4a2a);
+‎            color: white;
+‎            padding: 60px 20px;
+‎            text-align: center;
+‎        }
+‎        .hero h1 {
+‎            font-size: 2.2rem;
+‎            margin-bottom: 16px;
+‎        }
+‎        .hero p {
+‎            font-size: 1.2rem;
+‎            opacity: 0.9;
+‎        }
+‎        .search-box {
+‎            max-width: 500px;
+‎            margin: 30px auto 0;
+‎            display: flex;
+‎        }
+‎        .search-box input {
+‎            flex: 1;
+‎            padding: 14px;
+‎            border: none;
+‎            border-radius: 40px 0 0 40px;
+‎            font-size: 1rem;
+‎        }
+‎        .search-box button {
+‎            background: var(--yellow);
+‎            border: none;
+‎            padding: 0 24px;
+‎            border-radius: 0 40px 40px 0;
+‎            font-weight: bold;
+‎            cursor: pointer;
+‎        }
+‎        .container {
+‎            max-width: 1200px;
+‎            margin: 0 auto;
+‎            padding: 20px;
+‎        }
+‎        .categories {
+‎            display: flex;
+‎            gap: 12px;
+‎            flex-wrap: wrap;
+‎            margin: 30px 0;
+‎        }
+‎        .cat-btn {
+‎            background: white;
+‎            padding: 8px 20px;
+‎            border-radius: 40px;
+‎            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+‎            cursor: pointer;
+‎            transition: 0.2s;
+‎        }
+‎        .cat-btn:hover { background: var(--yellow); }
+‎        .une-section, .annonces-section {
+‎            margin: 40px 0;
+‎        }
+‎        .section-title {
+‎            font-size: 1.6rem;
+‎            margin-bottom: 20px;
+‎        }
+‎        .cards-grid {
+‎            display: grid;
+‎            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+‎            gap: 24px;
+‎        }
+‎        .card {
+‎            background: white;
+‎            border-radius: 16px;
+‎            overflow: hidden;
+‎            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+‎            cursor: pointer;
+‎            transition: 0.2s;
+‎        }
+‎        .card img {
+‎            width: 100%;
+‎            height: 160px;
+‎            object-fit: cover;
+‎        }
+‎        .card-content {
+‎            padding: 16px;
+‎        }
+‎        .price {
+‎            color: var(--green);
+‎            font-weight: bold;
+‎            font-size: 1.2rem;
+‎        }
+‎        .modal {
+‎            display: none;
+‎            position: fixed;
+‎            top: 0; left: 0;
+‎            width: 100%; height: 100%;
+‎            background: rgba(0,0,0,0.7);
+‎            justify-content: center;
+‎            align-items: center;
+‎            z-index: 1000;
+‎        }
+‎        .modal-content {
+‎            background: white;
+‎            max-width: 500px;
+‎            width: 90%;
+‎            border-radius: 24px;
+‎            padding: 24px;
+‎            max-height: 80vh;
+‎            overflow-y: auto;
+‎        }
+‎        form input, form select, form textarea {
+‎            width: 100%;
+‎            padding: 10px;
+‎            margin: 8px 0 16px;
+‎            border: 1px solid #ddd;
+‎            border-radius: 12px;
+‎        }
+‎        footer {
+‎            text-align: center;
+‎            padding: 40px;
+‎            background: #1a1f2e;
+‎            color: white;
+‎            margin-top: 60px;
+‎        }
+‎        @media (max-width: 700px) {
+‎            .navbar { flex-direction: column; gap: 12px; }
+‎            .nav-links { justify-content: center; }
+‎        }
+‎    </style>
+‎</head>
+‎<body>
+‎
+‎<div class="navbar">
+‎    <div class="logo">🇨🇬 EXPATBRAZZA</div>
+‎    <div class="city-selector" id="citySelector">
+‎        📍 <span id="currentCity">Brazzaville</span> ▼
+‎    </div>
+‎    <div class="nav-links">
+‎        <a href="index.html">Accueil</a>
+‎        <a href="blog.html">Blog</a>
+‎        <a href="about.html">À propos</a>
+‎        <a href="contact.html">Contact</a>
+‎        <a href="auth.html" id="authLink">Connexion</a>
+‎        <button class="btn-primary" id="postBtn">+ Publier</button>
+‎    </div>
+‎</div>
+‎
+‎<div class="hero">
+‎    <h1>Tout acheter, tout vendre à Brazzaville</h1>
+‎    <p>La plateforme d'annonces N°1 au Congo — pour acheter, vendre et trouver ce dont vous avez besoin.</p>
+‎    <div class="search-box">
+‎        <input type="text" id="searchInput" placeholder="Rechercher une annonce...">
+‎        <button id="searchBtn">🔍</button>
+‎    </div>
+‎</div>
+‎
+‎<div class="container">
+‎    <div class="categories" id="categories"></div>
+‎
+‎    <div class="une-section">
+‎        <h2 class="section-title">⭐ À la une</h2>
+‎        <div class="cards-grid" id="uneGrid"></div>
+‎    </div>
+‎
+‎    <div class="annonces-section">
+‎        <h2 class="section-title">📢 Dernières annonces</h2>
+‎        <div class="cards-grid" id="annoncesGrid"></div>
+‎    </div>
+‎</div>
+‎
+‎<!-- Modal détail -->
+‎<div id="detailModal" class="modal">
+‎    <div class="modal-content">
+‎        <span style="float:right; font-size:24px; cursor:pointer;" id="closeModal">&times;</span>
+‎        <div id="modalBody"></div>
+‎        <div style="display:flex; gap:12px; margin-top:20px;">
+‎            <button id="whatsappShare" class="btn-primary">📱 WhatsApp</button>
+‎            <button id="reportBtn" style="background:#ccc;">⚠️ Signaler</button>
+‎        </div>
+‎    </div>
+‎</div>
+‎
+‎<!-- Modal publication -->
+‎<div id="postModal" class="modal">
+‎    <div class="modal-content">
+‎        <h3>Déposer une annonce</h3>
+‎        <form id="annonceForm">
+‎            <input type="text" id="titre" placeholder="Titre" required>
+‎            <select id="categorie" required>
+‎                <option>Véhicules</option><option>Immobilier</option><option>Emploi</option>
+‎                <option>Services</option><option>Mode</option><option>Électronique</option><option>Autre</option>
+‎            </select>
+‎            <input type="text" id="prix" placeholder="Prix (FCFA)">
+‎            <input type="text" id="quartier" placeholder="Quartier">
+‎            <textarea id="description" rows="3" placeholder="Description"></textarea>
+‎            <input type="tel" id="whatsapp" placeholder="WhatsApp (+242...)" required>
+‎            <select id="ville">
+‎                <option>Brazzaville</option><option>Pointe-Noire</option><option>Dolisie</option>
+‎                <option>Nkayi</option><option>Impfondo</option><option>Ouesso</option>
+‎            </select>
+‎            <input type="file" id="photo" accept="image/*">
+‎            <button type="submit" class="btn-primary">Publier</button>
+‎        </form>
+‎    </div>
+‎</div>
+‎
+‎<footer>
+‎    <p>© 2026 ExpatBrazza – Djels & Joe ❤️ Congo</p>
+‎</footer>
+‎
+‎<script>
+‎    // Configuration Supabase
+‎    const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
+‎    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
+‎    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+‎
+‎    let currentUser = null;
+‎    let currentAdId = null;
+‎    let currentCity = localStorage.getItem('selectedCity') || 'Brazzaville';
+‎
+‎    // Éléments DOM
+‎    const citySpan = document.getElementById('currentCity');
+‎    const citySelectorDiv = document.getElementById('citySelector');
+‎    const postBtn = document.getElementById('postBtn');
+‎    const postModal = document.getElementById('postModal');
+‎    const authLink = document.getElementById('authLink');
+‎
+‎    // Mise à jour affichage ville
+‎    if (citySpan) citySpan.innerText = currentCity;
+‎    if (citySelectorDiv) {
+‎        citySelectorDiv.onclick = () => {
+‎            let newCity = prompt('Choisissez votre ville : Brazzaville, Pointe-Noire, Dolisie, Nkayi, Impfondo, Ouesso', currentCity);
+‎            if (newCity && newCity.trim()) {
+‎                currentCity = newCity.trim();
+‎                localStorage.setItem('selectedCity', currentCity);
+‎                citySpan.innerText = currentCity;
+‎                loadAds();
+‎                loadUne();
+‎                loadCategories();
+‎            }
+‎        };
+‎    }
+‎
+‎    async function checkUser() {
+‎        const { data } = await supabase.auth.getUser();
+‎        currentUser = data.user;
+‎        if (authLink) {
+‎            if (currentUser) {
+‎                authLink.textContent = 'Dashboard';
+‎                authLink.href = 'dashboard.html';
+‎            } else {
+‎                authLink.textContent = 'Connexion';
+‎                authLink.href = 'auth.html';
+‎            }
+‎        }
+‎    }
+‎
+‎    async function loadCategories() {
+‎        const { data } = await supabase.from('annonces').select('categorie').eq('statut', 'actif').eq('ville', currentCity);
+‎        const counts = {};
+‎        data?.forEach(a => counts[a.categorie] = (counts[a.categorie] || 0) + 1);
+‎        const cats = ['Véhicules','Immobilier','Emploi','Services','Mode','Électronique','Autre'];
+‎        const container = document.getElementById('categories');
+‎        if (!container) return;
+‎        container.innerHTML = cats.map(cat => `<div class="cat-btn" data-cat="${cat}">${cat} (${counts[cat] || 0})</div>`).join('');
+‎        document.querySelectorAll('.cat-btn').forEach(btn => {
+‎            btn.addEventListener('click', () => loadAds({ categorie: btn.dataset.cat }));
+‎        });
+‎    }
+‎
+‎    async function loadAds(filters = {}) {
+‎        let query = supabase.from('annonces').select('*').eq('statut', 'actif').eq('ville', currentCity);
+‎        if (filters.categorie) query = query.eq('categorie', filters.categorie);
+‎        if (filters.search) query = query.or(`titre.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+‎        query = query.order('created_at', { ascending: false }).limit(30);
+‎        const { data } = await query;
+‎        renderCards(data, 'annoncesGrid');
+‎    }
+‎
+‎    async function loadUne() {
+‎        const { data } = await supabase.from('annonces').select('*').eq('statut', 'actif').eq('une', true).eq('ville', currentCity).limit(6);
+‎        renderCards(data, 'uneGrid');
+‎    }
+‎
+‎    function renderCards(ads, containerId) {
+‎        const container = document.getElementById(containerId);
+‎        if (!container) return;
+‎        if (!ads || ads.length === 0) {
+‎            container.innerHTML = '<p>Aucune annonce pour le moment. Soyez le premier à publier !</p>';
+‎            return;
+‎        }
+‎        container.innerHTML = ads.map(ad => `
+‎            <div class="card" data-id="${ad.id}">
+‎                ${ad.image_url ? `<img src="${supabase.storage.from('annonces-images').getPublicUrl(ad.image_url).data.publicUrl}" alt="photo">` : '<img src="https://placehold.co/400x200?text=ExpatBrazza">'}
+‎                <div class="card-content">
+‎                    <div class="price">${ad.prix ? ad.prix + ' FCFA' : 'Sur demande'}</div>
+‎                    <strong>${ad.titre}</strong>
+‎                    <div>${ad.quartier || ''} • 👁️ ${ad.vues || 0}</div>
+‎                    ${ad.verified ? '<span style="color:#1DA1F2;">✓ Vérifié</span>' : ''}
+‎                </div>
+‎            </div>
+‎        `).join('');
+‎        document.querySelectorAll(`#${containerId} .card`).forEach(card => {
+‎            card.addEventListener('click', () => openModal(parseInt(card.dataset.id)));
+‎        });
+‎    }
+‎
+‎    async function openModal(id) {
+‎        currentAdId = id;
+‎        try {
+‎            await supabase.rpc('increment_vues', { annonce_id: id });
+‎        } catch(e) { console.warn("Incrément vues:", e); }
+‎        const { data: ad } = await supabase.from('annonces').select('*').eq('id', id).single();
+‎        if (!ad) return;
+‎        const modalBody = document.getElementById('modalBody');
+‎        if (modalBody) {
+‎            modalBody.innerHTML = `
+‎                <h2>${ad.titre}</h2>
+‎                <p><strong>Prix :</strong> ${ad.prix || 'Sur demande'} FCFA</p>
+‎                <p><strong>Quartier :</strong> ${ad.quartier || '-'}</p>
+‎                <p><strong>Description :</strong> ${ad.description || ''}</p>
+‎                <p><strong>Vendeur :</strong> ${ad.vendor_name || 'Particulier'} ${ad.verified ? '✓ Certifié' : ''}</p>
+‎                <p><strong>WhatsApp :</strong> <a href="https://wa.me/${ad.whatsapp?.replace(/[^0-9]/g, '')}" target="_blank">${ad.whatsapp}</a></p>
+‎                <p><strong>Vues :</strong> ${(ad.vues || 0) + 1}</p>
+‎            `;
+‎        }
+‎        const detailModal = document.getElementById('detailModal');
+‎        if (detailModal) detailModal.style.display = 'flex';
+‎    }
+‎
+‎    async function uploadImage(file, userId) {
+‎        const ext = file.name.split('.').pop();
+‎        const fileName = `${Date.now()}.${ext}`;
+‎        const filePath = `${userId}/${fileName}`;
+‎        const { error } = await supabase.storage.from('annonces-images').upload(filePath, file);
+‎        if (error) throw error;
+‎        return filePath;
+‎    }
+‎
+‎    // Formulaire d'annonce
+‎    const annonceForm = document.getElementById('annonceForm');
+‎    if (annonceForm) {
+‎        annonceForm.addEventListener('submit', async (e) => {
+‎            e.preventDefault();
+‎            if (!currentUser) {
+‎                alert("Connectez-vous pour publier.");
+‎                window.location.href = 'auth.html';
+‎                return;
+‎            }
+‎            const titre = document.getElementById('titre').value;
+‎            const categorie = document.getElementById('categorie').value;
+‎            const prix = document.getElementById('prix').value;
+‎            const quartier = document.getElementById('quartier').value;
+‎            const description = document.getElementById('description').value;
+‎            const whatsapp = document.getElementById('whatsapp').value;
+‎            const ville = document.getElementById('ville').value;
+‎            const photoFile = document.getElementById('photo').files[0];
+‎            let imageUrl = null;
+‎            if (photoFile) {
+‎                try {
+‎                    imageUrl = await uploadImage(photoFile, currentUser.id);
+‎                } catch(err) {
+‎                    alert("Erreur upload image: " + err.message);
+‎                    return;
+‎                }
+‎            }
+‎            const { error } = await supabase.from('annonces').insert([{
+‎                titre, categorie, prix, quartier, description, whatsapp, ville,
+‎                image_url: imageUrl, user_id: currentUser.id, vendor_name: currentUser.email?.split('@')[0] || 'Utilisateur',
+‎                statut: 'en_attente'
+‎            }]);
+‎            if (error) alert("Erreur: " + error.message);
+‎            else {
+‎                alert("Annonce soumise (en attente validation).");
+‎                if (postModal) postModal.style.display = 'none';
+‎                document.getElementById('annonceForm').reset();
+‎                loadAds();
+‎                loadUne();
+‎                loadCategories();
+‎            }
+‎        });
+‎    }
+‎
+‎    // Gestion des modals (fermeture)
+‎    const closeModalSpan = document.getElementById('closeModal');
+‎    if (closeModalSpan) {
+‎        closeModalSpan.onclick = () => {
+‎            const detailModal = document.getElementById('detailModal');
+‎            if (detailModal) detailModal.style.display = 'none';
+‎        };
+‎    }
+‎    window.onclick = (e) => {
+‎        const detailModal = document.getElementById('detailModal');
+‎        if (e.target === detailModal) detailModal.style.display = 'none';
+‎        if (e.target === postModal) postModal.style.display = 'none';
+‎    };
+‎
+‎    // Bouton "Publier" : OUVERTURE MODAL
+‎    if (postBtn) {
+‎        postBtn.addEventListener('click', (e) => {
+‎            e.preventDefault();
+‎            console.log("Bouton Publier cliqué");
+‎            if (!currentUser) {
+‎                alert("Connectez-vous d'abord pour déposer une annonce.");
+‎                return;
+‎            }
+‎            if (postModal) {
+‎                postModal.style.display = 'flex';
+‎                console.log("Modal postModal ouvert");
+‎            } else {
+‎                console.error("postModal introuvable dans le DOM");
+‎            }
+‎        });
+‎    } else {
+‎        console.error("Bouton #postBtn introuvable");
+‎    }
+‎
+‎    // Recherche
+‎    const searchBtn = document.getElementById('searchBtn');
+‎    const searchInput = document.getElementById('searchInput');
+‎    if (searchBtn) {
+‎        searchBtn.onclick = () => {
+‎            loadAds({ search: searchInput.value });
+‎        };
+‎    }
+‎    if (searchInput) {
+‎        searchInput.addEventListener('keypress', (e) => {
+‎            if (e.key === 'Enter') loadAds({ search: searchInput.value });
+‎        });
+‎    }
+‎
+‎    // Partage WhatsApp
+‎    const whatsappShare = document.getElementById('whatsappShare');
+‎    if (whatsappShare) {
+‎        whatsappShare.onclick = () => {
+‎            if (currentAdId) window.open(`https://wa.me/?text=Annonce ExpatBrazza: ${window.location.href}#ad=${currentAdId}`, '_blank');
+‎        };
+‎    }
+‎    const reportBtn = document.getElementById('reportBtn');
+‎    if (reportBtn) {
+‎        reportBtn.onclick = () => alert("Signalez à mahouka.djels@gmail.com");
+‎    }
+‎
+‎    // Initialisation
+‎    window.addEventListener('DOMContentLoaded', async () => {
+‎        await checkUser();
+‎        await loadCategories();
+‎        await loadAds();
+‎        await loadUne();
+‎    });
+‎</script>
+‎</body>
+‎</html>
