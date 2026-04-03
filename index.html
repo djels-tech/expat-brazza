@@ -276,6 +276,7 @@
 </footer>
 
 <script>
+    // Configuration Supabase
     const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -284,29 +285,40 @@
     let currentAdId = null;
     let currentCity = localStorage.getItem('selectedCity') || 'Brazzaville';
 
+    // Éléments DOM
+    const citySpan = document.getElementById('currentCity');
+    const citySelectorDiv = document.getElementById('citySelector');
+    const postBtn = document.getElementById('postBtn');
+    const postModal = document.getElementById('postModal');
+    const authLink = document.getElementById('authLink');
+
     // Mise à jour affichage ville
-    document.getElementById('currentCity').innerText = currentCity;
-    document.getElementById('citySelector').onclick = () => {
-        let newCity = prompt('Choisissez votre ville : Brazzaville, Pointe-Noire, Dolisie, Nkayi, Impfondo, Ouesso', currentCity);
-        if (newCity && newCity.trim()) {
-            currentCity = newCity.trim();
-            localStorage.setItem('selectedCity', currentCity);
-            document.getElementById('currentCity').innerText = currentCity;
-            loadAds();
-            loadUne();
-        }
-    };
+    if (citySpan) citySpan.innerText = currentCity;
+    if (citySelectorDiv) {
+        citySelectorDiv.onclick = () => {
+            let newCity = prompt('Choisissez votre ville : Brazzaville, Pointe-Noire, Dolisie, Nkayi, Impfondo, Ouesso', currentCity);
+            if (newCity && newCity.trim()) {
+                currentCity = newCity.trim();
+                localStorage.setItem('selectedCity', currentCity);
+                citySpan.innerText = currentCity;
+                loadAds();
+                loadUne();
+                loadCategories();
+            }
+        };
+    }
 
     async function checkUser() {
         const { data } = await supabase.auth.getUser();
         currentUser = data.user;
-        const authLink = document.getElementById('authLink');
-        if (currentUser) {
-            authLink.textContent = 'Dashboard';
-            authLink.href = 'dashboard.html';
-        } else {
-            authLink.textContent = 'Connexion';
-            authLink.href = 'auth.html';
+        if (authLink) {
+            if (currentUser) {
+                authLink.textContent = 'Dashboard';
+                authLink.href = 'dashboard.html';
+            } else {
+                authLink.textContent = 'Connexion';
+                authLink.href = 'auth.html';
+            }
         }
     }
 
@@ -316,6 +328,7 @@
         data?.forEach(a => counts[a.categorie] = (counts[a.categorie] || 0) + 1);
         const cats = ['Véhicules','Immobilier','Emploi','Services','Mode','Électronique','Autre'];
         const container = document.getElementById('categories');
+        if (!container) return;
         container.innerHTML = cats.map(cat => `<div class="cat-btn" data-cat="${cat}">${cat} (${counts[cat] || 0})</div>`).join('');
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.addEventListener('click', () => loadAds({ categorie: btn.dataset.cat }));
@@ -363,20 +376,23 @@
         currentAdId = id;
         try {
             await supabase.rpc('increment_vues', { annonce_id: id });
-        } catch(e) { console.warn(e); }
+        } catch(e) { console.warn("Incrément vues:", e); }
         const { data: ad } = await supabase.from('annonces').select('*').eq('id', id).single();
         if (!ad) return;
         const modalBody = document.getElementById('modalBody');
-        modalBody.innerHTML = `
-            <h2>${ad.titre}</h2>
-            <p><strong>Prix :</strong> ${ad.prix || 'Sur demande'} FCFA</p>
-            <p><strong>Quartier :</strong> ${ad.quartier || '-'}</p>
-            <p><strong>Description :</strong> ${ad.description || ''}</p>
-            <p><strong>Vendeur :</strong> ${ad.vendor_name || 'Particulier'} ${ad.verified ? '✓ Certifié' : ''}</p>
-            <p><strong>WhatsApp :</strong> <a href="https://wa.me/${ad.whatsapp?.replace(/[^0-9]/g, '')}" target="_blank">${ad.whatsapp}</a></p>
-            <p><strong>Vues :</strong> ${(ad.vues || 0) + 1}</p>
-        `;
-        document.getElementById('detailModal').style.display = 'flex';
+        if (modalBody) {
+            modalBody.innerHTML = `
+                <h2>${ad.titre}</h2>
+                <p><strong>Prix :</strong> ${ad.prix || 'Sur demande'} FCFA</p>
+                <p><strong>Quartier :</strong> ${ad.quartier || '-'}</p>
+                <p><strong>Description :</strong> ${ad.description || ''}</p>
+                <p><strong>Vendeur :</strong> ${ad.vendor_name || 'Particulier'} ${ad.verified ? '✓ Certifié' : ''}</p>
+                <p><strong>WhatsApp :</strong> <a href="https://wa.me/${ad.whatsapp?.replace(/[^0-9]/g, '')}" target="_blank">${ad.whatsapp}</a></p>
+                <p><strong>Vues :</strong> ${(ad.vues || 0) + 1}</p>
+            `;
+        }
+        const detailModal = document.getElementById('detailModal');
+        if (detailModal) detailModal.style.display = 'flex';
     }
 
     async function uploadImage(file, userId) {
@@ -388,64 +404,117 @@
         return filePath;
     }
 
-    document.getElementById('annonceForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) {
-            alert("Connectez-vous pour publier.");
-            window.location.href = 'auth.html';
-            return;
-        }
-        const titre = document.getElementById('titre').value;
-        const categorie = document.getElementById('categorie').value;
-        const prix = document.getElementById('prix').value;
-        const quartier = document.getElementById('quartier').value;
-        const description = document.getElementById('description').value;
-        const whatsapp = document.getElementById('whatsapp').value;
-        const ville = document.getElementById('ville').value;
-        const photoFile = document.getElementById('photo').files[0];
-        let imageUrl = null;
-        if (photoFile) {
-            imageUrl = await uploadImage(photoFile, currentUser.id);
-        }
-        const { error } = await supabase.from('annonces').insert([{
-            titre, categorie, prix, quartier, description, whatsapp, ville,
-            image_url: imageUrl, user_id: currentUser.id, vendor_name: currentUser.email?.split('@')[0] || 'Utilisateur',
-            statut: 'en_attente'
-        }]);
-        if (error) alert("Erreur: " + error.message);
-        else {
-            alert("Annonce soumise (en attente validation).");
-            document.getElementById('postModal').style.display = 'none';
-            loadAds();
-            loadUne();
-            loadCategories();
-        }
-    });
+    // Formulaire d'annonce
+    const annonceForm = document.getElementById('annonceForm');
+    if (annonceForm) {
+        annonceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                alert("Connectez-vous pour publier.");
+                window.location.href = 'auth.html';
+                return;
+            }
+            const titre = document.getElementById('titre').value;
+            const categorie = document.getElementById('categorie').value;
+            const prix = document.getElementById('prix').value;
+            const quartier = document.getElementById('quartier').value;
+            const description = document.getElementById('description').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+            const ville = document.getElementById('ville').value;
+            const photoFile = document.getElementById('photo').files[0];
+            let imageUrl = null;
+            if (photoFile) {
+                try {
+                    imageUrl = await uploadImage(photoFile, currentUser.id);
+                } catch(err) {
+                    alert("Erreur upload image: " + err.message);
+                    return;
+                }
+            }
+            const { error } = await supabase.from('annonces').insert([{
+                titre, categorie, prix, quartier, description, whatsapp, ville,
+                image_url: imageUrl, user_id: currentUser.id, vendor_name: currentUser.email?.split('@')[0] || 'Utilisateur',
+                statut: 'en_attente'
+            }]);
+            if (error) alert("Erreur: " + error.message);
+            else {
+                alert("Annonce soumise (en attente validation).");
+                if (postModal) postModal.style.display = 'none';
+                document.getElementById('annonceForm').reset();
+                loadAds();
+                loadUne();
+                loadCategories();
+            }
+        });
+    }
 
-    // Événements
-    document.getElementById('closeModal')?.addEventListener('click', () => document.getElementById('detailModal').style.display = 'none');
+    // Gestion des modals (fermeture)
+    const closeModalSpan = document.getElementById('closeModal');
+    if (closeModalSpan) {
+        closeModalSpan.onclick = () => {
+            const detailModal = document.getElementById('detailModal');
+            if (detailModal) detailModal.style.display = 'none';
+        };
+    }
     window.onclick = (e) => {
-        if (e.target === document.getElementById('detailModal')) document.getElementById('detailModal').style.display = 'none';
-        if (e.target === document.getElementById('postModal')) document.getElementById('postModal').style.display = 'none';
+        const detailModal = document.getElementById('detailModal');
+        if (e.target === detailModal) detailModal.style.display = 'none';
+        if (e.target === postModal) postModal.style.display = 'none';
     };
-    document.getElementById('postBtn')?.addEventListener('click', () => {
-        if (!currentUser) alert("Connectez-vous d'abord");
-        else document.getElementById('postModal').style.display = 'flex';
-    });
-    document.getElementById('searchBtn')?.addEventListener('click', () => {
-        loadAds({ search: document.getElementById('searchInput').value });
-    });
-    document.getElementById('whatsappShare')?.addEventListener('click', () => {
-        if (currentAdId) window.open(`https://wa.me/?text=Annonce ExpatBrazza: ${window.location.href}#ad=${currentAdId}`, '_blank');
-    });
-    document.getElementById('reportBtn')?.addEventListener('click', () => alert("Signalez à mahouka.djels@gmail.com"));
 
-    window.onload = async () => {
+    // Bouton "Publier" : OUVERTURE MODAL
+    if (postBtn) {
+        postBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Bouton Publier cliqué");
+            if (!currentUser) {
+                alert("Connectez-vous d'abord pour déposer une annonce.");
+                return;
+            }
+            if (postModal) {
+                postModal.style.display = 'flex';
+                console.log("Modal postModal ouvert");
+            } else {
+                console.error("postModal introuvable dans le DOM");
+            }
+        });
+    } else {
+        console.error("Bouton #postBtn introuvable");
+    }
+
+    // Recherche
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    if (searchBtn) {
+        searchBtn.onclick = () => {
+            loadAds({ search: searchInput.value });
+        };
+    }
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadAds({ search: searchInput.value });
+        });
+    }
+
+    // Partage WhatsApp
+    const whatsappShare = document.getElementById('whatsappShare');
+    if (whatsappShare) {
+        whatsappShare.onclick = () => {
+            if (currentAdId) window.open(`https://wa.me/?text=Annonce ExpatBrazza: ${window.location.href}#ad=${currentAdId}`, '_blank');
+        };
+    }
+    const reportBtn = document.getElementById('reportBtn');
+    if (reportBtn) {
+        reportBtn.onclick = () => alert("Signalez à mahouka.djels@gmail.com");
+    }
+
+    // Initialisation
+    window.addEventListener('DOMContentLoaded', async () => {
         await checkUser();
         await loadCategories();
         await loadAds();
         await loadUne();
-    };
+    });
 </script>
 </body>
-</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
