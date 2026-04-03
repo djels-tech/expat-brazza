@@ -1,520 +1,1003 @@
 <!DOCTYPE html>
 <html lang="fr">
-‎<head>
-‎    <meta charset="UTF-8">
-‎    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-‎    <title>ExpatBrazza – Annonces Congo 🇨🇬</title>
-‎    <meta name="description" content="Petites annonces gratuites au Congo – Brazzaville, Pointe-Noire">
-‎    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-‎    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-‎    <style>
-‎        * { margin:0; padding:0; box-sizing:border-box; }
-‎        body {
-‎            font-family: 'Inter', sans-serif;
-‎            background: #f5f7fb;
-‎            color: #1a1f2e;
-‎        }
-‎        :root {
-‎            --green: #00A550;
-‎            --yellow: #F9C003;
-‎            --red: #CE1126;
-‎        }
-‎        .navbar {
-‎            background: white;
-‎            padding: 16px 32px;
-‎            display: flex;
-‎            justify-content: space-between;
-‎            align-items: center;
-‎            flex-wrap: wrap;
-‎            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-‎            position: sticky;
-‎            top: 0;
-‎            z-index: 100;
-‎        }
-‎        .logo {
-‎            font-weight: 800;
-‎            font-size: 1.5rem;
-‎            background: linear-gradient(135deg, var(--green), var(--yellow));
-‎            -webkit-background-clip: text;
-‎            background-clip: text;
-‎            color: transparent;
-‎        }
-‎        .city-selector {
-‎            background: #f0f2f5;
-‎            padding: 6px 12px;
-‎            border-radius: 40px;
-‎            font-size: 0.9rem;
-‎            cursor: pointer;
-‎            display: flex;
-‎            align-items: center;
-‎            gap: 6px;
-‎        }
-‎        .nav-links {
-‎            display: flex;
-‎            align-items: center;
-‎            gap: 20px;
-‎            flex-wrap: wrap;
-‎        }
-‎        .nav-links a {
-‎            text-decoration: none;
-‎            color: #2c3e4e;
-‎            font-weight: 500;
-‎        }
-‎        .btn-primary {
-‎            background: var(--green);
-‎            color: white;
-‎            border: none;
-‎            padding: 8px 20px;
-‎            border-radius: 30px;
-‎            font-weight: 600;
-‎            cursor: pointer;
-‎        }
-‎        .hero {
-‎            background: linear-gradient(135deg, #0b2b1f, #1a4a2a);
-‎            color: white;
-‎            padding: 60px 20px;
-‎            text-align: center;
-‎        }
-‎        .hero h1 {
-‎            font-size: 2.2rem;
-‎            margin-bottom: 16px;
-‎        }
-‎        .hero p {
-‎            font-size: 1.2rem;
-‎            opacity: 0.9;
-‎        }
-‎        .search-box {
-‎            max-width: 500px;
-‎            margin: 30px auto 0;
-‎            display: flex;
-‎        }
-‎        .search-box input {
-‎            flex: 1;
-‎            padding: 14px;
-‎            border: none;
-‎            border-radius: 40px 0 0 40px;
-‎            font-size: 1rem;
-‎        }
-‎        .search-box button {
-‎            background: var(--yellow);
-‎            border: none;
-‎            padding: 0 24px;
-‎            border-radius: 0 40px 40px 0;
-‎            font-weight: bold;
-‎            cursor: pointer;
-‎        }
-‎        .container {
-‎            max-width: 1200px;
-‎            margin: 0 auto;
-‎            padding: 20px;
-‎        }
-‎        .categories {
-‎            display: flex;
-‎            gap: 12px;
-‎            flex-wrap: wrap;
-‎            margin: 30px 0;
-‎        }
-‎        .cat-btn {
-‎            background: white;
-‎            padding: 8px 20px;
-‎            border-radius: 40px;
-‎            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-‎            cursor: pointer;
-‎            transition: 0.2s;
-‎        }
-‎        .cat-btn:hover { background: var(--yellow); }
-‎        .une-section, .annonces-section {
-‎            margin: 40px 0;
-‎        }
-‎        .section-title {
-‎            font-size: 1.6rem;
-‎            margin-bottom: 20px;
-‎        }
-‎        .cards-grid {
-‎            display: grid;
-‎            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-‎            gap: 24px;
-‎        }
-‎        .card {
-‎            background: white;
-‎            border-radius: 16px;
-‎            overflow: hidden;
-‎            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-‎            cursor: pointer;
-‎            transition: 0.2s;
-‎        }
-‎        .card img {
-‎            width: 100%;
-‎            height: 160px;
-‎            object-fit: cover;
-‎        }
-‎        .card-content {
-‎            padding: 16px;
-‎        }
-‎        .price {
-‎            color: var(--green);
-‎            font-weight: bold;
-‎            font-size: 1.2rem;
-‎        }
-‎        .modal {
-‎            display: none;
-‎            position: fixed;
-‎            top: 0; left: 0;
-‎            width: 100%; height: 100%;
-‎            background: rgba(0,0,0,0.7);
-‎            justify-content: center;
-‎            align-items: center;
-‎            z-index: 1000;
-‎        }
-‎        .modal-content {
-‎            background: white;
-‎            max-width: 500px;
-‎            width: 90%;
-‎            border-radius: 24px;
-‎            padding: 24px;
-‎            max-height: 80vh;
-‎            overflow-y: auto;
-‎        }
-‎        form input, form select, form textarea {
-‎            width: 100%;
-‎            padding: 10px;
-‎            margin: 8px 0 16px;
-‎            border: 1px solid #ddd;
-‎            border-radius: 12px;
-‎        }
-‎        footer {
-‎            text-align: center;
-‎            padding: 40px;
-‎            background: #1a1f2e;
-‎            color: white;
-‎            margin-top: 60px;
-‎        }
-‎        @media (max-width: 700px) {
-‎            .navbar { flex-direction: column; gap: 12px; }
-‎            .nav-links { justify-content: center; }
-‎        }
-‎    </style>
-‎</head>
-‎<body>
-‎
-‎<div class="navbar">
-‎    <div class="logo">🇨🇬 EXPATBRAZZA</div>
-‎    <div class="city-selector" id="citySelector">
-‎        📍 <span id="currentCity">Brazzaville</span> ▼
-‎    </div>
-‎    <div class="nav-links">
-‎        <a href="index.html">Accueil</a>
-‎        <a href="blog.html">Blog</a>
-‎        <a href="about.html">À propos</a>
-‎        <a href="contact.html">Contact</a>
-‎        <a href="auth.html" id="authLink">Connexion</a>
-‎        <button class="btn-primary" id="postBtn">+ Publier</button>
-‎    </div>
-‎</div>
-‎
-‎<div class="hero">
-‎    <h1>Tout acheter, tout vendre à Brazzaville</h1>
-‎    <p>La plateforme d'annonces N°1 au Congo — pour acheter, vendre et trouver ce dont vous avez besoin.</p>
-‎    <div class="search-box">
-‎        <input type="text" id="searchInput" placeholder="Rechercher une annonce...">
-‎        <button id="searchBtn">🔍</button>
-‎    </div>
-‎</div>
-‎
-‎<div class="container">
-‎    <div class="categories" id="categories"></div>
-‎
-‎    <div class="une-section">
-‎        <h2 class="section-title">⭐ À la une</h2>
-‎        <div class="cards-grid" id="uneGrid"></div>
-‎    </div>
-‎
-‎    <div class="annonces-section">
-‎        <h2 class="section-title">📢 Dernières annonces</h2>
-‎        <div class="cards-grid" id="annoncesGrid"></div>
-‎    </div>
-‎</div>
-‎
-‎<!-- Modal détail -->
-‎<div id="detailModal" class="modal">
-‎    <div class="modal-content">
-‎        <span style="float:right; font-size:24px; cursor:pointer;" id="closeModal">&times;</span>
-‎        <div id="modalBody"></div>
-‎        <div style="display:flex; gap:12px; margin-top:20px;">
-‎            <button id="whatsappShare" class="btn-primary">📱 WhatsApp</button>
-‎            <button id="reportBtn" style="background:#ccc;">⚠️ Signaler</button>
-‎        </div>
-‎    </div>
-‎</div>
-‎
-‎<!-- Modal publication -->
-‎<div id="postModal" class="modal">
-‎    <div class="modal-content">
-‎        <h3>Déposer une annonce</h3>
-‎        <form id="annonceForm">
-‎            <input type="text" id="titre" placeholder="Titre" required>
-‎            <select id="categorie" required>
-‎                <option>Véhicules</option><option>Immobilier</option><option>Emploi</option>
-‎                <option>Services</option><option>Mode</option><option>Électronique</option><option>Autre</option>
-‎            </select>
-‎            <input type="text" id="prix" placeholder="Prix (FCFA)">
-‎            <input type="text" id="quartier" placeholder="Quartier">
-‎            <textarea id="description" rows="3" placeholder="Description"></textarea>
-‎            <input type="tel" id="whatsapp" placeholder="WhatsApp (+242...)" required>
-‎            <select id="ville">
-‎                <option>Brazzaville</option><option>Pointe-Noire</option><option>Dolisie</option>
-‎                <option>Nkayi</option><option>Impfondo</option><option>Ouesso</option>
-‎            </select>
-‎            <input type="file" id="photo" accept="image/*">
-‎            <button type="submit" class="btn-primary">Publier</button>
-‎        </form>
-‎    </div>
-‎</div>
-‎
-‎<footer>
-‎    <p>© 2026 ExpatBrazza – Djels & Joe ❤️ Congo</p>
-‎</footer>
-‎
-‎<script>
-‎    // Configuration Supabase
-‎    const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
-‎    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
-‎    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-‎
-‎    let currentUser = null;
-‎    let currentAdId = null;
-‎    let currentCity = localStorage.getItem('selectedCity') || 'Brazzaville';
-‎
-‎    // Éléments DOM
-‎    const citySpan = document.getElementById('currentCity');
-‎    const citySelectorDiv = document.getElementById('citySelector');
-‎    const postBtn = document.getElementById('postBtn');
-‎    const postModal = document.getElementById('postModal');
-‎    const authLink = document.getElementById('authLink');
-‎
-‎    // Mise à jour affichage ville
-‎    if (citySpan) citySpan.innerText = currentCity;
-‎    if (citySelectorDiv) {
-‎        citySelectorDiv.onclick = () => {
-‎            let newCity = prompt('Choisissez votre ville : Brazzaville, Pointe-Noire, Dolisie, Nkayi, Impfondo, Ouesso', currentCity);
-‎            if (newCity && newCity.trim()) {
-‎                currentCity = newCity.trim();
-‎                localStorage.setItem('selectedCity', currentCity);
-‎                citySpan.innerText = currentCity;
-‎                loadAds();
-‎                loadUne();
-‎                loadCategories();
-‎            }
-‎        };
-‎    }
-‎
-‎    async function checkUser() {
-‎        const { data } = await supabase.auth.getUser();
-‎        currentUser = data.user;
-‎        if (authLink) {
-‎            if (currentUser) {
-‎                authLink.textContent = 'Dashboard';
-‎                authLink.href = 'dashboard.html';
-‎            } else {
-‎                authLink.textContent = 'Connexion';
-‎                authLink.href = 'auth.html';
-‎            }
-‎        }
-‎    }
-‎
-‎    async function loadCategories() {
-‎        const { data } = await supabase.from('annonces').select('categorie').eq('statut', 'actif').eq('ville', currentCity);
-‎        const counts = {};
-‎        data?.forEach(a => counts[a.categorie] = (counts[a.categorie] || 0) + 1);
-‎        const cats = ['Véhicules','Immobilier','Emploi','Services','Mode','Électronique','Autre'];
-‎        const container = document.getElementById('categories');
-‎        if (!container) return;
-‎        container.innerHTML = cats.map(cat => `<div class="cat-btn" data-cat="${cat}">${cat} (${counts[cat] || 0})</div>`).join('');
-‎        document.querySelectorAll('.cat-btn').forEach(btn => {
-‎            btn.addEventListener('click', () => loadAds({ categorie: btn.dataset.cat }));
-‎        });
-‎    }
-‎
-‎    async function loadAds(filters = {}) {
-‎        let query = supabase.from('annonces').select('*').eq('statut', 'actif').eq('ville', currentCity);
-‎        if (filters.categorie) query = query.eq('categorie', filters.categorie);
-‎        if (filters.search) query = query.or(`titre.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
-‎        query = query.order('created_at', { ascending: false }).limit(30);
-‎        const { data } = await query;
-‎        renderCards(data, 'annoncesGrid');
-‎    }
-‎
-‎    async function loadUne() {
-‎        const { data } = await supabase.from('annonces').select('*').eq('statut', 'actif').eq('une', true).eq('ville', currentCity).limit(6);
-‎        renderCards(data, 'uneGrid');
-‎    }
-‎
-‎    function renderCards(ads, containerId) {
-‎        const container = document.getElementById(containerId);
-‎        if (!container) return;
-‎        if (!ads || ads.length === 0) {
-‎            container.innerHTML = '<p>Aucune annonce pour le moment. Soyez le premier à publier !</p>';
-‎            return;
-‎        }
-‎        container.innerHTML = ads.map(ad => `
-‎            <div class="card" data-id="${ad.id}">
-‎                ${ad.image_url ? `<img src="${supabase.storage.from('annonces-images').getPublicUrl(ad.image_url).data.publicUrl}" alt="photo">` : '<img src="https://placehold.co/400x200?text=ExpatBrazza">'}
-‎                <div class="card-content">
-‎                    <div class="price">${ad.prix ? ad.prix + ' FCFA' : 'Sur demande'}</div>
-‎                    <strong>${ad.titre}</strong>
-‎                    <div>${ad.quartier || ''} • 👁️ ${ad.vues || 0}</div>
-‎                    ${ad.verified ? '<span style="color:#1DA1F2;">✓ Vérifié</span>' : ''}
-‎                </div>
-‎            </div>
-‎        `).join('');
-‎        document.querySelectorAll(`#${containerId} .card`).forEach(card => {
-‎            card.addEventListener('click', () => openModal(parseInt(card.dataset.id)));
-‎        });
-‎    }
-‎
-‎    async function openModal(id) {
-‎        currentAdId = id;
-‎        try {
-‎            await supabase.rpc('increment_vues', { annonce_id: id });
-‎        } catch(e) { console.warn("Incrément vues:", e); }
-‎        const { data: ad } = await supabase.from('annonces').select('*').eq('id', id).single();
-‎        if (!ad) return;
-‎        const modalBody = document.getElementById('modalBody');
-‎        if (modalBody) {
-‎            modalBody.innerHTML = `
-‎                <h2>${ad.titre}</h2>
-‎                <p><strong>Prix :</strong> ${ad.prix || 'Sur demande'} FCFA</p>
-‎                <p><strong>Quartier :</strong> ${ad.quartier || '-'}</p>
-‎                <p><strong>Description :</strong> ${ad.description || ''}</p>
-‎                <p><strong>Vendeur :</strong> ${ad.vendor_name || 'Particulier'} ${ad.verified ? '✓ Certifié' : ''}</p>
-‎                <p><strong>WhatsApp :</strong> <a href="https://wa.me/${ad.whatsapp?.replace(/[^0-9]/g, '')}" target="_blank">${ad.whatsapp}</a></p>
-‎                <p><strong>Vues :</strong> ${(ad.vues || 0) + 1}</p>
-‎            `;
-‎        }
-‎        const detailModal = document.getElementById('detailModal');
-‎        if (detailModal) detailModal.style.display = 'flex';
-‎    }
-‎
-‎    async function uploadImage(file, userId) {
-‎        const ext = file.name.split('.').pop();
-‎        const fileName = `${Date.now()}.${ext}`;
-‎        const filePath = `${userId}/${fileName}`;
-‎        const { error } = await supabase.storage.from('annonces-images').upload(filePath, file);
-‎        if (error) throw error;
-‎        return filePath;
-‎    }
-‎
-‎    // Formulaire d'annonce
-‎    const annonceForm = document.getElementById('annonceForm');
-‎    if (annonceForm) {
-‎        annonceForm.addEventListener('submit', async (e) => {
-‎            e.preventDefault();
-‎            if (!currentUser) {
-‎                alert("Connectez-vous pour publier.");
-‎                window.location.href = 'auth.html';
-‎                return;
-‎            }
-‎            const titre = document.getElementById('titre').value;
-‎            const categorie = document.getElementById('categorie').value;
-‎            const prix = document.getElementById('prix').value;
-‎            const quartier = document.getElementById('quartier').value;
-‎            const description = document.getElementById('description').value;
-‎            const whatsapp = document.getElementById('whatsapp').value;
-‎            const ville = document.getElementById('ville').value;
-‎            const photoFile = document.getElementById('photo').files[0];
-‎            let imageUrl = null;
-‎            if (photoFile) {
-‎                try {
-‎                    imageUrl = await uploadImage(photoFile, currentUser.id);
-‎                } catch(err) {
-‎                    alert("Erreur upload image: " + err.message);
-‎                    return;
-‎                }
-‎            }
-‎            const { error } = await supabase.from('annonces').insert([{
-‎                titre, categorie, prix, quartier, description, whatsapp, ville,
-‎                image_url: imageUrl, user_id: currentUser.id, vendor_name: currentUser.email?.split('@')[0] || 'Utilisateur',
-‎                statut: 'en_attente'
-‎            }]);
-‎            if (error) alert("Erreur: " + error.message);
-‎            else {
-‎                alert("Annonce soumise (en attente validation).");
-‎                if (postModal) postModal.style.display = 'none';
-‎                document.getElementById('annonceForm').reset();
-‎                loadAds();
-‎                loadUne();
-‎                loadCategories();
-‎            }
-‎        });
-‎    }
-‎
-‎    // Gestion des modals (fermeture)
-‎    const closeModalSpan = document.getElementById('closeModal');
-‎    if (closeModalSpan) {
-‎        closeModalSpan.onclick = () => {
-‎            const detailModal = document.getElementById('detailModal');
-‎            if (detailModal) detailModal.style.display = 'none';
-‎        };
-‎    }
-‎    window.onclick = (e) => {
-‎        const detailModal = document.getElementById('detailModal');
-‎        if (e.target === detailModal) detailModal.style.display = 'none';
-‎        if (e.target === postModal) postModal.style.display = 'none';
-‎    };
-‎
-‎    // Bouton "Publier" : OUVERTURE MODAL
-‎    if (postBtn) {
-‎        postBtn.addEventListener('click', (e) => {
-‎            e.preventDefault();
-‎            console.log("Bouton Publier cliqué");
-‎            if (!currentUser) {
-‎                alert("Connectez-vous d'abord pour déposer une annonce.");
-‎                return;
-‎            }
-‎            if (postModal) {
-‎                postModal.style.display = 'flex';
-‎                console.log("Modal postModal ouvert");
-‎            } else {
-‎                console.error("postModal introuvable dans le DOM");
-‎            }
-‎        });
-‎    } else {
-‎        console.error("Bouton #postBtn introuvable");
-‎    }
-‎
-‎    // Recherche
-‎    const searchBtn = document.getElementById('searchBtn');
-‎    const searchInput = document.getElementById('searchInput');
-‎    if (searchBtn) {
-‎        searchBtn.onclick = () => {
-‎            loadAds({ search: searchInput.value });
-‎        };
-‎    }
-‎    if (searchInput) {
-‎        searchInput.addEventListener('keypress', (e) => {
-‎            if (e.key === 'Enter') loadAds({ search: searchInput.value });
-‎        });
-‎    }
-‎
-‎    // Partage WhatsApp
-‎    const whatsappShare = document.getElementById('whatsappShare');
-‎    if (whatsappShare) {
-‎        whatsappShare.onclick = () => {
-‎            if (currentAdId) window.open(`https://wa.me/?text=Annonce ExpatBrazza: ${window.location.href}#ad=${currentAdId}`, '_blank');
-‎        };
-‎    }
-‎    const reportBtn = document.getElementById('reportBtn');
-‎    if (reportBtn) {
-‎        reportBtn.onclick = () => alert("Signalez à mahouka.djels@gmail.com");
-‎    }
-‎
-‎    // Initialisation
-‎    window.addEventListener('DOMContentLoaded', async () => {
-‎        await checkUser();
-‎        await loadCategories();
-‎        await loadAds();
-‎        await loadUne();
-‎    });
-‎</script>
-‎</body>
-‎</html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites</title>
+<meta name="description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta name="keywords" content="annonces Congo, vendre Brazzaville, acheter Congo, immobilier Brazzaville, emploi Congo, voiture Brazzaville, petites annonces Congo">
+<meta name="author" content="ExpatBrazza — Djels & Joe">
+<meta name="robots" content="index, follow">
+<meta name="language" content="French">
+
+<!-- Open Graph (WhatsApp, Facebook) -->
+<meta property="og:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
+<meta property="og:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta property="og:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
+<meta property="og:url" content="https://djels-tech.github.io/expat-brazza/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_CG">
+<meta property="og:site_name" content="ExpatBrazza">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
+<meta name="twitter:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
+<meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://djels-tech.github.io/expat-brazza/">
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00A550;
+    --yellow: #F9C003;
+    --red: #CE1126;
+    --dark: #F5F7FA;
+    --darker: #EAECF0;
+    --card: #FFFFFF;
+    --border: #DDE1E7;
+    --text: #1A1F2E;
+    --muted: #6B7280;
+    --accent: #00A550;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #00A550, #00c764);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(0,165,80,0.3);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .logo-text span { color: var(--green); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); background: var(--border); }
+
+  .btn-post {
+    background: var(--green);
+    color: white !important;
+    font-weight: 500;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+  }
+
+  .btn-post:hover { background: #00c764 !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    margin-top: 60px;
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,165,80,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .congo-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .flag-stripe {
+    width: 24px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+
+  .hero h1 span { color: var(--green); }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 520px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  /* SEARCH BAR */
+  .search-container {
+    max-width: 640px;
+    margin: 0 auto 60px;
+    position: relative;
+  }
+
+  .search-bar {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus-within { border-color: var(--green); }
+
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 16px 20px;
+    color: var(--text);
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .search-bar input::placeholder { color: var(--muted); }
+
+  .search-btn {
+    background: var(--green);
+    border: none;
+    padding: 0 24px;
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+    transition: background 0.2s;
+  }
+
+  .search-btn:hover { background: #00c764; }
+
+  /* STATS */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  .stat:nth-child(1) { animation-delay: 0.1s; }
+  .stat:nth-child(2) { animation-delay: 0.2s; }
+  .stat:nth-child(3) { animation-delay: 0.3s; }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* CATEGORIES */
+  .section { padding: 60px 24px; max-width: 1200px; margin: 0 auto; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .see-all {
+    color: var(--green);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .category-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+
+  .category-card:hover {
+    border-color: var(--green);
+    transform: translateY(-3px);
+    background: rgba(0,165,80,0.08);
+  }
+
+  .category-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .category-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .category-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ANNONCES */
+  .annonces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .annonce-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .annonce-card:hover {
+    border-color: var(--green);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .annonce-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #e8f5ee, #f0f9f4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+
+  .badge-une {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--yellow);
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-new {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--green);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .annonce-body { padding: 16px; }
+
+  .annonce-cat {
+    font-size: 11px;
+    color: var(--green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .annonce-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .annonce-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .annonce-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .annonce-location {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .annonce-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .action-btn:hover { border-color: var(--green); color: var(--green); }
+  .action-btn.whatsapp:hover { border-color: #25D366; color: #25D366; }
+
+  /* BANNER */
+  .banner {
+    background: linear-gradient(135deg, rgba(0,165,80,0.15), rgba(0,165,80,0.05));
+    border: 1px solid rgba(0,165,80,0.3);
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  .banner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .banner p { color: var(--muted); margin-bottom: 24px; }
+
+  .btn-primary {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: #00c764; transform: translateY(-2px); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { background: var(--red); color: white; }
+
+  .modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--green); }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .form-group select option { background: var(--card); }
+
+  /* FOOTER */
+  footer {
+    background: var(--darker);
+    border-top: 1px solid var(--border);
+    padding: 60px 24px 30px;
+    margin-top: 60px;
+  }
+
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 12px;
+    max-width: 260px;
+  }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  .footer-col a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--green); }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .footer-flag {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .fs { width: 16px; height: 6px; border-radius: 1px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--green);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    box-shadow: 0 8px 24px rgba(0,165,80,0.4);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* RESPONSIVE */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .stats { gap: 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  /* FILTER TABS */
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-tab.active, .filter-tab:hover {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(0,165,80,0.08);
+  }
+
+  #photoInput { color: var(--text); }
+  .annonce-card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+
+  /* CITY SELECTOR */
+  .city-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .city-modal {
+    background: white;
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    animation: modalIn 0.3s ease;
+  }
+  .city-modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .city-modal p { color: var(--muted); margin-bottom: 28px; font-size: 15px; }
+  .cities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .city-btn {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+  .city-btn:hover, .city-btn.selected {
+    border-color: var(--green);
+    background: rgba(0,165,80,0.08);
+    color: var(--green);
+  }
+  .city-confirm {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+  }
+  .city-confirm:hover { background: #00c764; }
+  .city-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,165,80,0.1);
+    border: 1px solid rgba(0,165,80,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    transition: all 0.2s;
+  }
+  .city-indicator:hover { background: rgba(0,165,80,0.15); }
+
+
+  @media (max-width: 900px) {
+    .logo-text { font-size: 16px; }
+    .logo-icon { width: 32px; height: 32px; font-size: 16px; }
+    .city-indicator { padding: 5px 8px; font-size: 12px; max-width: 110px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    nav { padding: 0 12px; }
+  }
+  @media (max-width: 380px) {
+    .logo-text { font-size: 14px; }
+    .city-indicator { max-width: 85px; font-size: 11px; }
+  }
+
+
+  /* FEATURED ANNONCES - Horizontal */
+  .featured-annonces {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .annonce-card-featured {
+    background: var(--card);
+    border: 2px solid var(--yellow);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: row;
+    height: 130px;
+    position: relative;
+  }
+
+  .annonce-card-featured:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(249,192,3,0.2);
+  }
+
+  .annonce-card-featured .feat-img {
+    width: 130px;
+    min-width: 130px;
+    height: 100%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #f0f9f4, #e8f5ee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .annonce-card-featured .feat-body {
+    padding: 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .badge-une-top {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--yellow);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 1;
+  }
+
+  .feat-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-top: 16px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .feat-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  .feat-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* NORMAL ANNONCES - Compact grid */
+  .annonces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .annonce-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .annonce-card:hover {
+    border-color: var(--green);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+
+  .annonce-card .annonce-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #e8f5ee, #f0f9f4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .annonce-card-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+  }
+
+  .annonce-card .annonce-body {
+    padding: 10px 12px;
+  }
+
+  .annonce-card .annonce-cat {
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .annonce-card .annonce-title {
+    font-size: 13px;
+    font-weight: 600;
