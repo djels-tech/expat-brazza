@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin | ExpatBrazza</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; --red:#CE1126; --yellow:#F9C003; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -42,6 +43,12 @@
   .stat-box.red .num { color:var(--red); }
   .stat-box.blue .num { color:#3498DB; }
 
+  /* GRAPHIQUES */
+  .charts-row { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-bottom:32px; }
+  .chart-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
+  .chart-card h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:16px; }
+  .full-width { grid-column:span 2; }
+
   /* TABLE */
   .table-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow-x:auto; margin-bottom:24px; }
   .table-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
@@ -54,7 +61,6 @@
   td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:middle; }
   tr:last-child td { border-bottom:none; }
   tr:hover td { background:rgba(0,165,80,0.03); }
-  .annonce-thumb { width:44px; height:44px; border-radius:8px; object-fit:cover; background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:20px; }
   .badge { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; display:inline-block; }
   .badge-actif { background:rgba(0,165,80,0.1); color:var(--green); }
   .badge-attente { background:rgba(249,192,3,0.15); color:#B8860B; }
@@ -89,6 +95,8 @@
     .sidebar { display:none; }
     .main { margin-left:0; padding:16px; }
     .stats-grid { grid-template-columns:repeat(2,1fr); }
+    .charts-row { grid-template-columns:1fr; }
+    .full-width { grid-column:span 1; }
   }
 </style>
 </head>
@@ -122,6 +130,7 @@
     </div>
     <div class="nav-section">Principal</div>
     <button class="nav-item active" onclick="showPage('dashboard')"><span>📊</span> Tableau de bord</button>
+    <button class="nav-item" onclick="showPage('stats')"><span>📈</span> Statistiques</button>
     <button class="nav-item" onclick="showPage('annonces')"><span>📋</span> Annonces</button>
     <button class="nav-item" onclick="showPage('users')"><span>👥</span> Utilisateurs</button>
     <div class="nav-section">Modération</div>
@@ -150,6 +159,30 @@
       <div class="table-card">
         <div class="table-header"><h3>⏳ Annonces en attente de validation</h3></div>
         <div id="pendingList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- STATISTIQUES AVANCÉES -->
+    <div class="page" id="page-stats">
+      <div class="page-title">Statistiques avancées</div>
+      <div class="page-subtitle">Analyse des tendances et répartitions</div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3>📅 Annonces par jour (30 derniers jours)</h3>
+          <canvas id="annoncesChart" width="400" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>🏷️ Répartition par catégorie</h3>
+          <canvas id="categoriesChart" width="400" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>👤 Inscriptions utilisateurs (30 derniers jours)</h3>
+          <canvas id="usersChart" width="400" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>📍 Top villes (nombre d'annonces)</h3>
+          <canvas id="citiesChart" width="400" height="200"></canvas>
+        </div>
       </div>
     </div>
 
@@ -211,6 +244,25 @@
   const ADMIN_EMAIL = 'mahouka.djels@gmail.com';
   let allAnnonces = [];
 
+  // ==================== NOTIFICATION PAR EMAIL ====================
+  async function envoyerNotification(email, sujet, message) {
+    if (!email) return;
+    try {
+      await fetch('https://formspree.io/f/mlgoeabd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _replyto: email,
+          _subject: sujet,
+          message: message,
+          _from: 'admin@expatbrazza.com'
+        })
+      });
+      console.log(`📧 Notification envoyée à ${email}`);
+    } catch(e) { console.warn("Erreur envoi notif:", e); }
+  }
+  // ================================================================
+
   async function adminLogin() {
     const email = document.getElementById('adminEmail').value.trim();
     const password = document.getElementById('adminPassword').value;
@@ -231,6 +283,7 @@
     loadStats();
     loadPending();
     loadAllAnnonces();
+    loadStatistics(); // Charger les graphiques
   }
 
   async function loadStats() {
@@ -313,10 +366,19 @@
   async function updateStatus(id, statut) {
     const { error } = await sb.from('annonces').update({ statut }).eq('id', id);
     if (!error) {
-      loadStats();
-      loadPending();
-      loadAllAnnonces();
-      showToastAdmin(statut === 'actif' ? '✅ Annonce approuvée et publiée !' : '❌ Annonce refusée');
+      const { data: annonce } = await sb.from('annonces').select('*, user_id').eq('id', id).single();
+      if (annonce && annonce.user_id) {
+        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
+        if (userProfile && userProfile.email) {
+          const sujet = statut === 'actif' ? '✅ Annonce approuvée sur ExpatBrazza' : '❌ Annonce non approuvée';
+          const message = statut === 'actif' 
+            ? `Bonjour, votre annonce "${annonce.titre}" est maintenant en ligne !\n\nhttps://expatbrazza.com`
+            : `Bonjour, votre annonce "${annonce.titre}" n'a pas été approuvée. Veuillez la modifier et la soumettre à nouveau.`;
+          envoyerNotification(userProfile.email, sujet, message);
+        }
+      }
+      loadStats(); loadPending(); loadAllAnnonces();
+      showToastAdmin(statut === 'actif' ? '✅ Approuvée + notification envoyée' : '❌ Refusée + notification envoyée');
     } else {
       showToastAdmin('❌ Erreur : ' + error.message);
     }
@@ -333,9 +395,19 @@
     }
     const { error } = await sb.from('annonces').update(updateData).eq('id', id);
     if (!error) {
-      loadStats();
-      loadAllAnnonces();
-      showToastAdmin(value ? '⭐ Annonce mise À la une pour 7 jours !' : 'Annonce retirée de la une');
+      const { data: annonce } = await sb.from('annonces').select('*, user_id').eq('id', id).single();
+      if (annonce && annonce.user_id) {
+        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
+        if (userProfile && userProfile.email) {
+          const sujet = value ? '⭐ Votre annonce est à la une !' : '📌 Annonce retirée de la une';
+          const message = value 
+            ? `Félicitations, votre annonce "${annonce.titre}" est mise en avant pour 7 jours !`
+            : `Bonjour, votre annonce "${annonce.titre}" n'est plus à la une.`;
+          envoyerNotification(userProfile.email, sujet, message);
+        }
+      }
+      loadStats(); loadAllAnnonces();
+      showToastAdmin(value ? '⭐ Mise à la une + notification' : 'Retirée de la une + notification');
     } else {
       showToastAdmin('❌ Erreur: ' + error.message);
     }
@@ -345,8 +417,7 @@
     if (!confirm("Retirer cette annonce de la une immédiatement ?")) return;
     const { error } = await sb.from('annonces').update({ une: false, une_expire_le: null }).eq('id', id);
     if (!error) {
-      loadStats();
-      loadAllAnnonces();
+      loadStats(); loadAllAnnonces();
       showToastAdmin("⏰ Annonce retirée de la une");
     } else {
       showToastAdmin("❌ Erreur: " + error.message);
@@ -358,8 +429,7 @@
     const { error } = await sb.from('annonces').delete().eq('id', id);
     if (!error) {
       document.getElementById('row-' + id)?.remove();
-      loadStats();
-      loadAllAnnonces();
+      loadStats(); loadAllAnnonces();
       showToastAdmin("Annonce supprimée");
     }
   }
@@ -502,9 +572,14 @@
         .update({ verified: true })
         .eq('user_id', userId);
       if (annError) console.warn("Erreur mise à jour verified:", annError);
-      else showToastAdmin("Utilisateur certifié ! Toutes ses annonces ont le badge.");
+      else {
+        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', userId).single();
+        if (userProfile && userProfile.email) {
+          envoyerNotification(userProfile.email, '🏅 Vous êtes certifié sur ExpatBrazza', 'Félicitations ! Votre compte a été certifié. Un badge bleu apparaît désormais sur toutes vos annonces.');
+        }
+        showToastAdmin("Utilisateur certifié ! Notification envoyée.");
+      }
     }
-
     alert("Demande traitée.");
     loadCertificationRequests();
   }
@@ -567,6 +642,81 @@
     window.open(`index.html?annonce=${id}`, '_blank');
   }
 
+  // ========== STATISTIQUES AVANCÉES ==========
+  let annoncesChart, categoriesChart, usersChart, citiesChart;
+
+  async function loadStatistics() {
+    // 1. Annonces par jour (30 derniers jours)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const { data: annoncesParJour } = await sb
+      .from('annonces')
+      .select('created_at')
+      .gte('created_at', thirtyDaysAgo.toISOString());
+    
+    const jours = [];
+    const counts = [];
+    for (let i = 0; i <= 30; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      jours.unshift(dateStr);
+      const count = annoncesParJour?.filter(a => a.created_at.split('T')[0] === dateStr).length || 0;
+      counts.unshift(count);
+    }
+    
+    if (annoncesChart) annoncesChart.destroy();
+    annoncesChart = new Chart(document.getElementById('annoncesChart'), {
+      type: 'line',
+      data: { labels: jours, datasets: [{ label: 'Annonces publiées', data: counts, borderColor: '#00A550', tension: 0.3 }] }
+    });
+
+    // 2. Répartition par catégorie
+    const { data: categoriesData } = await sb.from('annonces').select('categorie');
+    const catMap = new Map();
+    categoriesData?.forEach(a => { catMap.set(a.categorie, (catMap.get(a.categorie) || 0) + 1); });
+    const catLabels = [...catMap.keys()];
+    const catValues = [...catMap.values()];
+    if (categoriesChart) categoriesChart.destroy();
+    categoriesChart = new Chart(document.getElementById('categoriesChart'), {
+      type: 'pie',
+      data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: ['#00A550','#F9C003','#CE1126','#3498DB','#9B59B6','#E67E22','#1ABC9C'] }] }
+    });
+
+    // 3. Inscriptions utilisateurs (30 derniers jours)
+    const { data: usersParJour } = await sb
+      .from('profiles')
+      .select('created_at')
+      .gte('created_at', thirtyDaysAgo.toISOString());
+    
+    const userCounts = [];
+    for (let i = 0; i <= 30; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const count = usersParJour?.filter(u => u.created_at.split('T')[0] === dateStr).length || 0;
+      userCounts.unshift(count);
+    }
+    if (usersChart) usersChart.destroy();
+    usersChart = new Chart(document.getElementById('usersChart'), {
+      type: 'bar',
+      data: { labels: jours, datasets: [{ label: 'Inscriptions', data: userCounts, backgroundColor: '#3498DB' }] }
+    });
+
+    // 4. Top villes (nombre d'annonces)
+    const { data: villesData } = await sb.from('annonces').select('ville');
+    const villeMap = new Map();
+    villesData?.forEach(a => { const v = a.ville || 'Brazzaville'; villeMap.set(v, (villeMap.get(v) || 0) + 1); });
+    const sortedVilles = [...villeMap.entries()].sort((a,b) => b[1] - a[1]).slice(0,6);
+    const villesLabels = sortedVilles.map(v => v[0]);
+    const villesCounts = sortedVilles.map(v => v[1]);
+    if (citiesChart) citiesChart.destroy();
+    citiesChart = new Chart(document.getElementById('citiesChart'), {
+      type: 'bar',
+      data: { labels: villesLabels, datasets: [{ label: 'Nombre d\'annonces', data: villesCounts, backgroundColor: '#F9C003' }] }
+    });
+  }
+
   // ========== UTILITAIRES ==========
   function showToastAdmin(msg) {
     const t = document.createElement('div');
@@ -586,6 +736,7 @@
     if (page === 'annonces') loadAllAnnonces();
     if (page === 'certifications') loadCertificationRequests();
     if (page === 'reports') loadReports();
+    if (page === 'stats') loadStatistics();
   }
 
   async function adminLogout() {
