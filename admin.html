@@ -43,13 +43,13 @@
   .stat-box.blue .num { color:#3498DB; }
 
   /* TABLE */
-  .table-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
-  .table-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .table-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow-x:auto; }
+  .table-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
   .table-header h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; }
   .filter-btns { display:flex; gap:8px; }
   .filter-btn { padding:6px 14px; border-radius:8px; border:1px solid var(--border); background:none; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; }
   .filter-btn.active, .filter-btn:hover { background:var(--green); color:#fff; border-color:var(--green); }
-  table { width:100%; border-collapse:collapse; }
+  table { width:100%; border-collapse:collapse; min-width:800px; }
   th { padding:12px 16px; text-align:left; font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--bg); }
   td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:middle; }
   tr:last-child td { border-bottom:none; }
@@ -59,13 +59,15 @@
   .badge-actif { background:rgba(0,165,80,0.1); color:var(--green); }
   .badge-attente { background:rgba(249,192,3,0.15); color:#B8860B; }
   .badge-refuse { background:rgba(206,17,38,0.1); color:var(--red); }
-  .action-btns { display:flex; gap:6px; }
+  .action-btns { display:flex; gap:6px; flex-wrap:wrap; }
   .btn-approve { background:rgba(0,165,80,0.1); color:var(--green); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
   .btn-approve:hover { background:var(--green); color:#fff; }
   .btn-reject { background:rgba(249,192,3,0.1); color:#B8860B; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
   .btn-reject:hover { background:#F9C003; color:#000; }
   .btn-del { background:rgba(206,17,38,0.1); color:var(--red); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
   .btn-del:hover { background:var(--red); color:#fff; }
+  .btn-expire { background:rgba(206,17,38,0.1); color:var(--red); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-expire:hover { background:var(--red); color:#fff; }
 
   /* LOGIN */
   .admin-login { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); }
@@ -80,18 +82,14 @@
   .btn-login:hover { background:#00c764; }
   .error-msg { background:rgba(206,17,38,0.1); border:1px solid rgba(206,17,38,0.3); border-radius:8px; padding:10px; color:var(--red); font-size:13px; margin-bottom:16px; display:none; }
 
-  /* USERS TABLE */
-  .user-row td { font-size:13px; }
+  .loading { text-align:center; padding:40px; color:var(--muted); }
+  .empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 
-  /* RESPONSIVE */
   @media(max-width:768px) {
     .sidebar { display:none; }
     .main { margin-left:0; padding:16px; }
     .stats-grid { grid-template-columns:repeat(2,1fr); }
   }
-
-  .loading { text-align:center; padding:40px; color:var(--muted); }
-  .empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 </style>
 </head>
 <body>
@@ -117,7 +115,6 @@
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" style="display:none">
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-text">Expat<span>Brazza</span></div>
@@ -134,7 +131,6 @@
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
   <div class="main">
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
@@ -220,12 +216,8 @@
     document.getElementById('s-total').textContent = data.length;
     document.getElementById('s-actif').textContent = data.filter(a => a.statut === 'actif').length;
     document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
-    const vuesEl = document.getElementById('s-vues');
-    const uneEl = document.getElementById('s-une');
-    if (vuesEl) vuesEl.textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
-    if (uneEl) uneEl.textContent = data.filter(a => a.une === true).length;
     document.getElementById('s-vues').textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
-    document.getElementById('s-une').textContent = data.filter(a => a.une).length;
+    document.getElementById('s-une').textContent = data.filter(a => a.une === true).length;
   }
 
   async function loadPending() {
@@ -251,12 +243,16 @@
 
   function renderTable(data) {
     const emojis = { 'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮' };
-    return `<table>
-      <thead><tr>
-        <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Actions</th>
-      </tr></thead>
+    return `<tr>
+      <thead>
+        <tr>
+          <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Expire le</th><th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
-        ${data.map(a => `
+        ${data.map(a => {
+          const expireDate = a.une_expire_le ? new Date(a.une_expire_le).toLocaleDateString('fr-FR') : '-';
+          return `
           <tr id="row-${a.id}">
             <td>
               <div style="display:flex;align-items:center;gap:12px">
@@ -273,18 +269,20 @@
             <td style="font-size:11px;color:var(--muted)">${new Date(a.created_at).toLocaleDateString('fr-FR')}</td>
             <td style="font-size:12px">👁️ ${a.vues || 0}</td>
             <td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td>
+            <td>${expireDate}</td>
             <td>
               <div class="action-btns">
                 ${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}
                 ${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}
-                <button class="${a.une ? 'btn-approve' : 'btn-reject'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})" title="${a.une ? 'Retirer de la une' : 'Mettre à la une'}">
-                  ${a.une ? '⭐ À la une' : '☆ Mettre une'}
+                <button class="${a.une ? 'btn-reject' : 'btn-approve'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})" title="${a.une ? 'Retirer de la une' : 'Mettre à la une'}">
+                  ${a.une ? '⭐ Retirer une' : '☆ Mettre une'}
                 </button>
+                ${a.une ? `<button class="btn-expire" onclick="expirerUne('${a.id}')">⏰ Expirer</button>` : ''}
                 <button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button>
               </div>
             </td>
           </tr>
-        `).join('')}
+        `}).join('')}
       </tbody>
     </table>`;
   }
@@ -296,22 +294,40 @@
       loadPending();
       loadAllAnnonces();
       showToastAdmin(statut === 'actif' ? '✅ Annonce approuvée et publiée !' : '❌ Annonce refusée');
-      // Remove row immediately for better UX
-      const row = document.getElementById('row-' + id);
-      if (row && statut !== 'actif') row.style.opacity = '0.3';
     } else {
       showToastAdmin('❌ Erreur : ' + error.message);
     }
   }
 
   async function toggleUne(id, value) {
-    const { error } = await sb.from('annonces').update({ une: value }).eq('id', id);
+    // Si on active "À la une", on peut ajouter une date d'expiration (par défaut +7 jours)
+    let updateData = { une: value };
+    if (value) {
+      const expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + 7);
+      updateData.une_expire_le = expireDate.toISOString();
+    } else {
+      updateData.une_expire_le = null;
+    }
+    const { error } = await sb.from('annonces').update(updateData).eq('id', id);
     if (!error) {
       loadStats();
       loadAllAnnonces();
-      showToastAdmin(value ? '⭐ Annonce mise À la une sur le site !' : 'Annonce retirée de la une');
+      showToastAdmin(value ? '⭐ Annonce mise À la une pour 7 jours !' : 'Annonce retirée de la une');
     } else {
       showToastAdmin('❌ Erreur: ' + error.message);
+    }
+  }
+
+  async function expirerUne(id) {
+    if (!confirm("Retirer cette annonce de la une immédiatement ?")) return;
+    const { error } = await sb.from('annonces').update({ une: false, une_expire_le: null }).eq('id', id);
+    if (!error) {
+      loadStats();
+      loadAllAnnonces();
+      showToastAdmin("⏰ Annonce retirée de la une");
+    } else {
+      showToastAdmin("❌ Erreur: " + error.message);
     }
   }
 
@@ -329,6 +345,7 @@
     if (!error) {
       document.getElementById('row-' + id)?.remove();
       loadStats();
+      loadAllAnnonces();
     }
   }
 
@@ -369,10 +386,6 @@
     const { data: { session } } = await sb.auth.getSession();
     if (session && session.user.email === ADMIN_EMAIL) showPanel();
   };
-
-  document.addEventListener('keypress', e => {
-    if (e.key === 'Enter') adminLogin();
-  });
 </script>
 </body>
 </html>
