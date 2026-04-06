@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin | ExpatBrazza</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.tiny.cloud/1/7qj2xq0j1m1c1s1h1z1y1x1w1v1u1t1s1r1q1p1o1n1m1l1k1j1i1h1g1f1e1d1c1b1a1z1y1x1w1v1u1t1s1r1q1p1o1n1m1l1k1j1i1h1g1f1e1d1c1b1a/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; --red:#CE1126; --yellow:#F9C003; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -47,7 +49,6 @@
   .charts-row { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-bottom:32px; }
   .chart-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
   .chart-card h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:16px; }
-  .full-width { grid-column:span 2; }
 
   /* TABLE */
   .table-card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow-x:auto; margin-bottom:24px; }
@@ -81,12 +82,18 @@
   .login-card h2 { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:6px; }
   .login-card p { color:var(--muted); font-size:14px; margin-bottom:24px; }
   .form-group { margin-bottom:16px; text-align:left; }
-  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
-  .form-group input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
-  .form-group input:focus { border-color:var(--green); }
+  .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .form-group input, .form-group textarea { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
+  .form-group input:focus, .form-group textarea:focus { border-color:var(--green); }
   .btn-login { background:var(--green); color:#fff; border:none; padding:14px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
   .btn-login:hover { background:#00c764; }
   .error-msg { background:rgba(206,17,38,0.1); border:1px solid rgba(206,17,38,0.3); border-radius:8px; padding:10px; color:var(--red); font-size:13px; margin-bottom:16px; display:none; }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.active { display:flex; }
+  .modal { background:#fff; border-radius:24px; padding:24px; width:100%; max-width:800px; max-height:85vh; overflow-y:auto; }
+  .modal-close { float:right; font-size:24px; cursor:pointer; }
 
   .loading { text-align:center; padding:40px; color:var(--muted); }
   .empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
@@ -96,7 +103,6 @@
     .main { margin-left:0; padding:16px; }
     .stats-grid { grid-template-columns:repeat(2,1fr); }
     .charts-row { grid-template-columns:1fr; }
-    .full-width { grid-column:span 1; }
   }
 </style>
 </head>
@@ -136,6 +142,9 @@
     <div class="nav-section">Modération</div>
     <button class="nav-item" onclick="showPage('certifications')"><span>✅</span> Certifications</button>
     <button class="nav-item" onclick="showPage('reports')"><span>🚩</span> Signalements</button>
+    <div class="nav-section">Contenu</div>
+    <button class="nav-item" onclick="showPage('blog')"><span>📝</span> Articles</button>
+    <button class="nav-item" onclick="showPage('comments')"><span>💬</span> Commentaires</button>
     <div class="nav-section">Actions</div>
     <button class="nav-item" onclick="window.open('index.html','_blank')"><span>🌐</span> Voir le site</button>
     <div style="position:absolute;bottom:16px;width:100%">
@@ -167,22 +176,10 @@
       <div class="page-title">Statistiques avancées</div>
       <div class="page-subtitle">Analyse des tendances et répartitions</div>
       <div class="charts-row">
-        <div class="chart-card">
-          <h3>📅 Annonces par jour (30 derniers jours)</h3>
-          <canvas id="annoncesChart" width="400" height="200"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>🏷️ Répartition par catégorie</h3>
-          <canvas id="categoriesChart" width="400" height="200"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>👤 Inscriptions utilisateurs (30 derniers jours)</h3>
-          <canvas id="usersChart" width="400" height="200"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>📍 Top villes (nombre d'annonces)</h3>
-          <canvas id="citiesChart" width="400" height="200"></canvas>
-        </div>
+        <div class="chart-card"><h3>📅 Annonces par jour</h3><canvas id="annoncesChart"></canvas></div>
+        <div class="chart-card"><h3>🏷️ Répartition par catégorie</h3><canvas id="categoriesChart"></canvas></div>
+        <div class="chart-card"><h3>👤 Inscriptions utilisateurs</h3><canvas id="usersChart"></canvas></div>
+        <div class="chart-card"><h3>📍 Top villes</h3><canvas id="citiesChart"></canvas></div>
       </div>
     </div>
 
@@ -232,6 +229,47 @@
         <div id="reportsList"><div class="loading">Chargement...</div></div>
       </div>
     </div>
+
+    <!-- BLOG : ARTICLES -->
+    <div class="page" id="page-blog">
+      <div class="page-title">Gestion des articles</div>
+      <div class="page-subtitle">Créez, modifiez ou supprimez des articles de blog</div>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Articles</h3>
+          <button class="btn-approve" onclick="openBlogEditor()">+ Nouvel article</button>
+        </div>
+        <div id="blogPostsList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- BLOG : COMMENTAIRES -->
+    <div class="page" id="page-comments">
+      <div class="page-title">Gestion des commentaires</div>
+      <div class="page-subtitle">Approuvez ou supprimez les commentaires des articles</div>
+      <div class="table-card">
+        <div class="table-header"><h3>Commentaires</h3></div>
+        <div id="commentsList"><div class="loading">Chargement...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ÉDITEUR BLOG -->
+<div class="modal-overlay" id="blogModal">
+  <div class="modal">
+    <span class="modal-close" onclick="closeBlogModal()">&times;</span>
+    <h2 id="blogModalTitle">Nouvel article</h2>
+    <input type="hidden" id="blogEditId">
+    <div class="form-group"><label>Titre</label><input type="text" id="blogTitle" placeholder="Titre de l'article"></div>
+    <div class="form-group"><label>Slug (URL)</label><input type="text" id="blogSlug" placeholder="ex: mon-article"></div>
+    <div class="form-group"><label>Résumé (extrait)</label><textarea id="blogExcerpt" rows="2" placeholder="Brève description"></textarea></div>
+    <div class="form-group"><label>Image (URL)</label><input type="text" id="blogImage" placeholder="https://expatbrazza.com/images/article.jpg"></div>
+    <div class="form-group"><label>Contenu (HTML)</label><textarea id="blogContent" rows="10"></textarea></div>
+    <div class="form-group">
+      <label><input type="checkbox" id="blogPublished"> Publié</label>
+    </div>
+    <button class="btn-primary" onclick="saveBlogPost()">Enregistrer</button>
   </div>
 </div>
 
@@ -243,6 +281,7 @@
 
   const ADMIN_EMAIL = 'mahouka.djels@gmail.com';
   let allAnnonces = [];
+  let tinyMceInitialized = false;
 
   // ==================== NOTIFICATION PAR EMAIL ====================
   async function envoyerNotification(email, sujet, message) {
@@ -251,14 +290,8 @@
       await fetch('https://formspree.io/f/mlgoeabd', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          _replyto: email,
-          _subject: sujet,
-          message: message,
-          _from: 'admin@expatbrazza.com'
-        })
+        body: JSON.stringify({ _replyto: email, _subject: sujet, message, _from: 'admin@expatbrazza.com' })
       });
-      console.log(`📧 Notification envoyée à ${email}`);
     } catch(e) { console.warn("Erreur envoi notif:", e); }
   }
   // ================================================================
@@ -267,7 +300,6 @@
     const email = document.getElementById('adminEmail').value.trim();
     const password = document.getElementById('adminPassword').value;
     if (!email || !password) return;
-
     const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if (error || data.user.email !== ADMIN_EMAIL) {
       document.getElementById('loginError').style.display = 'block';
@@ -283,7 +315,7 @@
     loadStats();
     loadPending();
     loadAllAnnonces();
-    loadStatistics(); // Charger les graphiques
+    loadStatistics();
   }
 
   async function loadStats() {
@@ -320,45 +352,12 @@
   function renderTable(data) {
     const emojis = { 'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮' };
     return `<table>
-      <thead>
-        <tr>
-          <th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Expire le</th><th>Actions</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Expire le</th><th>Actions</th></tr></thead>
       <tbody>
         ${data.map(a => {
           const expireDate = a.une_expire_le ? new Date(a.une_expire_le).toLocaleDateString('fr-FR') : '-';
-          return `
-          <tr id="row-${a.id}">
-            <td>
-              <div style="display:flex;align-items:center;gap:12px">
-                ${a.image_url ? `<img src="${a.image_url}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">` : `<div style="width:44px;height:44px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px">${emojis[a.categorie]||'📦'}</div>`}
-                <div>
-                  <div style="font-weight:600;font-size:13px">${a.titre || '-'}</div>
-                  <div style="color:var(--muted);font-size:12px">📍 ${a.quartier || a.ville || '-'}</div>
-                </div>
-              </div>
-            </td>
-            <td><span style="font-size:13px">${a.categorie || '-'}</span></td>
-            <td><strong style="color:var(--green)">${a.prix || '-'} FCFA</strong></td>
-            <td>${a.ville || 'Brazzaville'}</td>
-            <td style="font-size:11px;color:var(--muted)">${new Date(a.created_at).toLocaleDateString('fr-FR')}</td>
-            <td style="font-size:12px">👁️ ${a.vues || 0}</td>
-            <td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td>
-            <td>${expireDate}</td>
-            <td>
-              <div class="action-btns">
-                ${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}
-                ${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}
-                <button class="${a.une ? 'btn-reject' : 'btn-approve'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})" title="${a.une ? 'Retirer de la une' : 'Mettre à la une'}">
-                  ${a.une ? '⭐ Retirer une' : '☆ Mettre une'}
-                </button>
-                ${a.une ? `<button class="btn-expire" onclick="expirerUne('${a.id}')">⏰ Expirer</button>` : ''}
-                <button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button>
-              </div>
-            </td>
-          </tr>
-        `}).join('')}
+          return `<tr id="row-${a.id}"><td><div style="display:flex;align-items:center;gap:12px">${a.image_url ? `<img src="${a.image_url}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">` : `<div style="width:44px;height:44px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px">${emojis[a.categorie]||'📦'}</div>`}<div><div style="font-weight:600;font-size:13px">${a.titre || '-'}</div><div style="color:var(--muted);font-size:12px">📍 ${a.quartier || a.ville || '-'}</div></div></div></div></td><td><span style="font-size:13px">${a.categorie || '-'}</span></span></td><td><strong style="color:var(--green)">${a.prix || '-'} FCFA</strong></strong></td><td>${a.ville || 'Brazzaville'}</td><td style="font-size:11px">${new Date(a.created_at).toLocaleDateString('fr-FR')}</td><td>👁️ ${a.vues || 0}</td><td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td><td>${expireDate}</td><td><div class="action-btns">${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}<button class="${a.une ? 'btn-reject' : 'btn-approve'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})">${a.une ? '⭐ Retirer une' : '☆ Mettre une'}</button>${a.une ? `<button class="btn-expire" onclick="expirerUne('${a.id}')">⏰ Expirer</button>` : ''}<button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button></div></td></tr>`;
+        }).join('')}
       </tbody>
     </table>`;
   }
@@ -371,28 +370,19 @@
         const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
         if (userProfile && userProfile.email) {
           const sujet = statut === 'actif' ? '✅ Annonce approuvée sur ExpatBrazza' : '❌ Annonce non approuvée';
-          const message = statut === 'actif' 
-            ? `Bonjour, votre annonce "${annonce.titre}" est maintenant en ligne !\n\nhttps://expatbrazza.com`
-            : `Bonjour, votre annonce "${annonce.titre}" n'a pas été approuvée. Veuillez la modifier et la soumettre à nouveau.`;
+          const message = statut === 'actif' ? `Bonjour, votre annonce "${annonce.titre}" est maintenant en ligne !\n\nhttps://expatbrazza.com` : `Bonjour, votre annonce "${annonce.titre}" n'a pas été approuvée. Veuillez la modifier et la soumettre à nouveau.`;
           envoyerNotification(userProfile.email, sujet, message);
         }
       }
       loadStats(); loadPending(); loadAllAnnonces();
       showToastAdmin(statut === 'actif' ? '✅ Approuvée + notification envoyée' : '❌ Refusée + notification envoyée');
-    } else {
-      showToastAdmin('❌ Erreur : ' + error.message);
-    }
+    } else showToastAdmin('❌ Erreur : ' + error.message);
   }
 
   async function toggleUne(id, value) {
     let updateData = { une: value };
-    if (value) {
-      const expireDate = new Date();
-      expireDate.setDate(expireDate.getDate() + 7);
-      updateData.une_expire_le = expireDate.toISOString();
-    } else {
-      updateData.une_expire_le = null;
-    }
+    if (value) { const expireDate = new Date(); expireDate.setDate(expireDate.getDate() + 7); updateData.une_expire_le = expireDate.toISOString(); }
+    else updateData.une_expire_le = null;
     const { error } = await sb.from('annonces').update(updateData).eq('id', id);
     if (!error) {
       const { data: annonce } = await sb.from('annonces').select('*, user_id').eq('id', id).single();
@@ -400,72 +390,230 @@
         const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
         if (userProfile && userProfile.email) {
           const sujet = value ? '⭐ Votre annonce est à la une !' : '📌 Annonce retirée de la une';
-          const message = value 
-            ? `Félicitations, votre annonce "${annonce.titre}" est mise en avant pour 7 jours !`
-            : `Bonjour, votre annonce "${annonce.titre}" n'est plus à la une.`;
+          const message = value ? `Félicitations, votre annonce "${annonce.titre}" est mise en avant pour 7 jours !` : `Bonjour, votre annonce "${annonce.titre}" n'est plus à la une.`;
           envoyerNotification(userProfile.email, sujet, message);
         }
       }
       loadStats(); loadAllAnnonces();
       showToastAdmin(value ? '⭐ Mise à la une + notification' : 'Retirée de la une + notification');
-    } else {
-      showToastAdmin('❌ Erreur: ' + error.message);
-    }
+    } else showToastAdmin('❌ Erreur: ' + error.message);
   }
 
   async function expirerUne(id) {
     if (!confirm("Retirer cette annonce de la une immédiatement ?")) return;
     const { error } = await sb.from('annonces').update({ une: false, une_expire_le: null }).eq('id', id);
-    if (!error) {
-      loadStats(); loadAllAnnonces();
-      showToastAdmin("⏰ Annonce retirée de la une");
-    } else {
-      showToastAdmin("❌ Erreur: " + error.message);
-    }
+    if (!error) { loadStats(); loadAllAnnonces(); showToastAdmin("⏰ Annonce retirée de la une"); }
+    else showToastAdmin("❌ Erreur: " + error.message);
   }
 
   async function deleteAnnonce(id) {
     if (!confirm('Supprimer définitivement cette annonce ?')) return;
     const { error } = await sb.from('annonces').delete().eq('id', id);
-    if (!error) {
-      document.getElementById('row-' + id)?.remove();
-      loadStats(); loadAllAnnonces();
-      showToastAdmin("Annonce supprimée");
-    }
+    if (!error) { document.getElementById('row-' + id)?.remove(); loadStats(); loadAllAnnonces(); showToastAdmin("Annonce supprimée"); }
   }
 
   // ========== GESTION UTILISATEURS ==========
   async function loadUsers() {
-    const { data: profiles, error } = await sb
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const { data: profiles } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    if (!profiles || profiles.length === 0) { document.getElementById('usersList').innerHTML = '<div class="empty">Aucun utilisateur</div>'; document.getElementById('s-users').textContent = '0'; return; }
+    document.getElementById('s-users').textContent = profiles.length;
+    document.getElementById('usersList').innerHTML = `<table><thead><tr><th>Email</th><th>Nom</th><th>Rôle</th><th>Statut</th><th>Inscrit le</th><th>Actions</th></tr></thead><tbody>${profiles.map(p => `<tr><td>${p.email || '-'}</td><td>${p.full_name || '-'}</td><td><span class="badge ${p.role === 'admin' ? 'badge-actif' : 'badge-attente'}">${p.role === 'admin' ? 'Admin' : 'Utilisateur'}</span></td><td>${p.banned ? '<span class="badge badge-refuse">Banni</span>' : '<span class="badge badge-actif">Actif</span>'}</td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td><div class="action-btns">${p.role !== 'admin' ? `<button class="btn-approve" onclick="toggleAdmin('${p.id}', true)">👑 Promouvoir admin</button>` : `<button class="btn-reject" onclick="toggleAdmin('${p.id}', false)">↘️ Rétrograder</button>`}${!p.banned ? `<button class="btn-reject" onclick="toggleBan('${p.id}', true)">🚫 Bannir</button>` : `<button class="btn-approve" onclick="toggleBan('${p.id}', false)">✅ Débannir</button>`}<button class="btn-expire" onclick="viewUserAnnonces('${p.id}')">📋 Voir annonces</button><button class="btn-del" onclick="deleteUser('${p.id}')">🗑️ Supprimer</button></div></td></tr>`).join('')}</tbody></table>`;
+  }
 
-    if (error || !profiles || profiles.length === 0) {
-      document.getElementById('usersList').innerHTML = '<div class="empty">Aucun utilisateur</div>';
-      document.getElementById('s-users').textContent = '0';
+  async function toggleAdmin(userId, makeAdmin) {
+    const newRole = makeAdmin ? 'admin' : 'user';
+    const { error } = await sb.from('profiles').update({ role: newRole }).eq('id', userId);
+    if (!error) { showToastAdmin(makeAdmin ? 'Utilisateur promu admin' : 'Admin rétrogradé'); loadUsers(); }
+    else showToastAdmin('Erreur: ' + error.message);
+  }
+
+  async function toggleBan(userId, ban) {
+    const { error } = await sb.from('profiles').update({ banned: ban }).eq('id', userId);
+    if (!error) { showToastAdmin(ban ? 'Utilisateur banni' : 'Utilisateur débanni'); loadUsers(); }
+    else showToastAdmin('Erreur: ' + error.message);
+  }
+
+  async function viewUserAnnonces(userId) {
+    const { data: annonces } = await sb.from('annonces').select('*').eq('user_id', userId);
+    if (!annonces || annonces.length === 0) alert('Aucune annonce pour cet utilisateur.');
+    else alert(annonces.map(a => `${a.titre} (${a.statut}) - ${a.prix} FCFA`).join('\n'));
+  }
+
+  async function deleteUser(userId) {
+    if (!confirm('⚠️ Supprimer définitivement cet utilisateur et toutes ses annonces ?')) return;
+    await sb.from('annonces').delete().eq('user_id', userId);
+    await sb.from('profiles').delete().eq('id', userId);
+    showToastAdmin('Utilisateur supprimé.'); loadUsers(); loadStats();
+  }
+
+  // ========== CERTIFICATIONS ==========
+  async function loadCertificationRequests() {
+    const { data } = await sb.from('certification_requests').select('*, user_id').order('created_at', { ascending: false });
+    const container = document.getElementById('certifList');
+    if (!data || data.length === 0) { container.innerHTML = '<div class="empty">Aucune demande de certification</div>'; return; }
+    container.innerHTML = `<table><thead><tr><th>Nom</th><th>CNI</th><th>WhatsApp</th><th>Raison</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${data.map(req => `<tr><td>${req.full_name}</td><td>${req.cni_number}</td><td>${req.whatsapp}</td><td>${req.reason || '-'}</td><td><span class="badge badge-attente">${req.status === 'en_attente' ? '⏳ En attente' : (req.status === 'approuve' ? '✅ Approuvé' : '❌ Rejeté')}</span></td><td>${req.status === 'en_attente' ? `<button class="btn-approve" onclick="processCertification(${req.id}, 'approuve', '${req.user_id}')">✅ Approuver</button><button class="btn-reject" onclick="processCertification(${req.id}, 'rejete')">❌ Rejeter</button>` : ''}</td></tr>`).join('')}</tbody></tr>`;
+  }
+
+  async function processCertification(requestId, decision, userId = null) {
+    if (!confirm(`Confirmer la ${decision === 'approuve' ? 'validation' : 'rejet'} ?`)) return;
+    await sb.from('certification_requests').update({ status: decision, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id }).eq('id', requestId);
+    if (decision === 'approuve' && userId) {
+      await sb.from('annonces').update({ verified: true }).eq('user_id', userId);
+      const { data: userProfile } = await sb.from('profiles').select('email').eq('id', userId).single();
+      if (userProfile?.email) envoyerNotification(userProfile.email, '🏅 Vous êtes certifié sur ExpatBrazza', 'Félicitations ! Votre compte a été certifié. Un badge bleu apparaît sur vos annonces.');
+      showToastAdmin("Utilisateur certifié !");
+    }
+    loadCertificationRequests();
+  }
+
+  // ========== SIGNALEMENTS ==========
+  async function loadReports() {
+    const { data } = await sb.from('reports').select('*, annonces(titre, id)').order('created_at', { ascending: false });
+    const container = document.getElementById('reportsList');
+    if (!data || data.length === 0) { container.innerHTML = '<div class="empty">Aucun signalement</div>'; return; }
+    container.innerHTML = `<table><thead><tr><th>Annonce</th><th>Motif</th><th>Signalé par</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${data.map(r => `<tr><td><a href="#" onclick="viewAnnonce(${r.annonce_id})">${r.annonces?.titre || 'Annonce supprimée'}</a></td><td>${r.reason}</td><td>${r.reporter_contact || (r.reporter_user_id ? 'Utilisateur connecté' : 'Anonyme')}</td><td><span class="badge badge-${r.status === 'en_attente' ? 'attente' : (r.status === 'traite' ? 'actif' : 'refuse')}">${r.status === 'en_attente' ? '⏳ En attente' : (r.status === 'traite' ? '✅ Traité' : '❌ Ignoré')}</span></td><td>${r.status === 'en_attente' ? `<button class="btn-approve" onclick="processReport(${r.id}, 'traite')">✅ Marquer traité</button><button class="btn-del" onclick="deleteReportAndAnnonce(${r.id}, ${r.annonce_id})">🗑️ Supprimer l'annonce</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
+  }
+
+  async function processReport(reportId, newStatus) {
+    await sb.from('reports').update({ status: newStatus, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id }).eq('id', reportId);
+    loadReports();
+  }
+
+  async function deleteReportAndAnnonce(reportId, annonceId) {
+    if (!confirm("Supprimer définitivement cette annonce ?")) return;
+    await sb.from('annonces').delete().eq('id', annonceId);
+    await sb.from('reports').delete().eq('id', reportId);
+    loadReports(); loadStats();
+  }
+
+  function viewAnnonce(id) { window.open(`index.html?annonce=${id}`, '_blank'); }
+
+  // ========== STATISTIQUES AVANCÉES ==========
+  let annoncesChart, categoriesChart, usersChart, citiesChart;
+  async function loadStatistics() {
+    const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const { data: annoncesParJour } = await sb.from('annonces').select('created_at').gte('created_at', thirtyDaysAgo.toISOString());
+    const jours = [], counts = [];
+    for (let i = 0; i <= 30; i++) { const d = new Date(); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; jours.unshift(dateStr); counts.unshift(annoncesParJour?.filter(a => a.created_at.split('T')[0] === dateStr).length || 0); }
+    if (annoncesChart) annoncesChart.destroy();
+    annoncesChart = new Chart(document.getElementById('annoncesChart'), { type: 'line', data: { labels: jours, datasets: [{ label: 'Annonces publiées', data: counts, borderColor: '#00A550', tension: 0.3 }] } });
+    const { data: categoriesData } = await sb.from('annonces').select('categorie');
+    const catMap = new Map(); categoriesData?.forEach(a => catMap.set(a.categorie, (catMap.get(a.categorie) || 0) + 1));
+    if (categoriesChart) categoriesChart.destroy();
+    categoriesChart = new Chart(document.getElementById('categoriesChart'), { type: 'pie', data: { labels: [...catMap.keys()], datasets: [{ data: [...catMap.values()], backgroundColor: ['#00A550','#F9C003','#CE1126','#3498DB','#9B59B6','#E67E22','#1ABC9C'] }] } });
+    const { data: usersParJour } = await sb.from('profiles').select('created_at').gte('created_at', thirtyDaysAgo.toISOString());
+    const userCounts = []; for (let i = 0; i <= 30; i++) { const d = new Date(); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; userCounts.unshift(usersParJour?.filter(u => u.created_at.split('T')[0] === dateStr).length || 0); }
+    if (usersChart) usersChart.destroy();
+    usersChart = new Chart(document.getElementById('usersChart'), { type: 'bar', data: { labels: jours, datasets: [{ label: 'Inscriptions', data: userCounts, backgroundColor: '#3498DB' }] } });
+    const { data: villesData } = await sb.from('annonces').select('ville');
+    const villeMap = new Map(); villesData?.forEach(a => { const v = a.ville || 'Brazzaville'; villeMap.set(v, (villeMap.get(v) || 0) + 1); });
+    const sortedVilles = [...villeMap.entries()].sort((a,b) => b[1] - a[1]).slice(0,6);
+    if (citiesChart) citiesChart.destroy();
+    citiesChart = new Chart(document.getElementById('citiesChart'), { type: 'bar', data: { labels: sortedVilles.map(v => v[0]), datasets: [{ label: 'Nombre d\'annonces', data: sortedVilles.map(v => v[1]), backgroundColor: '#F9C003' }] } });
+  }
+
+  // ========== GESTION DU BLOG ==========
+  async function loadBlogPosts() {
+    const { data, error } = await sb.from('blog_posts').select('*').order('created_at', { ascending: false });
+    const container = document.getElementById('blogPostsList');
+    if (error || !data || data.length === 0) { container.innerHTML = '<div class="empty">Aucun article</div>'; return; }
+    container.innerHTML = `<table><thead><tr><th>Titre</th><th>Slug</th><th>Publié</th><th>Date</th><th>Actions</th></tr></thead><tbody>${data.map(post => `<tr><td>${post.title}</td><td>${post.slug}</td><td>${post.published ? '✅ Oui' : '❌ Non'}</td><td>${new Date(post.created_at).toLocaleDateString('fr-FR')}</td><td><button class="btn-approve" onclick="editBlogPost(${post.id})">✏️ Modifier</button><button class="btn-del" onclick="deleteBlogPost(${post.id})">🗑️ Supprimer</button></td></tr>`).join('')}</tbody></table>`;
+  }
+
+  function initTinyMCE() {
+    if (!tinyMceInitialized && typeof tinymce !== 'undefined') {
+      tinymce.init({ selector: '#blogContent', height: 400, menubar: false, plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount', toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help', setup: function(editor) { editor.on('change', function() { editor.save(); }); } });
+      tinyMceInitialized = true;
+    }
+  }
+
+  function openBlogEditor(id = null) {
+    document.getElementById('blogModal').classList.add('active');
+    document.getElementById('blogEditId').value = '';
+    document.getElementById('blogTitle').value = '';
+    document.getElementById('blogSlug').value = '';
+    document.getElementById('blogExcerpt').value = '';
+    document.getElementById('blogImage').value = '';
+    document.getElementById('blogPublished').checked = false;
+    if (tinyMceInitialized && tinymce.get('blogContent')) tinymce.get('blogContent').setContent('');
+    else document.getElementById('blogContent').value = '';
+    initTinyMCE();
+    if (id) editBlogPost(id);
+    document.getElementById('blogModalTitle').innerText = id ? 'Modifier l\'article' : 'Nouvel article';
+  }
+
+  async function editBlogPost(id) {
+    const { data, error } = await sb.from('blog_posts').select('*').eq('id', id).single();
+    if (error) { alert('Erreur chargement'); return; }
+    document.getElementById('blogEditId').value = data.id;
+    document.getElementById('blogTitle').value = data.title;
+    document.getElementById('blogSlug').value = data.slug;
+    document.getElementById('blogExcerpt').value = data.excerpt || '';
+    document.getElementById('blogImage').value = data.image_url || '';
+    document.getElementById('blogPublished').checked = data.published;
+    if (tinyMceInitialized && tinymce.get('blogContent')) tinymce.get('blogContent').setContent(data.content || '');
+    else document.getElementById('blogContent').value = data.content || '';
+    initTinyMCE();
+    document.getElementById('blogModal').classList.add('active');
+    document.getElementById('blogModalTitle').innerText = 'Modifier l\'article';
+  }
+
+  async function saveBlogPost() {
+    const id = document.getElementById('blogEditId').value;
+    const title = document.getElementById('blogTitle').value.trim();
+    let slug = document.getElementById('blogSlug').value.trim();
+    const excerpt = document.getElementById('blogExcerpt').value.trim();
+    const image_url = document.getElementById('blogImage').value.trim();
+    const published = document.getElementById('blogPublished').checked;
+    let content = '';
+    if (tinyMceInitialized && tinymce.get('blogContent')) content = tinymce.get('blogContent').getContent();
+    else content = document.getElementById('blogContent').value;
+    if (!title || !slug || !content) { alert('Titre, slug et contenu sont obligatoires'); return; }
+    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const postData = { title, slug, excerpt, content, image_url: image_url || null, published, updated_at: new Date() };
+    if (published && !id) postData.published_at = new Date();
+    let error;
+    if (id) { const { error: e } = await sb.from('blog_posts').update(postData).eq('id', id); error = e; }
+    else { postData.created_at = new Date(); if (published) postData.published_at = new Date(); const { error: e } = await sb.from('blog_posts').insert([postData]); error = e; }
+    if (error) alert('Erreur: ' + error.message);
+    else { alert('Article enregistré'); closeBlogModal(); loadBlogPosts(); }
+  }
+
+  async function deleteBlogPost(id) {
+    if (confirm('Supprimer définitivement cet article ?')) {
+      await sb.from('blog_posts').delete().eq('id', id);
+      loadBlogPosts();
+    }
+  }
+
+  function closeBlogModal() { document.getElementById('blogModal').classList.remove('active'); }
+
+  // ========== GESTION DES COMMENTAIRES ==========
+  async function loadComments() {
+    const { data, error } = await sb
+      .from('blog_comments')
+      .select('*, blog_posts(title)')
+      .order('created_at', { ascending: false });
+    const container = document.getElementById('commentsList');
+    if (error || !data || data.length === 0) {
+      container.innerHTML = '<div class="empty">Aucun commentaire</div>';
       return;
     }
-
-    document.getElementById('s-users').textContent = profiles.length;
-
-    const html = `
+    container.innerHTML = `
       <table style="width:100%">
-        <thead><tr><th>Email</th><th>Nom</th><th>Rôle</th><th>Statut</th><th>Inscrit le</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Article</th><th>Auteur</th><th>Commentaire</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>
-          ${profiles.map(p => `
-            <tr id="user-${p.id}">
-              <td>${p.email || '-'}</td>
-              <td>${p.full_name || '-'}</td>
-              <td><span class="badge ${p.role === 'admin' ? 'badge-actif' : 'badge-attente'}">${p.role === 'admin' ? 'Admin' : 'Utilisateur'}</span></td>
-              <td>${p.banned ? '<span class="badge badge-refuse">Banni</span>' : '<span class="badge badge-actif">Actif</span>'}</td>
-              <td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
+          ${data.map(c => `
+            <tr id="comment-${c.id}">
+              <td>${c.blog_posts?.title || 'Article supprimé'}</td>
+              <td>${c.author_name}<br><small>${c.author_email || ''}</small></td>
+              <td style="max-width:300px;">${c.content.substring(0, 100)}${c.content.length > 100 ? '…' : ''}</td>
+              <td><span class="badge badge-${c.status === 'approuve' ? 'actif' : (c.status === 'en_attente' ? 'attente' : 'refuse')}">${c.status === 'approuve' ? '✅ Approuvé' : (c.status === 'en_attente' ? '⏳ En attente' : '❌ Supprimé')}</span></td>
+              <td>${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
               <td>
                 <div class="action-btns">
-                  ${p.role !== 'admin' ? `<button class="btn-approve" onclick="toggleAdmin('${p.id}', true)">👑 Promouvoir admin</button>` : `<button class="btn-reject" onclick="toggleAdmin('${p.id}', false)">↘️ Rétrograder</button>`}
-                  ${!p.banned ? `<button class="btn-reject" onclick="toggleBan('${p.id}', true)">🚫 Bannir</button>` : `<button class="btn-approve" onclick="toggleBan('${p.id}', false)">✅ Débannir</button>`}
-                  <button class="btn-expire" onclick="viewUserAnnonces('${p.id}')">📋 Voir annonces</button>
-                  <button class="btn-del" onclick="deleteUser('${p.id}')">🗑️ Supprimer</button>
+                  ${c.status !== 'approuve' ? `<button class="btn-approve" onclick="moderateComment(${c.id}, 'approuve')">✅ Approuver</button>` : ''}
+                  ${c.status !== 'supprime' ? `<button class="btn-del" onclick="moderateComment(${c.id}, 'supprime')">🗑️ Supprimer</button>` : ''}
                 </div>
               </td>
             </tr>
@@ -473,254 +621,22 @@
         </tbody>
       </table>
     `;
-    document.getElementById('usersList').innerHTML = html;
   }
 
-  async function toggleAdmin(userId, makeAdmin) {
-    const newRole = makeAdmin ? 'admin' : 'user';
-    const { error } = await sb.from('profiles').update({ role: newRole }).eq('id', userId);
-    if (!error) {
-      showToastAdmin(makeAdmin ? 'Utilisateur promu admin' : 'Admin rétrogradé');
-      loadUsers();
-    } else {
-      showToastAdmin('Erreur: ' + error.message);
+  async function moderateComment(commentId, action) {
+    const newStatus = action === 'approuve' ? 'approuve' : 'supprime';
+    const { error } = await sb.from('blog_comments').update({ status: newStatus }).eq('id', commentId);
+    if (error) alert('Erreur : ' + error.message);
+    else {
+      showToastAdmin(action === 'approuve' ? 'Commentaire approuvé' : 'Commentaire supprimé');
+      loadComments();
     }
-  }
-
-  async function toggleBan(userId, ban) {
-    const { error } = await sb.from('profiles').update({ banned: ban }).eq('id', userId);
-    if (!error) {
-      showToastAdmin(ban ? 'Utilisateur banni' : 'Utilisateur débanni');
-      loadUsers();
-    } else {
-      showToastAdmin('Erreur: ' + error.message);
-    }
-  }
-
-  async function viewUserAnnonces(userId) {
-    const { data: annonces } = await sb.from('annonces').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-    if (!annonces || annonces.length === 0) {
-      alert('Aucune annonce pour cet utilisateur.');
-      return;
-    }
-    let msg = `Annonces de l'utilisateur :\n`;
-    annonces.forEach(a => {
-      msg += `- ${a.titre} (${a.statut}) - ${a.prix} FCFA\n`;
-    });
-    alert(msg);
-  }
-
-  async function deleteUser(userId) {
-    if (!confirm('⚠️ Supprimer définitivement cet utilisateur et toutes ses annonces ? Action irréversible.')) return;
-    await sb.from('annonces').delete().eq('user_id', userId);
-    await sb.from('profiles').delete().eq('id', userId);
-    showToastAdmin('Utilisateur supprimé (profil et annonces).');
-    loadUsers();
-    loadStats();
-  }
-
-  // ========== CERTIFICATIONS ==========
-  async function loadCertificationRequests() {
-    const { data, error } = await sb
-      .from('certification_requests')
-      .select('*, user_id')
-      .order('created_at', { ascending: false });
-
-    const container = document.getElementById('certifList');
-    if (error || !data || data.length === 0) {
-      container.innerHTML = '<div class="empty">Aucune demande de certification</div>';
-      return;
-    }
-
-    container.innerHTML = `
-      <table style="width:100%">
-        <thead><tr><th>Nom</th><th>CNI</th><th>WhatsApp</th><th>Raison</th><th>Statut</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${data.map(req => `
-            <tr id="certif-${req.id}">
-              <td>${req.full_name}</td>
-              <td>${req.cni_number}</td>
-              <td>${req.whatsapp}</td>
-              <td>${req.reason || '-'}</td>
-              <td><span class="badge badge-${req.status === 'en_attente' ? 'attente' : (req.status === 'approuve' ? 'actif' : 'refuse')}">${req.status === 'en_attente' ? '⏳ En attente' : (req.status === 'approuve' ? '✅ Approuvé' : '❌ Rejeté')}</span></td>
-              <td>
-                ${req.status === 'en_attente' ? `
-                  <button class="btn-approve" onclick="processCertification(${req.id}, 'approuve', '${req.user_id}')">✅ Approuver</button>
-                  <button class="btn-reject" onclick="processCertification(${req.id}, 'rejete')">❌ Rejeter</button>
-                ` : ''}
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
-
-  async function processCertification(requestId, decision, userId = null) {
-    if (!confirm(`Confirmer la ${decision === 'approuve' ? 'validation' : 'rejet'} de cette demande ?`)) return;
-
-    const { error: updateError } = await sb
-      .from('certification_requests')
-      .update({ status: decision, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id })
-      .eq('id', requestId);
-
-    if (updateError) { alert("Erreur: " + updateError.message); return; }
-
-    if (decision === 'approuve' && userId) {
-      const { error: annError } = await sb
-        .from('annonces')
-        .update({ verified: true })
-        .eq('user_id', userId);
-      if (annError) console.warn("Erreur mise à jour verified:", annError);
-      else {
-        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', userId).single();
-        if (userProfile && userProfile.email) {
-          envoyerNotification(userProfile.email, '🏅 Vous êtes certifié sur ExpatBrazza', 'Félicitations ! Votre compte a été certifié. Un badge bleu apparaît désormais sur toutes vos annonces.');
-        }
-        showToastAdmin("Utilisateur certifié ! Notification envoyée.");
-      }
-    }
-    alert("Demande traitée.");
-    loadCertificationRequests();
-  }
-
-  // ========== SIGNALEMENTS ==========
-  async function loadReports() {
-    const { data, error } = await sb
-      .from('reports')
-      .select('*, annonces(titre, id, user_id)')
-      .order('created_at', { ascending: false });
-
-    const container = document.getElementById('reportsList');
-    if (error || !data || data.length === 0) {
-      container.innerHTML = '<div class="empty">Aucun signalement</div>';
-      return;
-    }
-
-    container.innerHTML = `
-      <table style="width:100%">
-        <thead><tr><th>Annonce</th><th>Motif</th><th>Signalé par</th><th>Statut</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${data.map(r => `
-            <tr id="report-${r.id}">
-              <td><a href="#" onclick="viewAnnonce(${r.annonce_id})">${r.annonces?.titre || 'Annonce supprimée'}</a></td>
-              <td>${r.reason}</td>
-              <td>${r.reporter_contact || (r.reporter_user_id ? 'Utilisateur connecté' : 'Anonyme')}</td>
-              <td><span class="badge badge-${r.status === 'en_attente' ? 'attente' : (r.status === 'traite' ? 'actif' : 'refuse')}">${r.status === 'en_attente' ? '⏳ En attente' : (r.status === 'traite' ? '✅ Traité' : '❌ Ignoré')}</span></td>
-              <td>
-                ${r.status === 'en_attente' ? `
-                  <button class="btn-approve" onclick="processReport(${r.id}, 'traite')">✅ Marquer traité</button>
-                  <button class="btn-del" onclick="deleteReportAndAnnonce(${r.id}, ${r.annonce_id})">🗑️ Supprimer l'annonce</button>
-                ` : ''}
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
-
-  async function processReport(reportId, newStatus) {
-    const { error } = await sb
-      .from('reports')
-      .update({ status: newStatus, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id })
-      .eq('id', reportId);
-    if (error) alert("Erreur: " + error.message);
-    else loadReports();
-  }
-
-  async function deleteReportAndAnnonce(reportId, annonceId) {
-    if (!confirm("Supprimer définitivement cette annonce ? Le signalement sera aussi supprimé.")) return;
-    await sb.from('annonces').delete().eq('id', annonceId);
-    await sb.from('reports').delete().eq('id', reportId);
-    loadReports();
-    loadStats();
-    showToastAdmin("Annonce supprimée.");
-  }
-
-  function viewAnnonce(id) {
-    window.open(`index.html?annonce=${id}`, '_blank');
-  }
-
-  // ========== STATISTIQUES AVANCÉES ==========
-  let annoncesChart, categoriesChart, usersChart, citiesChart;
-
-  async function loadStatistics() {
-    // 1. Annonces par jour (30 derniers jours)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const { data: annoncesParJour } = await sb
-      .from('annonces')
-      .select('created_at')
-      .gte('created_at', thirtyDaysAgo.toISOString());
-    
-    const jours = [];
-    const counts = [];
-    for (let i = 0; i <= 30; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      jours.unshift(dateStr);
-      const count = annoncesParJour?.filter(a => a.created_at.split('T')[0] === dateStr).length || 0;
-      counts.unshift(count);
-    }
-    
-    if (annoncesChart) annoncesChart.destroy();
-    annoncesChart = new Chart(document.getElementById('annoncesChart'), {
-      type: 'line',
-      data: { labels: jours, datasets: [{ label: 'Annonces publiées', data: counts, borderColor: '#00A550', tension: 0.3 }] }
-    });
-
-    // 2. Répartition par catégorie
-    const { data: categoriesData } = await sb.from('annonces').select('categorie');
-    const catMap = new Map();
-    categoriesData?.forEach(a => { catMap.set(a.categorie, (catMap.get(a.categorie) || 0) + 1); });
-    const catLabels = [...catMap.keys()];
-    const catValues = [...catMap.values()];
-    if (categoriesChart) categoriesChart.destroy();
-    categoriesChart = new Chart(document.getElementById('categoriesChart'), {
-      type: 'pie',
-      data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: ['#00A550','#F9C003','#CE1126','#3498DB','#9B59B6','#E67E22','#1ABC9C'] }] }
-    });
-
-    // 3. Inscriptions utilisateurs (30 derniers jours)
-    const { data: usersParJour } = await sb
-      .from('profiles')
-      .select('created_at')
-      .gte('created_at', thirtyDaysAgo.toISOString());
-    
-    const userCounts = [];
-    for (let i = 0; i <= 30; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      const count = usersParJour?.filter(u => u.created_at.split('T')[0] === dateStr).length || 0;
-      userCounts.unshift(count);
-    }
-    if (usersChart) usersChart.destroy();
-    usersChart = new Chart(document.getElementById('usersChart'), {
-      type: 'bar',
-      data: { labels: jours, datasets: [{ label: 'Inscriptions', data: userCounts, backgroundColor: '#3498DB' }] }
-    });
-
-    // 4. Top villes (nombre d'annonces)
-    const { data: villesData } = await sb.from('annonces').select('ville');
-    const villeMap = new Map();
-    villesData?.forEach(a => { const v = a.ville || 'Brazzaville'; villeMap.set(v, (villeMap.get(v) || 0) + 1); });
-    const sortedVilles = [...villeMap.entries()].sort((a,b) => b[1] - a[1]).slice(0,6);
-    const villesLabels = sortedVilles.map(v => v[0]);
-    const villesCounts = sortedVilles.map(v => v[1]);
-    if (citiesChart) citiesChart.destroy();
-    citiesChart = new Chart(document.getElementById('citiesChart'), {
-      type: 'bar',
-      data: { labels: villesLabels, datasets: [{ label: 'Nombre d\'annonces', data: villesCounts, backgroundColor: '#F9C003' }] }
-    });
   }
 
   // ========== UTILITAIRES ==========
   function showToastAdmin(msg) {
     const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#00A550;color:#fff;padding:14px 20px;border-radius:12px;font-size:14px;font-weight:500;z-index:9999;box-shadow:0 8px 24px rgba(0,165,80,0.4)';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#00A550;color:#fff;padding:14px 20px;border-radius:12px;z-index:9999';
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3000);
@@ -731,18 +647,16 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + page).classList.add('active');
     event.currentTarget.classList.add('active');
-
     if (page === 'users') loadUsers();
     if (page === 'annonces') loadAllAnnonces();
     if (page === 'certifications') loadCertificationRequests();
     if (page === 'reports') loadReports();
     if (page === 'stats') loadStatistics();
+    if (page === 'blog') loadBlogPosts();
+    if (page === 'comments') loadComments();
   }
 
-  async function adminLogout() {
-    await sb.auth.signOut();
-    window.location.reload();
-  }
+  async function adminLogout() { await sb.auth.signOut(); window.location.reload(); }
 
   window.onload = async () => {
     const { data: { session } } = await sb.auth.getSession();
