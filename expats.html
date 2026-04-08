@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Expatriés — ExpatBrazza Congo</title>
+<meta name="description" content="Tout ce qu'il faut savoir pour s'installer à Brazzaville. Infos pratiques, quiz d'intégration, simulateur de budget et guide de vie au Congo.">
+<meta property="og:title" content="Guide Expatriés — ExpatBrazza">
+<meta property="og:description" content="Votre guide complet pour vivre et s'installer au Congo.">
+<meta property="og:site_name" content="ExpatBrazza">
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;8;00&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --green:   #00A550;
+  --green2:  #00C060;
+  --green3:  #E8FFF2;
+  --yellow:  #F9C003;
+  --yellow2: #FFF9E0;
+  --red:     #CE1126;
+  --red2:    #FFF0F2;
+  --bg:      #F4F7F5;
+  --white:   #FFFFFF;
+  --border:  #E2EDE8;
+  --text:    #0F1F16;
+  --muted:   #5A7A68;
+  --dim:     #94B5A4;
+  --dark:    #1A3025;
+  --card:    #FFFFFF;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+
+/* ── NAV ── */
+.navbar {
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:0 5%;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:200;
+  box-shadow:0 1px 8px rgba(0,0,0,0.05);
+}
+
+.nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+.logo-sq { width:34px; height:34px; background:var(--green); border-radius:7px; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:17px; color:white; }
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--text); }
+.nav-brand span { color:var(--green); }
+
+.nav-links { display:flex; align-items:center; gap:6px; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:13px; font-weight:500; padding:7px 12px; border-radius:6px; transition:all 0.2s; }
+.nav-links a:hover, .nav-links a.active { background:var(--green3); color:var(--green); }
+.nav-cta { background:var(--green) !important; color:white !important; font-weight:600 !important; }
+
+/* ── HERO ── */
+.hero {
+  background:linear-gradient(135deg, var(--dark) 0%, #0A2518 50%, #072010 100%);
+  padding:64px 5% 80px;
+  position:relative;
+  overflow:hidden;
+}
+
+.hero::before {
+  content:'';
+  position:absolute;
+  top:-100px; right:-100px;
+  width:500px; height:500px;
+  background:radial-gradient(circle, rgba(0,165,80,0.15) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.hero::after {
+  content:'';
+  position:absolute;
+  bottom:-80px; left:10%;
+  width:300px; height:300px;
+  background:radial-gradient(circle, rgba(249,192,3,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.hero-content { position:relative; z-index:2; max-width:680px; }
+.hero-flag { display:flex; gap:0; margin-bottom:20px; }
+.flag-stripe { width:22px; height:6px; border-radius:3px; }
+
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,165,80,0.15); border:1px solid rgba(0,165,80,0.25);
+  border-radius:20px; padding:5px 14px;
+  font-size:11px; font-weight:600; color:#6EF0A8;
+  letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+.hero-title {
+  font-family:'Syne',sans-serif;
+  font-size:clamp(28px,6vw,48px);
+  font-weight:800
+  color:white;
+  line-height:1.1;
+  margin-bottom:18px;
+  letter-spacing:-0.5px;
+}
+
+.hero-title span { color:#6EF0A8; }
+
+.hero-desc {
+  font-size:16px;
+  color:rgba(255,255,255,0.6);
+  line-height:1.7;
+  margin-bottom:32px;
+  max-width:520px;
+  font-weight:300;
+}
+
+.hero-pills { display:flex; gap:10px; flex-wrap:wrap; }
+.pill {
+  display:flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px; padding:7px 14px;
+  font-size:12px; color:rgba(255,255,255,0.75); font-weight:500;
+  cursor:pointer; transition:all 0.2s; text-decoration:none;
+}
+
+.pill:hover { background:rgba(0,165,80,0.2); border-color:rgba(0,165,80,0.4); color:white; }
+.pill svg { width:13px; height:13px; fill:currentColor; }
+
+/* ── PAGE TABS ── */
+.page-tabs {
+  background:var(--white);
+  border-bottom:2px solid var(--border);
+  padding:0 5%;
+  display:flex;
+  gap:0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.page-tabs::-webkit-scrollbar { display:none; }
+
+.tab-btn {
+  display:flex; align-items:center; gap:7px;
+  padding:16px 20px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:600;
+  color:var(--muted);
+  background:none; border:none;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+
+.tab-btn:hover { color:var(--green); }
+.tab-btn.active { color:var(--green); border-bottom-color:var(--green); }
+.tab-btn svg { width:16px; height:16px; fill:currentColor; }
+
+/* ── CONTENT AREA ── */
+.content-area { max-width:1100px; margin:0 auto; padding:40px 5%; }
+
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* ── SECTION TITLE ── */
+.sec-head { margin-bottom:32px; }
+.sec-label { font-size:10px; font-weight:700; color:var(--green); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.sec-label::before { content:''; width:20px; height:2px; background:var(--green); border-radius:1px; }
+.sec-title { font-family:'Syne',sans-serif; font-size:clamp(20px,4vw,28px); font-weight:800; margin-bottom:10px; }
+.sec-desc { font-size:14px; color:var(--muted); line-height:1.7; max-width:560px; }
+
+/* ── INFO CARDS ── */
+.info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-bottom:40px; }
+
+.info-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:24px;
+  transition:all 0.25s;
+  cursor:pointer;
+}
+
+.info-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,0.07); border-color:var(--green); }
+
+.ic-icon {
+  width:44px; height:44px;
+  border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:16px;
+  font-size:20px;
+}
+
+.ic-title { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:8px; }
+.ic-desc { font-size:13px; color:var(--muted); line-height:1.7; }
+
+.ic-expand {
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+  font-size:13px;
+  color:var(--text);
+  line-height:1.7;
+  display:none;
+}
+
+.ic-expand.open { display:block; }
+.ic-expand ul { padding-left:16px; margin-top:8px; }
+.ic-expand li { margin-bottom:6px; color:var(--muted); }
+.ic-expand li strong { color:var(--text); }
+
+.ic-toggle {
+  display:flex; align-items:center; gap:5px;
+  margin-top:12px;
+  font-size:12px; font-weight:600; color:var(--green);
+  cursor:pointer; background:none; border:none;
+  font-family:'DM Sans',sans-serif;
+}
+
+.ic-toggle svg { width:14px; height:14px; fill:var(--green); transition:transform 0.2s; }
+.ic-toggle.open svg { transform:rotate(180deg); }
+
+/* QUICK FACTS */
+.quick-facts {
+  background:linear-gradient(135deg,var(--dark),#0A2518);
+  border-radius:16px;
+  padding:32px;
+  margin-bottom:32px;
+  color:white;
+}
+
+.qf-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:20px; color:white; }
+
+.qf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:16px; }
+
+.qf-item {
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  padding:16px;
+}
+
+.qf-val { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:#6EF0A8; line-height:1; margin-bottom:6px; }
+.qf-label { font-size:11px; color:rgba(255,255,255,0.55); text-transform:uppercase; letter-spacing:0.5px; }
+
+/* CONTACTS UTILES */
+.contacts-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; margin-top:24px; }
+
+.contact-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:11px;
+  padding:16px;
+  display:flex; gap:12px; align-items:center;
+}
+
+.cc-icon { width:40px; height:40px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.cc-info {}
+.cc-name { font-size:13px; font-weight:600; margin-bottom:2px; }
+.cc-num { font-size:12px; color:var(--green); font-weight:500; }
+.cc-note { font-size:11px; color:var(--dim); margin-top:1px; }
+
+/* ══════════════════════════════
+   QUIZ
+══════════════════════════════ */
+.quiz-container {
+  max-width:680px;
+  margin:0 auto;
+}
+
+.quiz-progress {
+  margin-bottom:32px;
+}
+
+.quiz-prog-text {
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:8px;
+  font-weight:500;
+}
+
+.quiz-prog-bar {
+  height:6px;
+  background:var(--border);
+  border-radius:3px;
+  overflow:hidden;
+}
+
+.quiz-prog-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--green),var(--green2));
+  border-radius:3px;
+  transition:width 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.quiz-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+  margin-bottom:16px;
+  animation:slideIn 0.3s ease;
+}
+
+@keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.q-num { font-size:11px; font-weight:700; color:var(--green); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:12px; }
+.q-text { font-family:'Syne',sans-serif; font-size:clamp(15px,2vw,18px); font-weight:700; line-height:1.4; margin-bottom:24px; }
+
+.q-options { display:flex; flex-direction:column; gap:10px; }
+
+.q-option {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-size:14px;
+  font-weight:500;
+  background:var(--white);
+  font-family:'DM Sans',sans-serif;
+  text-align:left;
+}
+
+.q-option:hover { border-color:var(--green); background:var(--green3); color:var(--green); }
+.q-option.correct { border-color:var(--green); background:var(--green3); color:var(--dark); }
+.q-option.wrong { border-color:var(--red); background:var(--red2); color:var(--red); }
+.q-option.disabled { pointer-events:none; opacity:0.5; }
+.q-option.correct.disabled, .q-option.wrong.disabled { opacity:1; }
+
+.q-opt-letter {
+  width:28px; height:28px;
+  border-radius:7px;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700;
+  flex-shrink:0;
+  transition:all 0.2s;
+}
+
+.q-option:hover .q-opt-letter { background:rgba(0,165,80,0.15); color:var(--green); }
+.q-option.correct .q-opt-letter { background:var(--green); color:white; }
+.q-option.wrong .q-opt-letter { background:var(--red); color:white; }
+
+.q-explanation {
+  margin-top:14px;
+  padding:12px 14px;
+  background:var(--green3);
+  border:1px solid rgba(0,165,80,0.15);
+  border-radius:8px;
+  font-size:13px;
+  color:var(--dark);
+  line-height:1.6;
+  display:none;
+}
+
+.q-explanation.show { display:block; animation:fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.q-expl-icon { color:var(--green); font-weight:700; margin-right:6px; }
+
+.quiz-btn {
+  width:100%;
+  background:var(--green);
+  color:white;
+  border:none;
+  padding:15px;
+  border-radius:10px;
+  font-family:'Syne',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s;
+  margin-top:8px;
+}
+
+.quiz-btn:hover { background:var(--green2); transform:translateY(-1px); }
+.quiz-btn:disabled { background:var(--dim); cursor:not-allowed; transform:none; }
+
+/* Quiz Result */
+.quiz-result {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:40px 32px;
+  text-align:center;
+  display:none;
+  animation:slideIn 0.4s ease;
+}
+
+.result-score {
+  font-family:'Syne',sans-serif;
+  font-size:48px;
+  font-weight:800;
+  line-height:1;
+  margin-bottom:6px;
+}
+
+.result-label { font-size:16px; color:var(--muted); margin-bottom:24px; }
+.result-mention { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:12px; }
+.result-desc { font-size:14px; color:var(--muted); line-height:1.7; max-width:400px; margin:0 auto 28px; }
+.result-badges { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:28px; }
+
+.result-badge {
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.btn-retry {
+  background:none;
+  border:2px solid var(--green);
+  color:var(--green);
+  padding:12px 28px;
+  border-radius:10px;
+  font-family:'Syne',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+
+.btn-retry:hover { background:var(--green); color:white; }
+
+/* ══════════════════════════════
+   SIMULATEUR BUDGET
+══════════════════════════════ */
+.sim-layout {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  align-items:start;
+}
+
+@media(max-width:768px){ .sim-layout { grid-template-columns:1fr; } }
+
+.sim-form {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+}
+
+.sim-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:24px; display:flex; align-items:center; gap:10px; }
+.sim-title span { font-size:20px; }
+
+.sim-group { margin-bottom:20px; }
+.sim-label { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.sim-label-text { font-size:13px; font-weight:600; color:var(--text); }
+.sim-val { font-size:13px; font-weight:700; color:var(--green); }
+
+.sim-slider {
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:5px;
+  border-radius:3px;
+  background:var(--border);
+  outline:none;
+  cursor:pointer;
+}
+
+.sim-slider::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  width:20px; height:20px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,165,80,0.3);
+  border:2px solid white;
+}
+
+.sim-slider::-moz-range-thumb {
+  width:20px; height:20px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  border:2px solid white;
+}
+
+.sim-select {
+  width:100%;
+  padding:10px 12px;
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;
+  color:var(--text);
+  background:var(--white);
+  outline:none;
+  cursor:pointer;
+  transition:border-color 0.2s;
+}
+
+.sim-select:focus { border-color:var(--green); }
+
+.sim-hint { font-size:11px; color:var(--dim); margin-top:5px; }
+
+/* BUDGET RESULT */
+.budget-result {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  position:sticky;
+  top:80px;
+}
+
+.br-header { margin-bottom:24px; }
+.br-title { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; margin-bottom:4px; }
+.br-subtitle { font-size:12px; color:var(--muted); }
+
+.br-total {
+  background:linear-gradient(135deg,var(--dark),#0A2518);
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.br-total-label { font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.br-total-val { font-family:'Syne',sans-serif; font-size:32px; font-weight:800; color:#6EF0A8; }
+.br-total-mois { font-size:12px; color:rgba(255,255,255,0.4); margin-top:3px; }
+
+.br-items { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+
+.br-item {
+  display:flex; align-items:center; gap:10px;
+}
+
+.br-item-bar-wrap { flex:1; }
+.br-item-label { font-size:12px; color:var(--muted); margin-bottom:4px; display:flex; justify-content:space-between; }
+.br-item-label span { font-weight:600; color:var(--text); }
+.br-item-bar { height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+.br-item-fill { height:100%; border-radius:3px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1); }
+
+.br-tip {
+  background:var(--green3);
+  border:1px solid rgba(0,165,80,0.15);
+  border-radius:10px;
+  padding:14px;
+  font-size:12px;
+  color:var(--dark);
+  line-height:1.6;
+}
+
+.br-tip strong { color:var(--green); }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--dark); color:white;
+  padding:12px 18px; border-radius:10px;
+  font-size:13px; font-weight:500;
+  opacity:0; transform:translateY(12px);
+  transition:all 0.3s; z-index:9999;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+}
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .content-area { padding:28px 4%; }
+  .quiz-card { padding:20px; }
+  .sim-form, .budget-result { padding:20px; }
+  .qf-grid { grid-template-columns:1fr 1fr; }
+  .hero { padding:44px 5% 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+    <div class="logo-sq">E</div>
+    <div class="nav-brand">Expat<span>Brazza</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Annonces</a>
+    <a href="#" class="active">Guide Expats</a>
+    <a href="index.html#poster" class="nav-cta">Publier une annonce</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-flag">
+      <div class="flag-stripe" style="background:#00A550"></div>
+      <div class="flag-stripe" style="background:#F9C003; margin:0 2px"></div>
+      <div class="flag-stripe" style="background:#CE1126"></div>
+    </div>
+    <div class="hero-eyebrow">Guide complet expatriés</div>
+    <h1 class="hero-title">Bienvenue au <span>Congo.</span><br>On vous guide.</h1>
+    <p class="hero-desc">Tout ce qu'il faut savoir pour s'installer à Brazzaville — infos pratiques, quiz de préparation et simulateur de budget mensuel.</p>
+    <div class="hero-pills">
+      <a href="#" class="pill" onclick="switchTab('infos');return false">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        Infos pratiques
+      </a>
+      <a href="#" class="pill" onclick="switchTab('quiz');return false">
+        <svg viewBox="0 0 24 24"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg>
+        Quiz Congo
+      </a>
+      <a href="#" class="pill" onclick="switchTab('simulateur');return false">
+        <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        Simulateur budget
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="page-tabs">
+  <button class="tab-btn active" id="tab-infos" onclick="switchTab('infos')">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+    Infos pratiques
+  </button>
+  <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">
+    <svg viewBox="0 0 24 24"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg>
+    Quiz Congo
+  </button>
+  <button class="tab-btn" id="tab-simulateur" onclick="switchTab('simulateur')">
+    <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+    Simulateur budget
+  </button>
+</div>
+
+<!-- CONTENT -->
+<div class="content-area">
+
+  <!-- ══════════════════════════════════
+       TAB 1 — INFOS PRATIQUES
+  ══════════════════════════════════ -->
+  <div class="tab-content active" id="content-infos">
+
+    <div class="sec-head">
+      <div class="sec-label">Essentiel</div>
+      <h2 class="sec-title">Infos pratiques pour s'installer</h2>
+      <p class="sec-desc">Tout ce qu'il faut savoir avant et après votre arrivée à Brazzaville.</p>
+    </div>
+
+    <!-- QUICK FACTS -->
+    <div class="quick-facts">
+      <div class="qf-title">Congo en chiffres</div>
+      <div class="qf-grid">
+        <div class="qf-item"><div class="qf-val">5,8M</div><div class="qf-label">Habitants</div></div>
+        <div class="qf-item"><div class="qf-val">FCFA</div><div class="qf-label">Monnaie</div></div>
+        <div class="qf-item"><div class="qf-val">UTC+1</div><div class="qf-label">Fuseau horaire</div></div>
+        <div class="qf-item"><div class="qf-val">Français</div><div class="qf-label">Langue officielle</div></div>
+        <div class="qf-item"><div class="qf-val">342 km²</div><div class="qf-label">Superficie Brazzaville</div></div>
+        <div class="qf-item"><div class="qf-val">4G</div><div class="qf-label">MTN & Airtel</div></div>
+      </div>
+    </div>
+
+    <!-- INFO CARDS -->
+    <div class="info-grid">
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#E8FFF2">🏠</div>
+        <div class="ic-title">Logement</div>
+        <div class="ic-desc">Trouver un appartement ou une maison à Brazzaville — quartiers, prix, astuces.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Gombe :</strong> Quartier diplomatique, haut standing, 300K–800K FCFA/mois</li>
+            <li><strong>Poto-Poto :</strong> Animé, central, accessible, 80K–200K FCFA/mois</li>
+            <li><strong>Bacongo :</strong> Résidentiel calme, familles, 60K–180K FCFA/mois</li>
+            <li><strong>Moungali :</strong> Populaire, très abordable, 40K–120K FCFA/mois</li>
+            <li><strong>Conseil :</strong> Toujours visiter avant de payer. Caution = 1 à 2 mois de loyer.</li>
+            <li><strong>Sur ExpatBrazza :</strong> Consulter la catégorie Immobilier pour les annonces actuelles.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#FFF9E0">💱</div>
+        <div class="ic-title">Monnaie & Banques</div>
+        <div class="ic-desc">Franc CFA, change, banques disponibles et conseils pour gérer son argent au Congo.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Monnaie :</strong> Franc CFA (XAF). 1€ ≈ 655 FCFA</li>
+            <li><strong>Banques principales :</strong> BGFI, LCB, Ecobank, Crédit du Congo</li>
+            <li><strong>Paiement mobile :</strong> MTN Money et Airtel Money très répandus</li>
+            <li><strong>Retrait :</strong> DAB disponibles dans les grandes banques. Prévoyez du cash.</li>
+            <li><strong>Conseil :</strong> Ouvrir un compte local facilite beaucoup la vie quotidienne.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#FFF0F2">🏥</div>
+        <div class="ic-title">Santé</div>
+        <div class="ic-desc">Hôpitaux, cliniques, vaccins obligatoires et précautions médicales à Brazzaville.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Vaccin obligatoire :</strong> Fièvre jaune (certificat exigé à l'entrée)</li>
+            <li><strong>Paludisme :</strong> Traitement préventif recommandé. Moustiquaires conseillées.</li>
+            <li><strong>Cliniques privées :</strong> Clinique du Plateau, Hôpital des Armées, Centre Hospitalier Universitaire</li>
+            <li><strong>Pharmacies :</strong> Nombreuses en ville. Médicaments courants disponibles.</li>
+            <li><strong>Assurance :</strong> Fortement recommandée avant d'arriver.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#EEF4FF">📋</div>
+        <div class="ic-title">Visa & Formalités</div>
+        <div class="ic-desc">Visa d'entrée, titre de séjour, permis de travail — les démarches administratives expliquées.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Visa touriste :</strong> 30 jours, demande à l'ambassade ou à l'aérivée selon nationalité</li>
+            <li><strong>Long séjour :</strong> Visa long séjour + titre de séjour à la DGM (Direction Générale des Migrations)</li>
+            <li><strong>Permis de travail :</strong> Démarche via l'employeur congolais ou l'ambassade</li>
+            <li><strong>Documents requis :</strong> Passeport valide 6 mois, photos, assurance, justificatif hébergement</li>
+            <li><strong>Conseil :</strong> Contacter l'ambassade du Congo dans votre pays avant de partir.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#FFF3E0">🚗</div>
+        <div class="ic-title">Transport</div>
+        <div class="ic-desc">Comment se déplacer à Brazzaville — taxi, bus, moto-taxi et permis de conduire.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Taxi :</strong> Principal moyen de transport. Négociez le prix avant. Comptez 500–2000 FCFA.</li>
+            <li><strong>Moto-taxi (Boda-Boda) :</strong> Rapide pour les petits trajets, 200–500 FCFA</li>
+            <li><strong>Bus STPU :</strong> Réseau public, économique mais peu fréquent</li>
+            <li><strong>Voiture personnelle :</strong> Permis international accepté les 3 premiers mois</li>
+            <li><strong>Carburant :</strong> Essence disponible dans les stations Total, Puma, Tradex</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#F0FFF4">📱</div>
+        <div class="ic-title">Téléphone & Internet</div>
+        <div class="ic-desc">Opérateurs, cartes SIM, connexion internet et couverture réseau au Congo.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Opérateurs :</strong> MTN Congo et Airtel Congo (les deux principaux)</li>
+            <li><strong>Carte SIM :</strong> 1000–2000 FCFA avec pièce d'identité. Disponible partout.</li>
+            <li><strong>4G :</strong> Disponible à Brazzaville et Pointe-Noire. Qualité variable.</li>
+            <li><strong>Forfaits data :</strong> 1 Go ≈ 3000–5000 FCFA selon opérateur</li>
+            <li><strong>Fibre optique :</strong> Disponible dans certains quartiers via Congo Télécom</li>
+            <li><strong>Conseil :</strong> Prenez les deux opérateurs pour meilleure couverture.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#FFF9E0">🍽️</div>
+        <div class="ic-title">Alimentation</div>
+        <div class="ic-desc">Marchés, supermarchés, restaurants et prix de l'alimentation à Brazzaville.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Marchés locaux :</strong> Marché Total, Marché de Moungali — fruits, légumes, poisson frais</li>
+            <li><strong>Supermarchés :</strong> Casino, Score, Hyper U — produits importés disponibles</li>
+            <li><strong>Plats locaux :</strong> Pondu (feuilles de manioc), saka-saka, poulet braisé, poisson fumé</li>
+            <li><strong>Eau :</strong> Eau en bouteille recommandée. Grands bidons disponibles partout.</li>
+            <li><strong>Budget repas :</strong> 1000–3000 FCFA pour un repas local, 5000–20000 en restaurant</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#F5F0FF">🎓</div>
+        <div class="ic-title">Scolarité & Formation</div>
+        <div class="ic-desc">Écoles françaises, universités, et options éducatives pour vos enfants à Brazzaville.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>École française :</strong> École française de Brazzaville (système AEFE)</li>
+            <li><strong>Universités :</strong> Université Marien Ngouabi (principale), ESP'INFO (informatique)</li>
+            <li><strong>Écoles privées :</strong> Nombreuses écoles catholiques et privées de qualité</li>
+            <li><strong>Scolarité française :</strong> Inscription possible avec dossier AEFE, liste d'attente possible</li>
+            <li><strong>Conseil :</strong> Inscrire les enfants bien avant l'arrivée.</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+      <div class="info-card" onclick="toggleCard(this)">
+        <div class="ic-icon" style="background:#FFF0F2">☀️</div>
+        <div class="ic-title">Climat & Vie pratique</div>
+        <div class="ic-desc">Saisons, températures, électricité, eau courante et vie quotidienne au Congo.</div>
+        <div class="ic-expand">
+          <ul>
+            <li><strong>Températures :</strong> 23–32°C toute l'année. Tropical humide.</li>
+            <li><strong>Saison sèche :</strong> Mai à septembre — la plus agréable</li>
+            <li><strong>Saison des pluies :</strong> Octobre à avril — averses courtes mais intenses</li>
+            <li><strong>Électricité :</strong> Coupures fréquentes. Groupe électrogène ou onduleur recommandé.</li>
+            <li><strong>Eau courante :</strong> Pas toujours fiable. Citerne et réservoirs conseillés.</li>
+            <li><strong>Décalage horaire :</strong> UTC+1, même heure que la France en hiver</li>
+          </ul>
+        </div>
+        <button class="ic-toggle">Voir les détails <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+      </div>
+
+    </div>
+
+    <!-- CONTACTS UTILES -->
+    <div class="sec-head" style="margin-top:40px">
+      <div class="sec-label">Urgences & Contacts</div>
+      <h3 class="sec-title" style="font-size:22px">Numéros utiles à Brazzaville</h3>
+    </div>
+
+    <div class="contacts-grid">
+      <div class="contact-card"><div class="cc-icon" style="background:#FFF0F2">🚨</div><div class="cc-info"><div class="cc-name">Police Nationale</div><div class="cc-num">117</div><div class="cc-note">Urgences police</div></div></div>
+      <div class="contact-card"><div class="cc-icon" style="background:#FFF0F2">🔥</div><div class="cc-info"><div class="cc-name">Pompiers</div><div class="cc-num">118</div><div class="cc-note">Incendie & secours</div></div></div>
+      <div class="contact-card"><div class="cc-icon" style="background:#E8FFF2">🏥</div><div class="cc-info"><div class="cc-name">SAMU / Urgences médicales</div><div class="cc-num">15</div><div class="cc-note">Urgences médicales</div></div></div>
+      <div class="contact-card"><div class="cc-icon" style="background:#EEF4FF">🇫🇷</div><div class="cc-info"><div class="cc-name">Ambassade de France</div><div class="cc-num">+242 06 665 06 65</div><div class="cc-note">Ressortissants français</div></div></div>
+      <div class="contact-card"><div class="cc-icon" style="background:#FFF9E0">📡</div><div class="cc-info"><div class="cc-name">MTN Congo</div><div class="cc-num">8855</div><div class="cc-note">Service client MTN</div></div></div>
+      <div class="contact-card"><div class="cc-icon" style="background:#FFF9E0">📡</div><div class="cc-info"><div class="cc-name">Airtel Congo</div><div class="cc-num">121</div><div class="cc-note">Service client Airtel</div></div></div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 2 — QUIZ
+  ══════════════════════════════════ -->
+  <div class="tab-content" id="content-quiz">
+
+    <div class="sec-head">
+      <div class="sec-label">Testez vos connaissances</div>
+      <h2 class="sec-title">Quiz — Connaissez-vous le Congo ?</h2>
+      <p class="sec-desc">10 questions pour tester votre préparation avant de partir ou de vous installer au Congo.</p>
+    </div>
+
+    <div class="quiz-container">
+
+      <!-- PROGRESS -->
+      <div class="quiz-progress">
+        <div class="quiz-prog-text">
+          <span id="progLabel">Question 1 sur 10</span>
+          <span id="scoreLabel">Score : 0</span>
+        </div>
+        <div class="quiz-prog-bar">
+          <div class="quiz-prog-fill" id="progFill" style="width:10%"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ CARD -->
+      <div class="quiz-card" id="quizCard">
+        <div class="q-num" id="qNum">Question 01</div>
+        <div class="q-text" id="qText">Chargement...</div>
+        <div class="q-options" id="qOptions"></div>
+        <div class="q-explanation" id="qExpl"></div>
+      </div>
+
+      <button class="quiz-btn" id="quizNextBtn" onclick="nextQuestion()" disabled>
+        Question suivante →
+      </button>
+
+      <!-- RESULT -->
+      <div class="quiz-result" id="quizResult">
+        <div class="result-score" id="resultScore">0/10</div>
+        <div class="result-label">Votre score final</div>
+        <div class="result-mention" id="resultMention">—</div>
+        <div class="result-desc" id="resultDesc">—</div>
+        <div class="result-badges" id="resultBadges"></div>
+        <button class="btn-retry" onclick="resetQuiz()">Recommencer le quiz</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       TAB 3 — SIMULATEUR BUDGET
+  ══════════════════════════════════ -->
+  <div class="tab-content" id="content-simulateur">
+
+    <div class="sec-head">
+      <div class="sec-label">Planifiez votre vie</div>
+      <h2 class="sec-title">Simulateur de budget mensuel</h2>
+      <p class="sec-desc">Estimez votre budget de vie à Brazzaville selon votre situation personnelle.</p>
+    </div>
+
+    <div class="sim-layout">
+
+      <!-- FORMULAIRE -->
+      <div class="sim-form">
+        <div class="sim-title"><span>⚙️</span> Votre situation</div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Loyer mensuel</span>
+            <span class="sim-val" id="lblLoyer">150 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slLoyer" min="40000" max="800000" step="10000" value="150000" oninput="updateSim()">
+          <div class="sim-hint">Studio Poto-Poto ≈ 60K • Appartement Gombe ≈ 400K</div>
+        </div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Alimentation</span>
+            <span class="sim-val" id="lblAlimentation">80 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slAlimentation" min="30000" max="300000" step="5000" value="80000" oninput="updateSim()">
+          <div class="sim-hint">Marché local ≈ 40K/mois • Supermarché ≈ 150K+</div>
+        </div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Transport</span>
+            <span class="sim-val" id="lblTransport">40 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slTransport" min="10000" max="150000" step="5000" value="40000" oninput="updateSim()">
+          <div class="sim-hint">Taxi quotidien ≈ 40K • Voiture personnelle ≈ 100K+</div>
+        </div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Téléphone & Internet</span>
+            <span class="sim-val" id="lblTelephone">25 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slTelephone" min="5000" max="100000" step="1000" value="25000" oninput="updateSim()">
+        </div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Santé & Assurance</span>
+            <span class="sim-val" id="lblSante">30 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slSante" min="0" max="200000" step="5000" value="30000" oninput="updateSim()">
+        </div>
+
+        <div class="sim-group">
+          <div class="sim-label">
+            <span class="sim-label-text">Loisirs & Sorties</span>
+            <span class="sim-val" id="lblLoisirs">50 000 FCFA</span>
+          </div>
+          <input type="range" class="sim-slider" id="slLoisirs" min="0" max="300000" step="5000" value="50000" oninput="updateSim()">
+        </div>
+
+        <div class="sim-group">
+          <label class="sim-label-text" style="display:block;margin-bottom:8px">Situation familiale</label>
+          <select class="sim-select" id="selFamille" onchange="updateSim()">
+            <option value="1">Seul(e)</option>
+            <option value="1.5">En couple</option>
+            <option value="2">Famille (2 adultes)</option>
+            <option value="2.5">Famille avec enfants</option>
+          </select>
+        </div>
+
+        <div class="sim-group">
+          <label class="sim-label-text" style="display:block;margin-bottom:8px">Quartier souhaité</label>
+          <select class="sim-select" id="selQuartier" onchange="updateSim()">
+            <option value="1">Poto-Poto / Bacongo (accessible)</option>
+            <option value="1.3">Moungali / Talangaï (intermédiaire)</option>
+            <option value="1.8" selected>Ouenzé / Makélékélé</option>
+            <option value="2.5">Gombe / Centre-ville (premium)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- RÉSULTAT -->
+      <div class="budget-result">
+        <div class="br-header">
+          <div class="br-title">Estimation mensuelle</div>
+          <div class="br-subtitle">Basé sur votre situation</div>
+        </div>
+
+        <div class="br-total">
+          <div class="br-total-label">Budget total estimé</div>
+          <div class="br-total-val" id="brTotal">375 000</div>
+          <div class="br-total-mois">FCFA / mois</div>
+        </div>
+
+        <div class="br-items" id="brItems"></div>
+
+        <div class="br-tip" id="brTip">
+          <strong>Conseil :</strong> Prévoyez toujours 20–30% de marge pour les imprévus.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end content-area -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('content-'+name).classList.add('active');
+  if (name === 'quiz' && !quizStarted) initQuiz();
+  if (name === 'simulateur') updateSim();
+}
+
+// ════════════════════════════════════════
+// INFO CARDS TOGGLE
+// ════════════════════════════════════════
+function toggleCard(card) {
+  const expand = card.querySelector('.ic-expand');
+  const toggle = card.querySelector('.ic-toggle');
+  if (!expand) return;
+  expand.classList.toggle('open');
+  toggle.classList.toggle('open');
+  toggle.querySelector('span') && (toggle.querySelector('span').textContent =
+    expand.classList.contains('open') ? 'Réduire' : 'Voir les détails');
+}
+
+// Fix toggle text
+document.querySelectorAll('.ic-toggle').forEach(t => {
+  t.innerHTML = 'Voir les détails <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>';
+});
+
+// ════════════════════════════════════════
+// QUIZ
+// ════════════════════════════════════════
+const QUESTIONS = [
+  {
+    q: "Quelle est la capitale de la République du Congo ?",
+    opts: ["Kinshasa","Libreville","Brazzaville","Pointe-Noire"],
+    correct: 2,
+    expl: "Brazzaville est la capitale de la République du Congo. À ne pas confondre avec Kinshasa, capitale de la RDC (Congo-Kinshasa), située juste en face sur l'autre rive du fleuve Congo."
+  },
+  {
+    q: "Quelle monnaie est utilisée en République du Congo ?",
+    opts: ["Franc congolais","Franc CFA (XAF)","Dollar américain","Euro"],
+    correct: 1,
+    expl: "Le Franc CFA (XAF) est la monnaie de la CEMAC dont fait partie le Congo. 1 euro équivaut à environ 655 FCFA. Le franc congolais est utilisé en RDC."
+  },
+  {
+    q: "Quel vaccin est OBLIGATOIRE pour entrer en République du Congo ?",
+    opts: ["Hépatite B","Typhoïde","Fièvre jaune","COVID-19"],
+    correct: 2,
+    expl: "Le certificat de vaccination contre la fièvre jaune est obligatoire pour entrer en République du Congo. Sans ce document, vous pouvez être refusé à la frontière."
+  },
+  {
+    q: "Quels sont les deux principaux opérateurs téléphoniques au Congo ?",
+    opts: ["Orange & Free","Moov & Maroc Telecom","MTN & Airtel","SFR & Bouygues"],
+    correct: 2,
+    expl: "MTN Congo et Airtel Congo sont les deux principaux opérateurs. MTN est légèrement dominant. Il est conseillé de prendre une carte SIM des deux pour meilleure couverture."
+  },
+  {
+    q: "Dans quel quartier se trouve la zone diplomatique de Brazzaville ?",
+    opts: ["Poto-Poto","Bacongo","Moungali","Gombe"],
+    correct: 3,
+    expl: "La Gombe est le quartier des ambassades, des grandes entreprises et du haut standing. C'est le quartier le plus cher de Brazzaville, avec des loyers pouvant dépasser 500 000 FCFA/mois."
+  },
+  {
+    q: "Quelle est la saison la plus agréable pour vivre à Brazzaville ?",
+    opts: ["Novembre à mars","Mai à septembre","Toute l'année pareil","Octobre à décembre"],
+    correct: 1,
+    expl: "La saison sèche de mai à septembre est généralement la plus agréable — moins de pluies, températures légèrement plus fraîches (22-28°C). La saison des pluies (octobre-avril) apporte des averses courtes mais très intenses."
+  },
+  {
+    q: "Comment appelle-t-on les chauffeurs de moto-taxi à Brazzaville ?",
+    opts: ["Zemidjan","Boda-Boda","Okada","Bendskin"],
+    correct: 1,
+    expl: "À Brazzaville les motos-taxi sont appelées Boda-Boda. C'est un moyen de transport rapide et économique pour les courts trajets, coûtant généralement 200 à 500 FCFA."
+  },
+  {
+    q: "Qu'est-ce que le 'Pondu' dans la cuisine congolaise ?",
+    opts: ["Un poisson fumé","Des feuilles de manioc cuisinées","Une boisson locale","Un type de pain"],
+    correct: 1,
+    expl: "Le Pondu est l'un des plats traditionnels les plus populaires au Congo. Il est préparé avec des feuilles de manioc pilées et cuisinées avec de l'huile de palme, souvent accompagné de poisson ou de viande."
+  },
+  {
+    q: "Quelle université est la principale institution d'enseignement supérieur du Congo ?",
+    opts: ["Université de Brazzaville","Université Denis Sassou Nguesso","Université Marien Ngouabi","Université du Congo"],
+    correct: 2,
+    expl: "L'Université Marien Ngouabi (UMN) est la principale université publique de la République du Congo, fondée en 1971. Elle porte le nom du président Marien Ngouabi."
+  },
+  {
+    q: "Sur quelle plateforme trouver des annonces de logement, véhicules et emploi au Congo ?",
+    opts: ["Jumia","LeBonCoin","ExpatBrazza","CoinAfrique"],
+    correct: 2,
+    expl: "ExpatBrazza (expatbrazza.com) est la plateforme d'annonces dédiée au Congo, couvrant 8 villes dont Brazzaville et Pointe-Noire. Créée par KAIRO Technologie, elle est 100% congolaise."
+  }
+];
+
+let currentQ = 0, score = 0, answered = false, quizStarted = false;
+
+function initQuiz() {
+  quizStarted = true;
+  currentQ = 0;
+  score = 0;
+  answered = false;
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('qNum').textContent = `Question ${String(currentQ+1).padStart(2,'0')}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('progLabel').textContent = `Question ${currentQ+1} sur ${QUESTIONS.length}`;
+  document.getElementById('scoreLabel').textContent = `Score : ${score}`;
+  document.getElementById('progFill').style.width = `${((currentQ+1)/QUESTIONS.length)*100}%`;
+  document.getElementById('qExpl').className = 'q-explanation';
+  document.getElementById('qExpl').innerHTML = '';
+
+  const btn = document.getElementById('quizNextBtn');
+  btn.disabled = true;
+  btn.textContent = currentQ < QUESTIONS.length-1 ? 'Question suivante →' : 'Voir mes résultats →';
+
+  answered = false;
+
+  document.getElementById('qOptions').innerHTML = q.opts.map((opt, i) =>
+    `<button class="q-option" onclick="answerQ(${i})">
+      <span class="q-opt-letter">${letters[i]}</span>
+      ${opt}
+    </button>`
+  ).join('');
+}
+
+function answerQ(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = QUESTIONS[currentQ];
+  const opts = document.querySelectorAll('.q-option');
+
+  opts.forEach((opt, i) => {
+    opt.classList.add('disabled');
+    if (i === q.correct) opt.classList.add('correct');
+    else if (i === idx && idx !== q.correct) opt.classList.add('wrong');
+  });
+
+  if (idx === q.correct) score++;
+
+  const expl = document.getElementById('qExpl');
+  expl.innerHTML = `<span class="q-expl-icon">${idx === q.correct ? '✓' : '✗'}</span>${q.expl}`;
+  expl.classList.add('show');
+
+  document.getElementById('quizNextBtn').disabled = false;
+  document.getElementById('scoreLabel').textContent = `Score : ${score}`;
+}
+
+function nextQuestion() {
+  if (!answered && currentQ < QUESTIONS.length) {
+    showToast('Choisissez une réponse !');
+    return;
+  }
+
+  currentQ++;
+
+  if (currentQ >= QUESTIONS.length) {
+    showResult();
+    return;
+  }
+
+  renderQuestion();
+  document.getElementById('quizCard').style.animation = 'none';
+  requestAnimationFrame(() => { document.getElementById('quizCard').style.animation = ''; });
+}
+
+function showResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('quizNextBtn').style.display = 'none';
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  const res = document.getElementById('quizResult');
+
+  document.getElementById('resultScore').textContent = `${score}/${QUESTIONS.length}`;
+  document.getElementById('progFill').style.width = '100%';
+  document.getElementById('progLabel').textContent = 'Quiz terminé !';
+
+  let mention, desc, color, badges;
+
+  if (score >= 9) {
+    mention = 'Expert Congo'; desc = 'Félicitations ! Vous connaissez le Congo mieux que la plupart des résidents. Vous êtes parfaitement préparé pour votre installation.'; color = '#00A550';
+    badges = ['🏆 Expert','🌍 Prêt à partir','⭐ Top Score'];
+  } else if (score >= 7) {
+    mention = 'Bien préparé'; desc = 'Très bien ! Vous avez une bonne connaissance du Congo. Revoyez quelques points et vous serez prêt pour votre installation.'; color = '#16A34A';
+    badges = ['👍 Bien','📚 Presque expert'];
+  } else if (score >= 5) {
+    mention = 'En chemin'; desc = 'Vous avez les bases mais il reste des points à approfondir. Consultez le guide pratique pour compléter vos connaissances avant de partir.'; color = '#D97706';
+    badges = ['📖 À approfondir'];
+  } else {
+    mention = 'Débutant Congo'; desc = 'Pas de panique ! Le guide pratique et les infos utiles sont là pour vous préparer. Relisez les sections importantes et retentez le quiz.'; color = '#CE1126';
+    badges = ['🔁 Relire le guide'];
+  }
+
+  document.getElementById('resultScore').style.color = color;
+  document.getElementById('resultMention').textContent = mention;
+  document.getElementById('resultMention').style.color = color;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('resultBadges').innerHTML = badges.map(b =>
+    `<span class="result-badge" style="background:${color}20;color:${color};border:1px solid ${color}40">${b}</span>`
+  ).join('');
+
+  res.style.display = 'block';
+}
+
+function resetQuiz() {
+  initQuiz();
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('quizNextBtn').style.display = 'block';
+}
+
+// ════════════════════════════════════════
+// SIMULATEUR BUDGET
+// ════════════════════════════════════════
+function fmtF(n) {
+  return new Intl.NumberFormat('fr-FR').format(Math.round(n));
+}
+
+const ITEMS_CONFIG = [
+  { id:'Loyer',        slider:'slLoyer',        label:'lblLoyer',        color:'#00A550' },
+  { id:'Alimentation', slider:'slAlimentation', label:'lblAlimentation', color:'#F9C003' },
+  { id:'Transport',    slider:'slTransport',    label:'lblTransport',    color:'#3B82F6' },
+  { id:'Téléphone',    slider:'slTelephone',    label:'lblTelephone',    color:'#14B8A6' },
+  { id:'Santé',        slider:'slSante',        label:'lblSante',        color:'#EF4444' },
+  { id:'Loisirs',      slider:'slLoisirs',      label:'lblLoisirs',      color:'#8B5CF6' },
+];
+
+function updateSim() {
+  const famille = parseFloat(document.getElementById('selFamille').value) || 1;
+  const quartier = parseFloat(document.getElementById('selQuartier').value) || 1;
+
+  const vals = {};
+  ITEMS_CONFIG.forEach(item => {
+    const raw = parseInt(document.getElementById(item.slider).value) || 0;
+    document.getElementById(item.label).textContent = fmtF(raw) + ' FCFA';
+
+    let adjusted = raw;
+    if (item.id === 'Loyer') adjusted = raw * quartier;
+    else if (item.id === 'Alimentation') adjusted = raw * famille;
+    else if (item.id === 'Transport') adjusted = raw * Math.min(famille, 1.5);
+    vals[item.id] = adjusted;
+  });
+
+  const total = Object.values(vals).reduce((s,v) => s+v, 0);
+  document.getElementById('brTotal').textContent = fmtF(total);
+
+  // Items bars
+  document.getElementById('brItems').innerHTML = ITEMS_CONFIG.map(item => {
+    const pct = total > 0 ? (vals[item.id] / total * 100) : 0;
+    return `<div class="br-item">
+      <div class="br-item-bar-wrap">
+        <div class="br-item-label">
+          ${item.id}
+          <span>${fmtF(vals[item.id])} FCFA</span>
+        </div>
+        <div class="br-item-bar">
+          <div class="br-item-fill" style="width:${pct.toFixed(1)}%;background:${item.color}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Tip
+  let tip = '';
+  if (total < 150000) tip = '<strong>Budget serré.</strong> Vivable pour un étudiant ou jeune professionnel local. Préférez les marchés locaux et les transports en commun.';
+  else if (total < 300000) tip = '<strong>Budget raisonnable.</strong> Confortable pour un célibataire à Brazzaville. Les marchés locaux permettent de manger varié sans se ruiner.';
+  else if (total < 600000) tip = '<strong>Budget confortable.</strong> Vous pourrez profiter des commodités de Brazzaville sans contrainte. Idéal pour une famille.';
+  else tip = '<strong>Budget élevé.</strong> Style de vie international. Vous pourrez accéder aux meilleures adresses de la ville.';
+
+  document.getElementById('brTip').innerHTML = tip;
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──
+updateSim();
+</script>
+</body>
+</html>

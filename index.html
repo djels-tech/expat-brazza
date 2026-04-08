@@ -47,7 +47,7 @@
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--dark);
+    : var(--dark);
     color: var(--text);
     overflow-x: hidden;
   }
@@ -488,21 +488,23 @@
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 16px;
   }
 
   .modal-overlay.active { display: flex; }
 
   .modal {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    max-width: 500px;
-    width: 100%;
-    position: relative;
-    animation: modalIn 0.3s ease;
-  }
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
 
   @keyframes modalIn {
     from { opacity: 0; transform: scale(0.95) translateY(20px); }
@@ -1402,6 +1404,19 @@
     .blog-preview-grid { grid-template-columns: 1fr; }
   }
 
+@media (max-width: 600px) {
+  .modal {
+    padding: 16px;
+    max-width: 95%;
+    max-height: 90vh;
+  }
+  .form-group input, 
+  .form-group select, 
+  .form-group textarea {
+    font-size: 16px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1417,6 +1432,7 @@
     <li><a href="javascript:void(0)" onclick="document.getElementById('annoncesGrid').scrollIntoView({behavior:'smooth'})">Annonces</a></li>
     <li><a href="javascript:void(0)" onclick="showToast('Boutiques bientôt disponibles !')">Boutiques</a></li>
     <li><a href="blog.html">Blog</a></li>
+<li><a href="expats.html">Guide Expats</a></li>
     <li><a href="javascript:void(0)" onclick="openModal('post')" class="btn-post">+ Déposer une annonce</a></li>
   </ul>
   <div style="display:flex;align-items:center;gap:8px">
@@ -1439,6 +1455,7 @@
   <a href="faq.html">❓ FAQ</a>
   <a href="about.html">👥 Qui sommes-nous</a>
   <a href="contact.html">✉️ Contact</a>
+<a href="expats.html">🌍 Guide Expats</a>
   <a href="javascript:void(0)" onclick="handleAuthNav();toggleMenu()" id="authMobileBtn">👤 Connexion</a>
   <a href="javascript:void(0)" onclick="openModal('post');toggleMenu()" class="btn-post-mobile">+ Déposer une annonce</a>
 </div>
