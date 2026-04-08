@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites</title> <link rel="icon" type="image/x-icon" href="/favicon.ico">
+<title>ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites</title>
 <meta name="description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
 <meta name="keywords" content="annonces Congo, vendre Brazzaville, acheter Congo, immobilier Brazzaville, emploi Congo, voiture Brazzaville, petites annonces Congo">
 <meta name="author" content="ExpatBrazza — Djels & Joe">
@@ -24,10 +24,6 @@
 <meta name="twitter:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
 <meta name="twitter:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
 <meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-<link rel="apple-touch-icon" href="/apple-touchicon.png">
-<link rel="manifest" href="/site.webmanifest">
 
 <!-- Canonical -->
 <link rel="canonical" href="https://djels-tech.github.io/expat-brazza/">
@@ -1818,7 +1814,7 @@
       if (featuredGrid) {
         if (featured.length > 0 && filter === 'all') {
           featuredGrid.innerHTML = featured.map((a, idx) => `
-            <div class="annonce-card-featured fade-up" onclick="openDetail(${data.indexOf(a)})">
+            <div class="annonce-card-featured fade-up" onclick="window.location.href='annonce.html?id=${a.id}'">
               <div class="badge-une-top">⭐ À la une</div>
               ${a.image_url
                 ? `<img src="${a.image_url}" class="feat-img" style="object-fit:cover" alt="${a.titre || ''}">`
@@ -1849,7 +1845,7 @@
         const realIdx = data.indexOf(a);
         const newBadge = isNew(a.created_at) ? '<span style="background:#00A550;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px">Nouveau</span>' : '';
         return `
-          <div class="annonce-card fade-up" onclick="openDetail(${realIdx})">
+          <div class="annonce-card fade-up" onclick="window.location.href='annonce.html?id=${a.id}'">
             ${a.image_url
               ? `<img src="${a.image_url}" class="annonce-card-img" alt="${a.titre || ''}">`
               : `<div class="annonce-img">${getCatEmoji(a.categorie)}</div>`
@@ -1959,7 +1955,7 @@
 
       window._annoncesData = data;
       grid.innerHTML = data.length ? data.map((a, idx) => `
-        <div class="annonce-card fade-up" onclick="openDetail(${idx})">
+        <div class="annonce-card fade-up" onclick="window.location.href='annonce.html?id=${a.id}'">
           ${a.image_url
             ? `<img src="${a.image_url}" class="annonce-card-img" alt="${a.titre || ''}">`
             : `<div class="annonce-img">${getCatEmoji(a.categorie)}</div>`
