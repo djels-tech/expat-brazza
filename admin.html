@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Admin | ExpatBrazza</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,8 +12,20 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
   
-  /* SIDEBAR */
-  .sidebar { position:fixed; left:0; top:0; bottom:0; width:240px; background:#1A1F2E; padding:24px 0; z-index:100; }
+  /* SIDEBAR (desktop & mobile) */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    background: #1A1F2E;
+    padding: 24px 0;
+    z-index: 200;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
   .sidebar-logo { padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px; }
   .sidebar-logo .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:#fff; }
   .sidebar-logo .logo-text span { color:var(--green); }
@@ -23,11 +35,47 @@
   .nav-item.active { border-right:3px solid var(--green); }
   .nav-item span { font-size:18px; }
   .nav-section { padding:8px 20px; font-size:11px; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:1px; margin-top:8px; }
-  .btn-logout-sidebar { margin:16px; padding:10px; background:rgba(206,17,38,0.15); color:#ff6b6b; border:none; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; width:calc(100% - 32px); transition:all 0.2s; }
-  .btn-logout-sidebar:hover { background:rgba(206,17,38,0.3); }
 
-  /* MAIN */
-  .main { margin-left:240px; padding:32px; min-height:100vh; }
+  /* OVERLAY pour fermer la sidebar sur mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    display: none;
+  }
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  /* MOBILE MENU BUTTON */
+  .mobile-menu-btn {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 210;
+    background: var(--green);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    padding: 32px;
+    min-height: 100vh;
+  }
   .page { display:none; }
   .page.active { display:block; }
   .page-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; margin-bottom:4px; }
@@ -44,7 +92,7 @@
   .stat-box.red .num { color:var(--red); }
   .stat-box.blue .num { color:#3498DB; }
 
-  /* GRAPHIQUES */
+  /* CHARTS */
   .charts-row { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-bottom:32px; }
   .chart-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
   .chart-card h3 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:16px; }
@@ -56,7 +104,7 @@
   .filter-btns { display:flex; gap:8px; }
   .filter-btn { padding:6px 14px; border-radius:8px; border:1px solid var(--border); background:none; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.2s; }
   .filter-btn.active, .filter-btn:hover { background:var(--green); color:#fff; border-color:var(--green); }
-  table { width:100%; border-collapse:collapse; min-width:800px; }
+  table { width:100%; border-collapse:collapse; min-width:700px; }
   th { padding:12px 16px; text-align:left; font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--bg); }
   td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:middle; }
   tr:last-child td { border-bottom:none; }
@@ -66,13 +114,14 @@
   .badge-attente { background:rgba(249,192,3,0.15); color:#B8860B; }
   .badge-refuse { background:rgba(206,17,38,0.1); color:var(--red); }
   .action-btns { display:flex; gap:6px; flex-wrap:wrap; }
-  .btn-approve { background:rgba(0,165,80,0.1); color:var(--green); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-approve, .btn-reject, .btn-del, .btn-expire { padding:6px 12px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-approve { background:rgba(0,165,80,0.1); color:var(--green); }
   .btn-approve:hover { background:var(--green); color:#fff; }
-  .btn-reject { background:rgba(249,192,3,0.1); color:#B8860B; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-reject { background:rgba(249,192,3,0.1); color:#B8860B; }
   .btn-reject:hover { background:#F9C003; color:#000; }
-  .btn-del { background:rgba(206,17,38,0.1); color:var(--red); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-del { background:rgba(206,17,38,0.1); color:var(--red); }
   .btn-del:hover { background:var(--red); color:#fff; }
-  .btn-expire { background:rgba(206,17,38,0.1); color:var(--red); border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+  .btn-expire { background:rgba(206,17,38,0.1); color:var(--red); }
   .btn-expire:hover { background:var(--red); color:#fff; }
 
   /* LOGIN */
@@ -82,8 +131,8 @@
   .login-card p { color:var(--muted); font-size:14px; margin-bottom:24px; }
   .form-group { margin-bottom:16px; text-align:left; }
   .form-group label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
-  .form-group input, .form-group textarea { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
-  .form-group input:focus, .form-group textarea:focus { border-color:var(--green); }
+  .form-group input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; outline:none; }
+  .form-group input:focus { border-color:var(--green); }
   .btn-login { background:var(--green); color:#fff; border:none; padding:14px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; width:100%; transition:all 0.2s; }
   .btn-login:hover { background:#00c764; }
   .error-msg { background:rgba(206,17,38,0.1); border:1px solid rgba(206,17,38,0.3); border-radius:8px; padding:10px; color:var(--red); font-size:13px; margin-bottom:16px; display:none; }
@@ -102,11 +151,24 @@
   .loading { text-align:center; padding:40px; color:var(--muted); }
   .empty { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
 
+  /* RESPONSIVE */
   @media(max-width:768px) {
-    .sidebar { display:none; }
-    .main { margin-left:0; padding:16px; }
-    .stats-grid { grid-template-columns:repeat(2,1fr); }
-    .charts-row { grid-template-columns:1fr; }
+    .mobile-menu-btn { display: flex; }
+    .sidebar {
+      left: -240px;
+      z-index: 200;
+    }
+    .sidebar.open { left: 0; }
+    .main {
+      margin-left: 0;
+      padding: 16px;
+      padding-top: 60px;
+    }
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 10px; }
+    .action-btns button { padding: 4px 8px; font-size: 10px; }
   }
 </style>
 </head>
@@ -133,9 +195,12 @@
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" style="display:none">
-  <div class="sidebar">
+  <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
+      <img src="EB_globe_logo_dark.png" alt="ExpatBrazza" style="height:38px;">
       <small>Panel d'administration</small>
     </div>
     <div class="nav-section">Principal</div>
@@ -151,9 +216,7 @@
     <button class="nav-item" onclick="showPage('comments')"><span>💬</span> Commentaires</button>
     <div class="nav-section">Actions</div>
     <button class="nav-item" onclick="window.open('index.html','_blank')"><span>🌐</span> Voir le site</button>
-    <div style="position:absolute;bottom:16px;width:100%">
-      <button class="btn-logout-sidebar" onclick="adminLogout()">🚪 Déconnexion</button>
-    </div>
+    <button class="nav-item" onclick="adminLogout()"><span>🚪</span> Déconnexion</button>
   </div>
 
   <div class="main">
@@ -259,7 +322,7 @@
   </div>
 </div>
 
-<!-- MODAL ÉDITEUR BLOG (sans TinyMCE) -->
+<!-- MODAL ÉDITEUR BLOG -->
 <div class="modal-overlay" id="blogModal">
   <div class="modal">
     <span class="modal-close" onclick="closeBlogModal()">&times;</span>
@@ -328,330 +391,4 @@
     document.getElementById('s-actif').textContent = data.filter(a => a.statut === 'actif').length;
     document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
     document.getElementById('s-vues').textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
-    document.getElementById('s-une').textContent = data.filter(a => a.une === true).length;
-  }
-
-  async function loadPending() {
-    const { data } = await sb.from('annonces').select('*').eq('statut', 'en_attente').order('created_at', { ascending: false });
-    const el = document.getElementById('pendingList');
-    if (!data || data.length === 0) { el.innerHTML = '<div class="empty">✅ Aucune annonce en attente</div>'; return; }
-    el.innerHTML = renderTable(data);
-  }
-
-  async function loadAllAnnonces(filter = 'all') {
-    let query = sb.from('annonces').select('*').order('created_at', { ascending: false });
-    if (filter !== 'all') query = query.eq('statut', filter);
-    const { data } = await query;
-    allAnnonces = data || [];
-    document.getElementById('allAnnoncesList').innerHTML = data && data.length ? renderTable(data) : '<div class="empty">Aucune annonce</div>';
-  }
-
-  function filterAnnonces(filter, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    loadAllAnnonces(filter);
-  }
-
-  function renderTable(data) {
-    const emojis = { 'Immobilier':'🏠','Véhicules':'🚗','Emploi':'💼','Électronique':'📱','Services':'🛠️','Mode':'👗','Alimentation':'🍽️','Loisirs':'🎮' };
-    return `<table>
-      <thead><tr><th>Annonce</th><th>Catégorie</th><th>Prix</th><th>Ville</th><th>Date</th><th>Vues</th><th>Statut</th><th>Expire le</th><th>Actions</th></tr></thead>
-      <tbody>
-        ${data.map(a => {
-          const expireDate = a.une_expire_le ? new Date(a.une_expire_le).toLocaleDateString('fr-FR') : '-';
-          return `<tr id="row-${a.id}"><td><div style="display:flex;align-items:center;gap:12px">${a.image_url ? `<img src="${a.image_url}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">` : `<div style="width:44px;height:44px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px">${emojis[a.categorie]||'📦'}</div>`}<div><div style="font-weight:600;font-size:13px">${a.titre || '-'}</div><div style="color:var(--muted);font-size:12px">📍 ${a.quartier || a.ville || '-'}</div></div></div></div></td><td><span style="font-size:13px">${a.categorie || '-'}</span></td><td><strong style="color:var(--green)">${a.prix || '-'} FCFA</strong></td><td>${a.ville || 'Brazzaville'}</td><td style="font-size:11px">${new Date(a.created_at).toLocaleDateString('fr-FR')}</td><td>👁️ ${a.vues || 0}</td><td><span class="badge badge-${a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse'}">${a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ Attente' : '❌ Refusé'}</span></td><td>${expireDate}</td><td><div class="action-btns">${a.statut !== 'actif' ? `<button class="btn-approve" onclick="updateStatus('${a.id}', 'actif')">✅ Approuver</button>` : ''}${a.statut !== 'en_attente' ? '' : `<button class="btn-reject" onclick="updateStatus('${a.id}', 'refuse')">⏸️ Refuser</button>`}<button class="${a.une ? 'btn-reject' : 'btn-approve'}" onclick="toggleUne('${a.id}', ${a.une ? false : true})">${a.une ? '⭐ Retirer une' : '☆ Mettre une'}</button>${a.une ? `<button class="btn-expire" onclick="expirerUne('${a.id}')">⏰ Expirer</button>` : ''}<button class="btn-del" onclick="deleteAnnonce('${a.id}')">🗑️</button></div></td></tr>`;
-        }).join('')}
-      </tbody>
-    </table>`;
-  }
-
-  async function updateStatus(id, statut) {
-    const { error } = await sb.from('annonces').update({ statut }).eq('id', id);
-    if (!error) {
-      const { data: annonce } = await sb.from('annonces').select('*, user_id').eq('id', id).single();
-      if (annonce && annonce.user_id) {
-        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
-        if (userProfile && userProfile.email) {
-          const sujet = statut === 'actif' ? '✅ Annonce approuvée sur ExpatBrazza' : '❌ Annonce non approuvée';
-          const message = statut === 'actif' ? `Bonjour, votre annonce "${annonce.titre}" est maintenant en ligne !\n\nhttps://expatbrazza.com` : `Bonjour, votre annonce "${annonce.titre}" n'a pas été approuvée. Veuillez la modifier et la soumettre à nouveau.`;
-          envoyerNotification(userProfile.email, sujet, message);
-        }
-      }
-      loadStats(); loadPending(); loadAllAnnonces();
-      showToastAdmin(statut === 'actif' ? '✅ Approuvée + notification envoyée' : '❌ Refusée + notification envoyée');
-    } else showToastAdmin('❌ Erreur : ' + error.message);
-  }
-
-  async function toggleUne(id, value) {
-    let updateData = { une: value };
-    if (value) { const expireDate = new Date(); expireDate.setDate(expireDate.getDate() + 7); updateData.une_expire_le = expireDate.toISOString(); }
-    else updateData.une_expire_le = null;
-    const { error } = await sb.from('annonces').update(updateData).eq('id', id);
-    if (!error) {
-      const { data: annonce } = await sb.from('annonces').select('*, user_id').eq('id', id).single();
-      if (annonce && annonce.user_id) {
-        const { data: userProfile } = await sb.from('profiles').select('email').eq('id', annonce.user_id).single();
-        if (userProfile && userProfile.email) {
-          const sujet = value ? '⭐ Votre annonce est à la une !' : '📌 Annonce retirée de la une';
-          const message = value ? `Félicitations, votre annonce "${annonce.titre}" est mise en avant pour 7 jours !` : `Bonjour, votre annonce "${annonce.titre}" n'est plus à la une.`;
-          envoyerNotification(userProfile.email, sujet, message);
-        }
-      }
-      loadStats(); loadAllAnnonces();
-      showToastAdmin(value ? '⭐ Mise à la une + notification' : 'Retirée de la une + notification');
-    } else showToastAdmin('❌ Erreur: ' + error.message);
-  }
-
-  async function expirerUne(id) {
-    if (!confirm("Retirer cette annonce de la une immédiatement ?")) return;
-    const { error } = await sb.from('annonces').update({ une: false, une_expire_le: null }).eq('id', id);
-    if (!error) { loadStats(); loadAllAnnonces(); showToastAdmin("⏰ Annonce retirée de la une"); }
-    else showToastAdmin("❌ Erreur: " + error.message);
-  }
-
-  async function deleteAnnonce(id) {
-    if (!confirm('Supprimer définitivement cette annonce ?')) return;
-    const { error } = await sb.from('annonces').delete().eq('id', id);
-    if (!error) { document.getElementById('row-' + id)?.remove(); loadStats(); loadAllAnnonces(); showToastAdmin("Annonce supprimée"); }
-  }
-
-  // ========== GESTION UTILISATEURS ==========
-  async function loadUsers() {
-    const { data: profiles } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
-    if (!profiles || profiles.length === 0) { document.getElementById('usersList').innerHTML = '<div class="empty">Aucun utilisateur</div>'; document.getElementById('s-users').textContent = '0'; return; }
-    document.getElementById('s-users').textContent = profiles.length;
-    document.getElementById('usersList').innerHTML = `</table><thead><tr><th>Email</th><th>Nom</th><th>Rôle</th><th>Statut</th><th>Inscrit le</th><th>Actions</th></tr></thead><tbody>${profiles.map(p => `<tr><td>${p.email || '-'}</td><td>${p.full_name || '-'}</td><td><span class="badge ${p.role === 'admin' ? 'badge-actif' : 'badge-attente'}">${p.role === 'admin' ? 'Admin' : 'Utilisateur'}</span></td><td>${p.banned ? '<span class="badge badge-refuse">Banni</span>' : '<span class="badge badge-actif">Actif</span>'}</td><td>${new Date(p.created_at).toLocaleDateString('fr-FR')}</td><td><div class="action-btns">${p.role !== 'admin' ? `<button class="btn-approve" onclick="toggleAdmin('${p.id}', true)">👑 Promouvoir admin</button>` : `<button class="btn-reject" onclick="toggleAdmin('${p.id}', false)">↘️ Rétrograder</button>`}${!p.banned ? `<button class="btn-reject" onclick="toggleBan('${p.id}', true)">🚫 Bannir</button>` : `<button class="btn-approve" onclick="toggleBan('${p.id}', false)">✅ Débannir</button>`}<button class="btn-expire" onclick="viewUserAnnonces('${p.id}')">📋 Voir annonces</button><button class="btn-del" onclick="deleteUser('${p.id}')">🗑️ Supprimer</button></div></td></tr>`).join('')}</tbody></table>`;
-  }
-
-  async function toggleAdmin(userId, makeAdmin) {
-    const newRole = makeAdmin ? 'admin' : 'user';
-    const { error } = await sb.from('profiles').update({ role: newRole }).eq('id', userId);
-    if (!error) { showToastAdmin(makeAdmin ? 'Utilisateur promu admin' : 'Admin rétrogradé'); loadUsers(); }
-    else showToastAdmin('Erreur: ' + error.message);
-  }
-
-  async function toggleBan(userId, ban) {
-    const { error } = await sb.from('profiles').update({ banned: ban }).eq('id', userId);
-    if (!error) { showToastAdmin(ban ? 'Utilisateur banni' : 'Utilisateur débanni'); loadUsers(); }
-    else showToastAdmin('Erreur: ' + error.message);
-  }
-
-  async function viewUserAnnonces(userId) {
-    const { data: annonces } = await sb.from('annonces').select('*').eq('user_id', userId);
-    if (!annonces || annonces.length === 0) alert('Aucune annonce pour cet utilisateur.');
-    else alert(annonces.map(a => `${a.titre} (${a.statut}) - ${a.prix} FCFA`).join('\n'));
-  }
-
-  async function deleteUser(userId) {
-    if (!confirm('⚠️ Supprimer définitivement cet utilisateur et toutes ses annonces ?')) return;
-    await sb.from('annonces').delete().eq('user_id', userId);
-    await sb.from('profiles').delete().eq('id', userId);
-    showToastAdmin('Utilisateur supprimé.'); loadUsers(); loadStats();
-  }
-
-  // ========== CERTIFICATIONS ==========
-  async function loadCertificationRequests() {
-    const { data } = await sb.from('certification_requests').select('*, user_id').order('created_at', { ascending: false });
-    const container = document.getElementById('certifList');
-    if (!data || data.length === 0) { container.innerHTML = '<div class="empty">Aucune demande de certification</div>'; return; }
-    container.innerHTML = `<table><thead><tr><th>Nom</th><th>CNI</th><th>WhatsApp</th><th>Raison</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${data.map(req => `<tr><td>${req.full_name}</td><td>${req.cni_number}</td><td>${req.whatsapp}</td><td>${req.reason || '-'}</td><td><span class="badge badge-attente">${req.status === 'en_attente' ? '⏳ En attente' : (req.status === 'approuve' ? '✅ Approuvé' : '❌ Rejeté')}</span></td><td>${req.status === 'en_attente' ? `<button class="btn-approve" onclick="processCertification(${req.id}, 'approuve', '${req.user_id}')">✅ Approuver</button><button class="btn-reject" onclick="processCertification(${req.id}, 'rejete')">❌ Rejeter</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
-  }
-
-  async function processCertification(requestId, decision, userId = null) {
-    if (!confirm(`Confirmer la ${decision === 'approuve' ? 'validation' : 'rejet'} ?`)) return;
-    await sb.from('certification_requests').update({ status: decision, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id }).eq('id', requestId);
-    if (decision === 'approuve' && userId) {
-      await sb.from('annonces').update({ verified: true }).eq('user_id', userId);
-      const { data: userProfile } = await sb.from('profiles').select('email').eq('id', userId).single();
-      if (userProfile?.email) envoyerNotification(userProfile.email, '🏅 Vous êtes certifié sur ExpatBrazza', 'Félicitations ! Votre compte a été certifié. Un badge bleu apparaît sur vos annonces.');
-      showToastAdmin("Utilisateur certifié !");
-    }
-    loadCertificationRequests();
-  }
-
-  // ========== SIGNALEMENTS ==========
-  async function loadReports() {
-    const { data } = await sb.from('reports').select('*, annonces(titre, id)').order('created_at', { ascending: false });
-    const container = document.getElementById('reportsList');
-    if (!data || data.length === 0) { container.innerHTML = '<div class="empty">Aucun signalement</div>'; return; }
-    container.innerHTML = `<tr><thead><tr><th>Annonce</th><th>Motif</th><th>Signalé par</th><th>Statut</th><th>Actions</th></tr></thead><tbody>${data.map(r => `<tr><td><a href="#" onclick="viewAnnonce(${r.annonce_id})">${r.annonces?.titre || 'Annonce supprimée'}</a></td><td>${r.reason}</td><td>${r.reporter_contact || (r.reporter_user_id ? 'Utilisateur connecté' : 'Anonyme')}</td><td><span class="badge badge-${r.status === 'en_attente' ? 'attente' : (r.status === 'traite' ? 'actif' : 'refuse')}">${r.status === 'en_attente' ? '⏳ En attente' : (r.status === 'traite' ? '✅ Traité' : '❌ Ignoré')}</span></td><td>${r.status === 'en_attente' ? `<button class="btn-approve" onclick="processReport(${r.id}, 'traite')">✅ Marquer traité</button><button class="btn-del" onclick="deleteReportAndAnnonce(${r.id}, ${r.annonce_id})">🗑️ Supprimer l'annonce</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
-  }
-
-  async function processReport(reportId, newStatus) {
-    await sb.from('reports').update({ status: newStatus, processed_at: new Date(), processed_by: (await sb.auth.getUser()).data.user.id }).eq('id', reportId);
-    loadReports();
-  }
-
-  async function deleteReportAndAnnonce(reportId, annonceId) {
-    if (!confirm("Supprimer définitivement cette annonce ?")) return;
-    await sb.from('annonces').delete().eq('id', annonceId);
-    await sb.from('reports').delete().eq('id', reportId);
-    loadReports(); loadStats();
-  }
-
-  function viewAnnonce(id) { window.open(`index.html?annonce=${id}`, '_blank'); }
-
-  // ========== STATISTIQUES AVANCÉES ==========
-  let annoncesChart, categoriesChart, usersChart, citiesChart;
-  async function loadStatistics() {
-    const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const { data: annoncesParJour } = await sb.from('annonces').select('created_at').gte('created_at', thirtyDaysAgo.toISOString());
-    const jours = [], counts = [];
-    for (let i = 0; i <= 30; i++) { const d = new Date(); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; jours.unshift(dateStr); counts.unshift(annoncesParJour?.filter(a => a.created_at.split('T')[0] === dateStr).length || 0); }
-    if (annoncesChart) annoncesChart.destroy();
-    annoncesChart = new Chart(document.getElementById('annoncesChart'), { type: 'line', data: { labels: jours, datasets: [{ label: 'Annonces publiées', data: counts, borderColor: '#00A550', tension: 0.3 }] } });
-    const { data: categoriesData } = await sb.from('annonces').select('categorie');
-    const catMap = new Map(); categoriesData?.forEach(a => catMap.set(a.categorie, (catMap.get(a.categorie) || 0) + 1));
-    if (categoriesChart) categoriesChart.destroy();
-    categoriesChart = new Chart(document.getElementById('categoriesChart'), { type: 'pie', data: { labels: [...catMap.keys()], datasets: [{ data: [...catMap.values()], backgroundColor: ['#00A550','#F9C003','#CE1126','#3498DB','#9B59B6','#E67E22','#1ABC9C'] }] } });
-    const { data: usersParJour } = await sb.from('profiles').select('created_at').gte('created_at', thirtyDaysAgo.toISOString());
-    const userCounts = []; for (let i = 0; i <= 30; i++) { const d = new Date(); d.setDate(d.getDate() - i); const dateStr = d.toISOString().split('T')[0]; userCounts.unshift(usersParJour?.filter(u => u.created_at.split('T')[0] === dateStr).length || 0); }
-    if (usersChart) usersChart.destroy();
-    usersChart = new Chart(document.getElementById('usersChart'), { type: 'bar', data: { labels: jours, datasets: [{ label: 'Inscriptions', data: userCounts, backgroundColor: '#3498DB' }] } });
-    const { data: villesData } = await sb.from('annonces').select('ville');
-    const villeMap = new Map(); villesData?.forEach(a => { const v = a.ville || 'Brazzaville'; villeMap.set(v, (villeMap.get(v) || 0) + 1); });
-    const sortedVilles = [...villeMap.entries()].sort((a,b) => b[1] - a[1]).slice(0,6);
-    if (citiesChart) citiesChart.destroy();
-    citiesChart = new Chart(document.getElementById('citiesChart'), { type: 'bar', data: { labels: sortedVilles.map(v => v[0]), datasets: [{ label: 'Nombre d\'annonces', data: sortedVilles.map(v => v[1]), backgroundColor: '#F9C003' }] } });
-  }
-
-  // ========== GESTION DU BLOG ==========
-  async function loadBlogPosts() {
-    const { data, error } = await sb.from('blog_posts').select('*').order('created_at', { ascending: false });
-    const container = document.getElementById('blogPostsList');
-    if (error || !data || data.length === 0) { container.innerHTML = '<div class="empty">Aucun article</div>'; return; }
-    container.innerHTML = `<table><thead><tr><th>Titre</th><th>Slug</th><th>Publié</th><th>Date</th><th>Actions</th></tr></thead><tbody>${data.map(post => `<tr><td>${post.title}</td><td>${post.slug}</td><td>${post.published ? '✅ Oui' : '❌ Non'}</td><td>${new Date(post.created_at).toLocaleDateString('fr-FR')}</td><td><button class="btn-approve" onclick="editBlogPost(${post.id})">✏️ Modifier</button><button class="btn-del" onclick="deleteBlogPost(${post.id})">🗑️ Supprimer</button></td></tr>`).join('')}</tbody></table>`;
-  }
-
-  function openBlogEditor(id = null) {
-    document.getElementById('blogModal').classList.add('active');
-    document.getElementById('blogEditId').value = '';
-    document.getElementById('blogTitle').value = '';
-    document.getElementById('blogSlug').value = '';
-    document.getElementById('blogExcerpt').value = '';
-    document.getElementById('blogImage').value = '';
-    document.getElementById('blogPublished').checked = false;
-    document.getElementById('blogContent').value = '';
-    if (id) editBlogPost(id);
-    document.getElementById('blogModalTitle').innerText = id ? 'Modifier l\'article' : 'Nouvel article';
-  }
-
-  async function editBlogPost(id) {
-    const { data, error } = await sb.from('blog_posts').select('*').eq('id', id).single();
-    if (error) { alert('Erreur chargement'); return; }
-    document.getElementById('blogEditId').value = data.id;
-    document.getElementById('blogTitle').value = data.title;
-    document.getElementById('blogSlug').value = data.slug;
-    document.getElementById('blogExcerpt').value = data.excerpt || '';
-    document.getElementById('blogImage').value = data.image_url || '';
-    document.getElementById('blogPublished').checked = data.published;
-    document.getElementById('blogContent').value = data.content || '';
-    document.getElementById('blogModal').classList.add('active');
-    document.getElementById('blogModalTitle').innerText = 'Modifier l\'article';
-  }
-
-  async function saveBlogPost() {
-    const id = document.getElementById('blogEditId').value;
-    const title = document.getElementById('blogTitle').value.trim();
-    let slug = document.getElementById('blogSlug').value.trim();
-    const excerpt = document.getElementById('blogExcerpt').value.trim();
-    const image_url = document.getElementById('blogImage').value.trim();
-    const published = document.getElementById('blogPublished').checked;
-    const content = document.getElementById('blogContent').value;
-    if (!title || !slug || !content) { alert('Titre, slug et contenu sont obligatoires'); return; }
-    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    const postData = { title, slug, excerpt, content, image_url: image_url || null, published, updated_at: new Date() };
-    if (published && !id) postData.published_at = new Date();
-    let error;
-    if (id) { const { error: e } = await sb.from('blog_posts').update(postData).eq('id', id); error = e; }
-    else { postData.created_at = new Date(); if (published) postData.published_at = new Date(); const { error: e } = await sb.from('blog_posts').insert([postData]); error = e; }
-    if (error) alert('Erreur: ' + error.message);
-    else { alert('Article enregistré'); closeBlogModal(); loadBlogPosts(); }
-  }
-
-  async function deleteBlogPost(id) {
-    if (confirm('Supprimer définitivement cet article ?')) {
-      await sb.from('blog_posts').delete().eq('id', id);
-      loadBlogPosts();
-    }
-  }
-
-  function closeBlogModal() { document.getElementById('blogModal').classList.remove('active'); }
-
-  // ========== GESTION DES COMMENTAIRES ==========
-  async function loadComments() {
-    const { data, error } = await sb
-      .from('blog_comments')
-      .select('*, blog_posts(title)')
-      .order('created_at', { ascending: false });
-    const container = document.getElementById('commentsList');
-    if (error || !data || data.length === 0) {
-      container.innerHTML = '<div class="empty">Aucun commentaire</div>';
-      return;
-    }
-    container.innerHTML = `
-      <table style="width:100%">
-        <thead><tr><th>Article</th><th>Auteur</th><th>Commentaire</th><th>Statut</th><th>Date</th><th>Actions</th></tr></thead>
-        <tbody>
-          ${data.map(c => `
-            <tr id="comment-${c.id}">
-              <td>${c.blog_posts?.title || 'Article supprimé'}</td>
-              <td>${c.author_name}<br><small>${c.author_email || ''}</small></td>
-              <td style="max-width:300px;">${c.content.substring(0, 100)}${c.content.length > 100 ? '…' : ''}</td>
-              <td><span class="badge badge-${c.status === 'approuve' ? 'actif' : (c.status === 'en_attente' ? 'attente' : 'refuse')}">${c.status === 'approuve' ? '✅ Approuvé' : (c.status === 'en_attente' ? '⏳ En attente' : '❌ Supprimé')}</span></td>
-              <td>${new Date(c.created_at).toLocaleDateString('fr-FR')}</td>
-              <td>
-                <div class="action-btns">
-                  ${c.status !== 'approuve' ? `<button class="btn-approve" onclick="moderateComment(${c.id}, 'approuve')">✅ Approuver</button>` : ''}
-                  ${c.status !== 'supprime' ? `<button class="btn-del" onclick="moderateComment(${c.id}, 'supprime')">🗑️ Supprimer</button>` : ''}
-                </div>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-  }
-
-  async function moderateComment(commentId, action) {
-    const newStatus = action === 'approuve' ? 'approuve' : 'supprime';
-    const { error } = await sb.from('blog_comments').update({ status: newStatus }).eq('id', commentId);
-    if (error) alert('Erreur : ' + error.message);
-    else {
-      showToastAdmin(action === 'approuve' ? 'Commentaire approuvé' : 'Commentaire supprimé');
-      loadComments();
-    }
-  }
-
-  // ========== UTILITAIRES ==========
-  function showToastAdmin(msg) {
-    const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#00A550;color:#fff;padding:14px 20px;border-radius:12px;z-index:9999';
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-  }
-
-  function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + page).classList.add('active');
-    event.currentTarget.classList.add('active');
-    if (page === 'users') loadUsers();
-    if (page === 'annonces') loadAllAnnonces();
-    if (page === 'certifications') loadCertificationRequests();
-    if (page === 'reports') loadReports();
-    if (page === 'stats') loadStatistics();
-    if (page === 'blog') loadBlogPosts();
-    if (page === 'comments') loadComments();
-  }
-
-  async function adminLogout() { await sb.auth.signOut(); window.location.reload(); }
-
-  window.onload = async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session && session.user.email === ADMIN_EMAIL) showPanel();
-  };
-</script>
-</body>
-</html>
+    document.getElementById('s-une').textC
