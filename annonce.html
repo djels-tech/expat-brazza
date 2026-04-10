@@ -1051,7 +1051,7 @@ async function incrementVues(id, currentVues) {
   } catch(e) {}
 }
 
-// ── RENDER ANNONCE ──
+// ── RENDER ANNONCE (avec galerie multi-images) ──
 function renderAnnonce(a) {
   // Meta
   document.title = `${a.titre} — ExpatBrazza`;
@@ -1069,13 +1069,35 @@ function renderAnnonce(a) {
   if (isNew(a.created_at)) badgesEl.innerHTML += '<span class="badge badge-new">Nouveau</span>';
   if (a.verified) badgesEl.innerHTML += '<span class="badge badge-certified">Certifié</span>';
 
-  // Image
-  const imgEl = q('galleryMain');
-  const url = imgUrl(a.image_url);
-  if (url) {
-    imgEl.className = 'gallery-main';
-    imgEl.innerHTML = `<img src="${url}" alt="${a.titre}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openImgModal('${url}')">`;
-    q('ogImage').content = url;
+  // Récupération des images (tableau ou ancien champ)
+  const images = (a.images_urls && a.images_urls.length) ? a.images_urls : (a.image_url ? [a.image_url] : []);
+  const galleryMain = q('galleryMain');
+  const ogImage = q('ogImage');
+
+  if (images.length > 0) {
+    galleryMain.className = 'gallery-main';
+    galleryMain.innerHTML = `<img src="${images[0]}" alt="${a.titre}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openImgModal('${images[0]}')">`;
+    ogImage.content = images[0];
+
+    // Miniatures si plusieurs images
+    const existingThumbs = document.querySelector('.gallery-thumbs');
+    if (existingThumbs) existingThumbs.remove();
+
+    if (images.length > 1) {
+      let thumbsHtml = '<div class="gallery-thumbs">';
+      images.forEach((img, idx) => {
+        thumbsHtml += `<img src="${img}" class="thumb ${idx === 0 ? 'active' : ''}" onclick="event.stopPropagation(); changeMainImage(${idx})">`;
+      });
+      thumbsHtml += '</div>';
+      galleryMain.insertAdjacentHTML('afterend', thumbsHtml);
+      window.currentImages = images;
+    } else {
+      const existing = document.querySelector('.gallery-thumbs');
+      if (existing) existing.remove();
+    }
+  } else {
+    galleryMain.className = 'gallery-main no-img';
+    galleryMain.innerHTML = '<div class="gallery-placeholder"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
   }
 
   // Infos
@@ -1110,11 +1132,22 @@ function renderAnnonce(a) {
   q('btnPhone').dataset.phone = waClean;
 }
 
+// Fonction pour changer l'image principale dans la galerie
+function changeMainImage(index) {
+  const images = window.currentImages;
+  if (!images || !images[index]) return;
+  const galleryMain = q('galleryMain');
+  galleryMain.innerHTML = `<img src="${images[index]}" alt="Image" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openImgModal('${images[index]}')">`;
+  document.querySelectorAll('.thumb').forEach((thumb, i) => {
+    thumb.classList.toggle('active', i === index);
+  });
+}
+
 // ── AUTRES ANNONCES VENDEUR ──
 async function loadAutresAnnonces(userId, excludeId) {
   try {
     const data = await sbFetch('annonces',
-      `user_id=eq.${userId}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url`
+      `user_id=eq.${userId}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url,images_urls`
     );
     renderAutres(data, excludeId);
   } catch(e) {}
@@ -1123,7 +1156,7 @@ async function loadAutresAnnonces(userId, excludeId) {
 async function loadAutresParWhatsapp(wa, excludeId) {
   try {
     const data = await sbFetch('annonces',
-      `whatsapp=eq.${encodeURIComponent(wa)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url`
+      `whatsapp=eq.${encodeURIComponent(wa)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url,images_urls`
     );
     renderAutres(data, excludeId);
   } catch(e) {}
@@ -1141,7 +1174,8 @@ function renderAutres(data, excludeId) {
 
   q('autresCard').style.display = 'block';
   q('autresList').innerHTML = data.map(a => {
-    const url = imgUrl(a.image_url);
+    const img = (a.images_urls && a.images_urls[0]) || a.image_url;
+    const url = imgUrl(img);
     return `<a class="mini-annonce" href="annonce.html?id=${a.id}">
       <div class="mini-img">
         ${url
@@ -1163,13 +1197,14 @@ async function loadSimilaires(categorie, excludeId) {
   if (!categorie) return;
   try {
     const data = await sbFetch('annonces',
-      `categorie=eq.${encodeURIComponent(categorie)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=6&select=id,titre,prix,ville,image_url,quartier`
+      `categorie=eq.${encodeURIComponent(categorie)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=6&select=id,titre,prix,ville,image_url,images_urls,quartier`
     );
     if (!data || data.length === 0) return;
 
     q('similairesSection').style.display = 'block';
     q('similairesGrid').innerHTML = data.map(a => {
-      const url = imgUrl(a.image_url);
+      const img = (a.images_urls && a.images_urls[0]) || a.image_url;
+      const url = imgUrl(img);
       return `<a class="sim-card" href="annonce.html?id=${a.id}">
         <div class="sim-img">
           ${url

@@ -80,7 +80,7 @@
 
 <nav>
   <a href="index.html" class="logo">
-    <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
+    <img src="EB_globe_logo_dark.png" alt="ExpatBrazza" style="height:38px;">
   </a>
   <div class="nav-right">
     <div class="user-badge">
@@ -121,7 +121,7 @@
   <div id="annoncesList"><div class="loading">⏳ Chargement...</div></div>
 </div>
 
-<!-- MODAL ANNONCE -->
+<!-- MODAL ANNONCE (multi-upload) -->
 <div class="overlay" id="overlayAnnonce" onclick="overlayClick(event,'annonce')">
   <div class="modal">
     <h2>📝 Déposer une annonce</h2>
@@ -141,9 +141,15 @@
       <div class="phone-row"><span class="phone-pre">🇨🇬 +242</span><input type="tel" id="dPhone" placeholder="06 123 45 67"></div>
     </div>
     <div class="fg">
-      <label>Photo <span style="color:var(--muted);font-weight:400">(optionnel)</span></label>
-      <label class="photo-lbl" for="dPhoto" id="dPhotoLabel">📷 Choisir une photo</label>
-      <input type="file" id="dPhoto" accept="image/*" style="display:none">
+      <label>Photos (max 5) <span style="color:var(--muted);font-weight:400">(optionnel)</span></label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <label class="photo-lbl" for="dPhoto" id="dPhotoLabel">📷 Choisir jusqu'à 5 photos</label>
+        <div id="photoPreview" style="display:none;width:60px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0">
+          <img id="previewImg" style="width:100%;height:100%;object-fit:cover">
+        </div>
+      </div>
+      <input type="file" id="dPhoto" accept="image/*" multiple style="display:none">
+      <div id="photoList" style="margin-top:8px;font-size:12px;color:var(--green);"></div>
     </div>
     <button class="btn-primary" id="btnAnn" onclick="submitAnn()">Publier l'annonce</button>
     <button class="btn-secondary" onclick="closeModal('annonce')">Annuler</button>
@@ -198,8 +204,23 @@ function overlayClick(e, type) {
   if (e.target === e.currentTarget) closeModal(type);
 }
 
+// Aperçu des photos sélectionnées (multi)
 document.getElementById("dPhoto").addEventListener("change", function() {
-  if (this.files[0]) document.getElementById("dPhotoLabel").textContent = "✅ " + this.files[0].name.substring(0, 28);
+  const files = this.files;
+  if (files.length > 0) {
+    const names = Array.from(files).map(f => f.name).join(', ');
+    document.getElementById("photoList").innerHTML = `${files.length} photo(s) sélectionnée(s) : ${names.substring(0, 50)}${names.length > 50 ? '…' : ''}`;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById("previewImg").src = e.target.result;
+      document.getElementById("photoPreview").style.display = 'block';
+    };
+    reader.readAsDataURL(files[0]);
+  } else {
+    document.getElementById("photoList").innerHTML = '';
+    document.getElementById("photoPreview").style.display = 'none';
+  }
+  document.getElementById("dPhotoLabel").textContent = files.length ? `✅ ${files.length} photo(s) choisie(s)` : "📷 Choisir jusqu'à 5 photos";
 });
 
 async function loadDashboard() {
@@ -249,8 +270,9 @@ async function loadDashboard() {
       const certBadge = a.verified ? '<span class="certified"><span class="cert-icon">✓</span> Certifié</span>' : '';
       const statusClass = a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse';
       const statusText = a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : '❌ Refusé';
+      const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
       return `<div class='annonce-row' id='row-${a.id}'>
-        ${a.image_url ? `<img src='${a.image_url}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
+        ${imgUrl ? `<img src='${imgUrl}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
         <div class='annonce-info'>
           <div class='annonce-title'>${a.titre || '-'}</div>
           <div class='annonce-meta'>
@@ -302,17 +324,24 @@ async function submitAnn() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = "auth.html"; return; }
 
-    let image_url = null;
-    const photoFile = document.getElementById("dPhoto").files[0];
-    if (photoFile) {
-      const userId = session.user.id;
-      const fileExt = photoFile.name.split('.').pop();
-      const fileName = `${Date.now()}.${fileExt}`;
+    let images_urls = [];
+    const photoFiles = document.getElementById("dPhoto").files;
+    if (photoFiles.length > 5) {
+      showNotif("⚠️ Maximum 5 photos autorisées");
+      btn.disabled = false; btn.textContent = "Publier annonce";
+      return;
+    }
+    const userId = session.user.id;
+
+    for (let i = 0; i < photoFiles.length; i++) {
+      const file = photoFiles[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${i}.${fileExt}`;
       const filePath = `${userId}/${fileName}`;
-      const { error: upErr } = await sb.storage.from("annonces-images").upload(filePath, photoFile, { cacheControl: "3600", upsert: true });
+      const { error: upErr } = await sb.storage.from("annonces-images").upload(filePath, file, { cacheControl: "3600", upsert: true });
       if (!upErr) {
         const { data: urlData } = sb.storage.from("annonces-images").getPublicUrl(filePath);
-        image_url = urlData.publicUrl;
+        images_urls.push(urlData.publicUrl);
       } else {
         console.warn("Upload error:", upErr);
       }
@@ -326,7 +355,7 @@ async function submitAnn() {
       quartier: document.getElementById("dQuartier").value.trim(),
       description: document.getElementById("dDesc").value.trim(),
       whatsapp: "+242" + phone.replace(/[^0-9]/g, ""),
-      image_url,
+      images_urls: images_urls,
       user_id: session.user.id,
       vendor_name: session.user.user_metadata && session.user.user_metadata.name ? session.user.user_metadata.name : null,
       statut: "en_attente"
