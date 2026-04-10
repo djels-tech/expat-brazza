@@ -2351,7 +2351,47 @@
       });
     }
   });
+let selectedCity = null;
 
+function selectCity(city, btn) {
+  document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedCity = city;
+  document.getElementById('cityConfirmBtn').disabled = false;
+}
+
+function confirmCity() {
+  if (!selectedCity) return;
+  try { localStorage.setItem('expatbrazza_city', selectedCity); } catch(e) {}
+  document.getElementById('cityOverlay').style.display = 'none';
+  document.getElementById('currentCityLabel').textContent = selectedCity === 'Toute le Congo' ? 'Congo 🇨🇬' : selectedCity;
+  loadFromSupabase('all');
+  loadCategoryCounts();
+  showToast('📍 Annonces de ' + selectedCity);
+}
+
+function showCitySelector() {
+  document.getElementById('cityOverlay').style.display = 'flex';
+  selectedCity = null;
+  document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('cityConfirmBtn').disabled = true;
+}
+
+function initCity() {
+  let saved = null;
+  try { saved = localStorage.getItem('expatbrazza_city'); } catch(e) {}
+  if (saved) {
+    document.getElementById('cityOverlay').style.display = 'none';
+    document.getElementById('currentCityLabel').textContent = saved === 'Toute le Congo' ? 'Congo 🇨🇬' : saved;
+    selectedCity = saved;
+  } else {
+    document.getElementById('cityOverlay').style.display = 'flex';
+  }
+}
+
+function getCurrentCity() {
+  try { return localStorage.getItem('expatbrazza_city') || null; } catch(e) { return null; }
+  }
 
   window.onload = () => {
     // Init Supabase after page load
