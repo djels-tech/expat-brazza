@@ -819,4 +819,430 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
           <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Partager
         </button>
-        <button class="btn-share" style="background:var(--bg);color:var(--text);border:1px 
+        <button class="btn-share" style="background:var(--bg);color:var(--text);border:1px solid var(--border)" onclick="copyLink()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Copier le lien
+        </button>
+        <button class="btn-report" onclick="signaler()">Signaler</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- CARTE VENDEUR -->
+    <div class="vendeur-card">
+      <div class="vc-title">Vendeur</div>
+      <div class="vc-profile">
+        <div class="vc-avatar" id="vcAvatar">
+          ?
+          <div class="verified-badge" id="vcBadge" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+          </div>
+        </div>
+        <div class="vc-info">
+          <div class="vc-name" id="vcName">
+            —
+            <svg id="vcVerifIcon" style="display:none" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          </div>
+          <div class="vc-since" id="vcSince">—</div>
+          <div class="vc-annonces" id="vcAnnonces">—</div>
+        </div>
+      </div>
+
+      <div class="vc-stats">
+        <div class="vc-stat">
+          <div class="vc-stat-val" id="vcStatAnnonces">—</div>
+          <div class="vc-stat-label">Annonces</div>
+        </div>
+        <div class="vc-stat">
+          <div class="vc-stat-val" id="vcStatVues">—</div>
+          <div class="vc-stat-label">Vues total</div>
+        </div>
+        <div class="vc-stat">
+          <div class="vc-stat-val" id="vcStatVilles">—</div>
+          <div class="vc-stat-label">Villes</div>
+        </div>
+      </div>
+
+      <a id="btnWa" href="#" class="btn-wa" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Contacter sur WhatsApp
+      </a>
+      <button class="phone-reveal" id="btnPhone" onclick="revealPhone()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        Voir le numéro
+      </button>
+    </div>
+
+    <!-- AUTRES ANNONCES DU VENDEUR -->
+    <div class="autres-card" id="autresCard" style="display:none">
+      <div class="autres-title">
+        Autres annonces
+        <a href="#" class="voir-tout" id="voirToutLink">Tout voir</a>
+      </div>
+      <div id="autresList"></div>
+    </div>
+
+    <!-- SÉCURITÉ NOTE -->
+    <div style="background:rgba(249,192,3,0.08);border:1px solid rgba(249,192,3,0.2);border-radius:10px;padding:14px;font-size:12px;color:#856500;line-height:1.6">
+      <strong style="display:block;margin-bottom:4px">Conseil de sécurité</strong>
+      Ne jamais envoyer d'argent avant d'avoir vu l'objet en vrai. Préférez les transactions en personne.
+    </div>
+  </div>
+
+</div>
+
+<!-- ANNONCES SIMILAIRES -->
+<div class="similaires-section" id="similairesSection" style="display:none">
+  <div class="sim-title">Annonces similaires</div>
+  <div class="sim-grid" id="similairesGrid"></div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="img-modal" id="imgModal" onclick="closeImgModal()">
+  <button class="img-modal-close" onclick="closeImgModal()">✕</button>
+  <img id="imgModalSrc" src="" alt="">
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+// EXPATBRAZZA — PAGE ANNONCE DÉTAIL
+// Connexion Supabase directe
+// ════════════════════════════════════════
+
+const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
+const STORAGE_URL   = `${SUPABASE_URL}/storage/v1/object/public/annonces-images`;
+
+let currentAnnonce = null;
+let phoneRevealed  = false;
+
+// ── UTILS ──
+function q(id) { return document.getElementById(id); }
+
+function showToast(msg, ok = true) {
+  const t = q('toast');
+  t.textContent = msg;
+  t.style.background = ok ? '#0F172A' : '#CE1126';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function sbFetch(table, params = '') {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!res.ok) throw new Error(`Supabase error ${res.status}`);
+  return res.json();
+}
+
+async function sbPatch(table, params, body) {
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(body)
+  });
+}
+
+function formatPrix(prix) {
+  if (!prix && prix !== 0) return 'Prix à débattre';
+  if (prix === 0) return 'Gratuit';
+  return new Intl.NumberFormat('fr-FR').format(prix) + ' FCFA';
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 3600)  return `il y a ${Math.floor(diff/60)} min`;
+  if (diff < 86400) return `il y a ${Math.floor(diff/3600)}h`;
+  if (diff < 604800) return `il y a ${Math.floor(diff/86400)} jours`;
+  return d.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+}
+
+function isNew(dateStr) {
+  if (!dateStr) return false;
+  return (new Date() - new Date(dateStr)) < 3 * 24 * 60 * 60 * 1000;
+}
+
+function imgUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `${STORAGE_URL}/${path}`;
+}
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+// ── GET ID FROM URL ──
+function getAnnonceId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id');
+}
+
+// ── LOAD ANNONCE ──
+async function loadAnnonce() {
+  const id = getAnnonceId();
+
+  if (!id) {
+    showError();
+    return;
+  }
+
+  try {
+    // Fetch annonce
+    const data = await sbFetch('annonces', `id=eq.${id}&statut=eq.actif&select=*`);
+
+    if (!data || data.length === 0) {
+      showError();
+      return;
+    }
+
+    currentAnnonce = data[0];
+
+    // Incrémenter vues
+    incrementVues(id, currentAnnonce.vues || 0);
+
+    // Render
+    renderAnnonce(currentAnnonce);
+
+    // Load seller autres annonces
+    if (currentAnnonce.user_id) {
+      loadAutresAnnonces(currentAnnonce.user_id, id);
+    } else if (currentAnnonce.whatsapp) {
+      loadAutresParWhatsapp(currentAnnonce.whatsapp, id);
+    }
+
+    // Load similaires
+    loadSimilaires(currentAnnonce.categorie, id);
+
+    // Show layout
+    q('loadingState').style.display = 'none';
+    q('mainLayout').style.display   = 'grid';
+
+  } catch(e) {
+    console.error(e);
+    showError();
+  }
+}
+
+// ── INCREMENT VUES ──
+async function incrementVues(id, currentVues) {
+  try {
+    await sbPatch('annonces', `id=eq.${id}`, { vues: (currentVues || 0) + 1 });
+  } catch(e) {}
+}
+
+// ── RENDER ANNONCE ──
+function renderAnnonce(a) {
+  // Meta
+  document.title = `${a.titre} — ExpatBrazza`;
+  q('ogTitle').content = a.titre;
+  q('ogDesc').content  = (a.description || '').substring(0, 120);
+
+  // Breadcrumb
+  q('bcCat').textContent   = a.categorie || '—';
+  q('bcTitre').textContent = a.titre || '—';
+
+  // Badges
+  const badgesEl = q('galleryBadges');
+  badgesEl.innerHTML = '';
+  if (a.une) badgesEl.innerHTML += '<span class="badge badge-une">A la une</span>';
+  if (isNew(a.created_at)) badgesEl.innerHTML += '<span class="badge badge-new">Nouveau</span>';
+  if (a.verified) badgesEl.innerHTML += '<span class="badge badge-certified">Certifié</span>';
+
+  // Image
+  const imgEl = q('galleryMain');
+  const url = imgUrl(a.image_url);
+  if (url) {
+    imgEl.className = 'gallery-main';
+    imgEl.innerHTML = `<img src="${url}" alt="${a.titre}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" onclick="openImgModal('${url}')">`;
+    q('ogImage').content = url;
+  }
+
+  // Infos
+  q('annoncecat').textContent   = a.categorie   || '—';
+  q('annonceDate').textContent  = formatDate(a.created_at);
+  q('annonceTitre').textContent = a.titre        || '—';
+  q('annoncePrix').innerHTML    = formatPrix(a.prix).replace(' FCFA', '<span class="currency">FCFA</span>');
+  q('annonceVille').textContent    = a.ville     || 'Brazzaville';
+  q('annonceQuartier').textContent = a.quartier  || '—';
+  q('annonceRef').textContent      = `EB-${String(a.id).padStart(5,'0')}`;
+  q('annonceDesc').textContent     = a.description || 'Aucune description fournie.';
+  q('vuesText').textContent        = `${(a.vues || 0) + 1} vue${((a.vues||0)+1)>1?'s':''}`;
+
+  // Vendeur
+  const vendorName = a.vendor_name || 'Vendeur ExpatBrazza';
+  q('vcAvatar').innerHTML = initials(vendorName);
+  if (a.verified) {
+    q('vcAvatar').innerHTML += `<div class="verified-badge"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>`;
+    q('vcVerifIcon').style.display = 'inline';
+  }
+  q('vcName').childNodes[0].textContent = vendorName + ' ';
+  q('vcSince').textContent = `Membre depuis ${new Date(a.created_at).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}`;
+
+  // WhatsApp
+  const wa = a.whatsapp || '';
+  const waClean = wa.replace(/[^0-9+]/g,'');
+  const waMsg = encodeURIComponent(`Bonjour, je vous contacte depuis ExpatBrazza concernant votre annonce : ${a.titre}`);
+  q('btnWa').href = waClean ? `https://wa.me/${waClean}?text=${waMsg}` : '#';
+  if (!waClean) q('btnWa').style.display = 'none';
+
+  // Phone button
+  q('btnPhone').dataset.phone = waClean;
+}
+
+// ── AUTRES ANNONCES VENDEUR ──
+async function loadAutresAnnonces(userId, excludeId) {
+  try {
+    const data = await sbFetch('annonces',
+      `user_id=eq.${userId}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url`
+    );
+    renderAutres(data, excludeId);
+  } catch(e) {}
+}
+
+async function loadAutresParWhatsapp(wa, excludeId) {
+  try {
+    const data = await sbFetch('annonces',
+      `whatsapp=eq.${encodeURIComponent(wa)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=4&select=id,titre,prix,ville,image_url`
+    );
+    renderAutres(data, excludeId);
+  } catch(e) {}
+}
+
+function renderAutres(data, excludeId) {
+  if (!data || data.length === 0) return;
+
+  q('vcStatAnnonces').textContent = data.length + 1;
+  const villes = [...new Set(data.map(a => a.ville).filter(Boolean))];
+  q('vcStatVilles').textContent = villes.length || 1;
+  const totalVues = data.reduce((s,a) => s + (a.vues||0), 0);
+  q('vcStatVues').textContent = totalVues > 999 ? Math.round(totalVues/1000)+'K' : totalVues;
+  q('vcAnnonces').textContent = `${data.length + 1} annonce${data.length>0?'s':''} publiée${data.length>0?'s':''}`;
+
+  q('autresCard').style.display = 'block';
+  q('autresList').innerHTML = data.map(a => {
+    const url = imgUrl(a.image_url);
+    return `<a class="mini-annonce" href="annonce.html?id=${a.id}">
+      <div class="mini-img">
+        ${url
+          ? `<img src="${url}" alt="${a.titre}" style="width:60px;height:52px;object-fit:cover;border-radius:8px">`
+          : `<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>`
+        }
+      </div>
+      <div class="mini-info">
+        <div class="mini-titre">${a.titre}</div>
+        <div class="mini-prix">${formatPrix(a.prix)}</div>
+        <div class="mini-ville">${a.ville || 'Brazzaville'}</div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+// ── ANNONCES SIMILAIRES ──
+async function loadSimilaires(categorie, excludeId) {
+  if (!categorie) return;
+  try {
+    const data = await sbFetch('annonces',
+      `categorie=eq.${encodeURIComponent(categorie)}&statut=eq.actif&id=neq.${excludeId}&order=created_at.desc&limit=6&select=id,titre,prix,ville,image_url,quartier`
+    );
+    if (!data || data.length === 0) return;
+
+    q('similairesSection').style.display = 'block';
+    q('similairesGrid').innerHTML = data.map(a => {
+      const url = imgUrl(a.image_url);
+      return `<a class="sim-card" href="annonce.html?id=${a.id}">
+        <div class="sim-img">
+          ${url
+            ? `<img src="${url}" alt="${a.titre}" style="width:100%;aspect-ratio:4/3;object-fit:cover">`
+            : `<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>`
+          }
+        </div>
+        <div class="sim-body">
+          <div class="sim-titre">${a.titre}</div>
+          <div class="sim-prix">${formatPrix(a.prix)}</div>
+          <div class="sim-meta">${a.quartier || ''} ${a.ville ? '· '+a.ville : ''}</div>
+        </div>
+      </a>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ── ACTIONS ──
+function revealPhone() {
+  const phone = q('btnPhone').dataset.phone;
+  if (!phone) { showToast('Numéro non disponible', false); return; }
+  if (!phoneRevealed) {
+    phoneRevealed = true;
+    q('btnPhone').innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> ${phone}`;
+    q('btnPhone').style.color = 'var(--green)';
+    q('btnPhone').style.borderColor = 'var(--green)';
+  } else {
+    window.location.href = `tel:${phone}`;
+  }
+}
+
+function shareWA() {
+  if (!currentAnnonce) return;
+  const url = window.location.href;
+  const msg = `Regarde cette annonce sur ExpatBrazza : *${currentAnnonce.titre}* — ${formatPrix(currentAnnonce.prix)}\n${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => showToast('Lien copié !'))
+    .catch(() => showToast('Impossible de copier', false));
+}
+
+function signaler() {
+  if (confirm('Signaler cette annonce comme inappropriée ?')) {
+    showToast('Annonce signalée. Merci.');
+  }
+}
+
+// ── IMAGE MODAL ──
+function openImgModal(src) {
+  q('imgModalSrc').src = src;
+  q('imgModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImgModal() {
+  q('imgModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ── ERROR ──
+function showError() {
+  q('loadingState').style.display = 'none';
+  q('errorState').style.display   = 'block';
+}
+
+// ── INIT ──
+loadAnnonce();
+
+// Fermer modal avec Escape
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeImgModal(); });
+</script>
+</body>
+</html>
