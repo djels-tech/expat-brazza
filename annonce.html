@@ -201,6 +201,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .badge-une { background:var(--yellow); color:#1a1a00; }
 .badge-new { background:var(--green); color:white; }
 .badge-certified { background:rgba(255,255,255,0.95); color:var(--green); border:1px solid var(--green); }
+.badge-vendu { background:#6B21A8; color:white; font-size:13px; padding:6px 14px; letter-spacing:1px; }
 
 /* ANNONCE CARD */
 .annonce-card {
@@ -1009,7 +1010,7 @@ async function loadAnnonce() {
 
   try {
     // Fetch annonce
-    const data = await sbFetch('annonces', `id=eq.${id}&statut=eq.actif&select=*`);
+    const data = await sbFetch('annonces', `id=eq.${id}&or=(statut.eq.actif,statut.eq.vendu)&select=*`);
 
     if (!data || data.length === 0) {
       showError();
@@ -1065,9 +1066,22 @@ function renderAnnonce(a) {
   // Badges
   const badgesEl = q('galleryBadges');
   badgesEl.innerHTML = '';
-  if (a.une) badgesEl.innerHTML += '<span class="badge badge-une">A la une</span>';
-  if (isNew(a.created_at)) badgesEl.innerHTML += '<span class="badge badge-new">Nouveau</span>';
+  if (a.statut === 'vendu') badgesEl.innerHTML += '<span class="badge badge-vendu">🏷️ VENDU</span>';
+  if (a.une && a.statut !== 'vendu') badgesEl.innerHTML += '<span class="badge badge-une">A la une</span>';
+  if (isNew(a.created_at) && a.statut !== 'vendu') badgesEl.innerHTML += '<span class="badge badge-new">Nouveau</span>';
   if (a.verified) badgesEl.innerHTML += '<span class="badge badge-certified">Certifié</span>';
+  // Overlay grisé si vendu
+  const galleryEl = document.querySelector('.gallery-main');
+  if (galleryEl && a.statut === 'vendu') {
+    galleryEl.style.position = 'relative';
+    if (!document.getElementById('venduOverlay')) {
+      const overlay = document.createElement('div');
+      overlay.id = 'venduOverlay';
+      overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;border-radius:inherit;z-index:5;pointer-events:none;';
+      overlay.innerHTML = '<span style="color:white;font-size:28px;font-weight:900;letter-spacing:3px;text-shadow:0 2px 8px rgba(0,0,0,0.5)">VENDU</span>';
+      galleryEl.appendChild(overlay);
+    }
+  }
 
   // Récupération des images (tableau ou ancien champ)
   const images = (a.images_urls && a.images_urls.length) ? a.images_urls : (a.image_url ? [a.image_url] : []);

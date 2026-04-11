@@ -44,9 +44,12 @@
   .badge-actif { background:rgba(0,165,80,0.1); color:var(--green); }
   .badge-attente { background:rgba(249,192,3,0.15); color:#B8860B; }
   .badge-refuse { background:rgba(206,17,38,0.1); color:var(--red); }
+  .badge-vendu { background:rgba(107,33,168,0.1); color:#6B21A8; }
   .certified { display:inline-flex; align-items:center; gap:3px; color:var(--blue); font-size:11px; font-weight:600; }
   .cert-icon { width:14px; height:14px; background:var(--blue); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:8px; }
   .btn-del { background:rgba(206,17,38,0.08); color:var(--red); border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-family:"DM Sans",sans-serif; flex-shrink:0; }
+  .btn-vendu-user { background:rgba(107,33,168,0.08); color:#6B21A8; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-family:"DM Sans",sans-serif; flex-shrink:0; }
+  .btn-vendu-user:hover { background:#6B21A8; color:#fff; }
   .empty-state { text-align:center; padding:48px 24px; color:var(--muted); }
   .empty-icon { font-size:40px; margin-bottom:12px; }
   .loading { text-align:center; padding:32px; color:var(--muted); font-size:14px; }
@@ -268,8 +271,8 @@ async function loadDashboard() {
 
     document.getElementById('annoncesList').innerHTML = annonces.map(a => {
       const certBadge = a.verified ? '<span class="certified"><span class="cert-icon">✓</span> Certifié</span>' : '';
-      const statusClass = a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : 'refuse';
-      const statusText = a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : '❌ Refusé';
+      const statusClass = a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : a.statut === 'vendu' ? 'vendu' : 'refuse';
+      const statusText = a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : a.statut === 'vendu' ? '🏷️ Vendu' : '❌ Refusé';
       const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
       return `<div class='annonce-row' id='row-${a.id}'>
         ${imgUrl ? `<img src='${imgUrl}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
@@ -283,7 +286,10 @@ async function loadDashboard() {
             ${certBadge}
           </div>
         </div>
-        <button class='btn-del' onclick="delAnn('${a.id}')">🗑️</button>
+        <div style='display:flex;gap:6px;flex-shrink:0;'>
+          ${a.statut === 'actif' ? `<button class='btn-vendu-user' onclick="markVenduUser('${a.id}')">🏷️ Vendu</button>` : ''}
+          <button class='btn-del' onclick="delAnn('${a.id}')">🗑️</button>
+        </div>
       </div>`;
     }).join('');
 
@@ -291,6 +297,17 @@ async function loadDashboard() {
     console.error('❌ Erreur complète:', e);
     showNotif(`❌ Erreur: ${e.message}`);
     document.getElementById('annoncesList').innerHTML = `<div class="empty-state"><div class="empty-icon">🚨</div><p>Une erreur est survenue.<br>${e.message}</p></div>`;
+  }
+}
+
+async function markVenduUser(id) {
+  if (!confirm("Marquer cette annonce comme vendue ? Elle ne sera plus modifiable.")) return;
+  const { error } = await sb.from("annonces").update({ statut: "vendu" }).eq("id", id);
+  if (!error) {
+    showNotif("🏷️ Annonce marquée comme vendue !");
+    loadDashboard();
+  } else {
+    showNotif("❌ Erreur : " + error.message);
   }
 }
 
