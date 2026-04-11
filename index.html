@@ -2332,7 +2332,7 @@
     
     // Increment vue counter using RPC (sécurisé)
     try {
-      await _sb.rpc('increment_vues', { annonce_id: a.id });
+      await _sb.rpc('increment_vues', { annonce_id: parseInt(a.id, 10) });
       a.vues = (a.vues || 0) + 1;
     } catch(e) { console.warn("Erreur incrément vues:", e); }
     

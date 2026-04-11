@@ -1048,8 +1048,16 @@ async function loadAnnonce() {
 // ── INCREMENT VUES ──
 async function incrementVues(id, currentVues) {
   try {
-    await sbPatch('annonces', `id=eq.${id}`, { vues: (currentVues || 0) + 1 });
-  } catch(e) {}
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_vues`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ annonce_id: parseInt(id, 10) })
+    });
+  } catch(e) { console.warn('increment_vues error:', e); }
 }
 
 // ── RENDER ANNONCE (avec galerie multi-images) ──
