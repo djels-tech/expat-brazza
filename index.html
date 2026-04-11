@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites</title>
 <meta name="description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
@@ -860,10 +863,22 @@
 
   /* FEATURED ANNONCES - Horizontal */
   .featured-annonces {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    display: flex;
     gap: 16px;
     margin-bottom: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel-track {
+    display: flex;
+    gap: 16px;
+    animation: carouselScroll 30s linear infinite;
+    will-change: transform;
+  }
+  .carousel-track:hover { animation-play-state: paused; }
+  @keyframes carouselScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   .annonce-card-featured {
@@ -1146,10 +1161,22 @@
 
   /* FEATURED ANNONCES - Horizontal */
   .featured-annonces {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    display: flex;
     gap: 16px;
     margin-bottom: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+  .carousel-track {
+    display: flex;
+    gap: 16px;
+    animation: carouselScroll 30s linear infinite;
+    will-change: transform;
+  }
+  .carousel-track:hover { animation-play-state: paused; }
+  @keyframes carouselScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   .annonce-card-featured {
@@ -1418,6 +1445,7 @@
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1547,7 +1575,9 @@
   <div class="section-header" id="featuredTitle">
     <h2 class="section-title">⭐ À la une</h2>
   </div>
-  <div class="featured-annonces" id="featuredGrid"></div>
+  <div class="featured-annonces" id="featuredWrapper">
+    <div class="carousel-track" id="featuredGrid"></div>
+  </div>
 
   <div class="section-header" style="margin-top:32px">
     <h2 class="section-title">Toutes les annonces</h2>
@@ -1718,8 +1748,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <!-- MODAL DETAIL ANNONCE -->
 <div class="modal-overlay" id="modalDetail">
   <div class="modal" style="max-width:600px">
@@ -1759,6 +1787,17 @@
 
 
 <!-- CITY SELECTOR -->
+<script>
+  // Bridge: ensures selectCity works even before main script loads
+  window._pendingCity = null;
+  window.selectCity = function(city, btn) {
+    document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
+    if(btn) btn.classList.add('selected');
+    window._pendingCity = city;
+    var confirmBtn = document.getElementById('cityConfirmBtn');
+    if(confirmBtn) confirmBtn.disabled = false;
+  };
+</script>
 <div class="city-overlay" id="cityOverlay">
   <div class="city-modal">
     <div style="font-size:48px;margin-bottom:16px">📍</div>
@@ -1831,8 +1870,8 @@
       // Render featured horizontal (avec fallback images)
       if (featuredGrid) {
         if (featured.length > 0 && filter === 'all') {
-          featuredGrid.innerHTML = featured.map((a, idx) => `
-            <div class="annonce-card-featured fade-up" onclick="window.location.href='annonce.html?id=${a.id}'">
+          const cardHTML = (a) => `
+            <div class="annonce-card-featured" onclick="window.location.href='annonce.html?id=${a.id}'" style="min-width:300px;flex-shrink:0;">
               <div class="badge-une-top">⭐ À la une</div>
               ${(a.images_urls && a.images_urls[0]) || a.image_url
                 ? `<img src="${(a.images_urls && a.images_urls[0]) || a.image_url}" class="feat-img" style="object-fit:cover" alt="${a.titre || ''}">`
@@ -1847,7 +1886,9 @@
                 </div>
               </div>
             </div>
-          `).join('');
+          `;
+          const allCards = featured.map(cardHTML).join('');
+          featuredGrid.innerHTML = allCards + allCards;
           const featTitle = document.getElementById('featuredTitle');
           if (featTitle) featTitle.style.display = 'flex';
         } else {
@@ -2163,8 +2204,9 @@
 
   function selectCity(city, btn) {
     document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
+    if(btn) btn.classList.add('selected');
     selectedCity = city;
+    window._pendingCity = city;
     document.getElementById('cityConfirmBtn').disabled = false;
   }
 
