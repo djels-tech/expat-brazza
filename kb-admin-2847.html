@@ -704,6 +704,9 @@
     document.getElementById('s-attente').textContent = data.filter(a => a.statut === 'en_attente').length;
     document.getElementById('s-vues').textContent = data.reduce((sum, a) => sum + (a.vues || 0), 0);
     document.getElementById('s-une').textContent = data.filter(a => a.une === true).length;
+    // Charger le nombre d'utilisateurs
+    const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
+    document.getElementById('s-users').textContent = userCount || 0;
   }
 
   async function loadPending() {
