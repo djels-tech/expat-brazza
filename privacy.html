@@ -3,107 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Confidentialité | ExpatBrazza</title>
+<title>Politique de Confidentialité | ExpatBrazza</title>
+<meta name="description" content="Politique de confidentialité d'ExpatBrazza — Comment nous collectons, utilisons et protégeons vos données personnelles.">
+<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
-  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
   .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-  .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:20px; color:var(--text); }
+  .logo-icon { width:34px; height:34px; background:linear-gradient(135deg,#00A550,#00c764); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:900; color:#fff; font-family:'Syne',sans-serif; }
+  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--text); }
   .logo-text span { color:var(--green); }
-  .btn-back { color:var(--muted); text-decoration:none; font-size:13px; display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); transition:all 0.2s; } .btn-back:hover { color:var(--green); border-color:var(--green); }
-  .content { max-width:800px; margin:0 auto; padding:60px 24px; }
-  .content h1 { font-family:'Syne',sans-serif; font-size:36px; font-weight:800; margin-bottom:8px; }
-  .content h1 span { color:var(--green); }
-  .date { color:var(--muted); font-size:14px; margin-bottom:40px; }
+  .btn-back { color:var(--muted); text-decoration:none; font-size:13px; display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); transition:all 0.2s; }
+  .btn-back:hover { color:var(--green); border-color:var(--green); }
+
+  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.08),rgba(0,165,80,0.02)); padding:48px 24px; text-align:center; border-bottom:1px solid var(--border); }
+  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(22px,4vw,32px); font-weight:800; margin-bottom:10px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { color:var(--muted); font-size:14px; }
+
+  .content { max-width:800px; margin:0 auto; padding:48px 20px 80px; }
   .section { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:20px; }
-  .section h2 { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--green); margin-bottom:12px; }
-  .section p, .section li { color:var(--muted); line-height:1.8; font-size:14px; margin-bottom:8px; }
-  .section ul { padding-left:20px; }
-  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px; margin-top:60px; font-size:14px; }
+  .section h2 { font-family:'Syne',sans-serif; font-size:16px; font-weight:800; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .section h2 .num { width:28px; height:28px; background:var(--green); color:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:900; flex-shrink:0; }
+  .section p { color:var(--muted); font-size:14px; line-height:1.75; margin-bottom:10px; }
+  .section p:last-child { margin-bottom:0; }
+  .section ul { color:var(--muted); font-size:14px; line-height:1.75; padding-left:18px; margin-bottom:10px; }
+  .section ul li { margin-bottom:6px; }
+  .highlight { background:rgba(0,165,80,0.07); border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:12px 16px; margin:14px 0; }
+  .highlight p { color:var(--text); font-weight:500; margin:0; }
+  .date-badge { display:inline-block; background:rgba(0,165,80,0.1); color:var(--green); font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; margin-top:8px; }
+
+  footer { background:#1A1F2E; color:#fff; text-align:center; padding:24px 20px; font-size:13px; margin-top:0; }
   footer a { color:var(--green); text-decoration:none; }
-
-  @media(max-width:768px){
-    .section, .content, .content-wrap { padding-left:16px; padding-right:16px; }
-    .footer-grid { grid-template-columns:1fr 1fr; }
-    h1 { font-size:28px !important; }
-  }
-  @media(max-width:480px){
-    .footer-grid { grid-template-columns:1fr; }
-    .section-grid, .values-grid, .team-grid { grid-template-columns:1fr !important; }
-  }
-
-
-  /* Mobile fix */
-  @media(max-width:600px){
-    .section, .content, .values-grid, .team-grid { padding-left:16px !important; padding-right:16px !important; }
-    .values-grid, .team-grid { grid-template-columns:1fr 1fr !important; }
-    .card, .faq-item, .section-box { margin-left:0 !important; margin-right:0 !important; }
-    h1 { font-size:26px !important; }
-    .hero { padding:32px 16px !important; }
-  }
-
+  footer .footer-links { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
 </style>
 </head>
 <body>
+
 <nav>
   <a href="index.html" class="logo">
-   <img src="EB_globe_logo_dark.png" alt="ExpatBrazza" style="height:38px;">
+<img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
   </a>
   <a href="index.html" class="btn-back">← Accueil</a>
 </nav>
 
+<div class="hero">
+  <h1>Politique de <span>Confidentialité</span></h1>
+  <p>Comment ExpatBrazza collecte, utilise et protège vos données personnelles</p>
+  <div class="date-badge">Dernière mise à jour : Avril 2026</div>
+</div>
+
 <div class="content">
-  <h1>Politique de <span>confidentialité</span></h1>
-  <p class="date">Dernière mise à jour : Mars 2026</p>
 
   <div class="section">
-    <h2>1. Données collectées</h2>
-    <p>Lorsque vous utilisez ExpatBrazza, nous collectons uniquement les informations nécessaires :</p>
+    <h2><span class="num">1</span> Qui sommes-nous ?</h2>
+    <p>ExpatBrazza est une plateforme d'annonces classées en ligne opérée par <strong>Kairo Technologie</strong>, studio tech basé à Brazzaville, République du Congo.</p>
+    <p>Site web : <strong>expatbrazza.com</strong><br>Contact : <strong>contact@expatbrazza.com</strong></p>
+    <div class="highlight"><p>ExpatBrazza est un service 100% congolais, conçu et développé à Brazzaville.</p></div>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">2</span> Données collectées</h2>
+    <p>Lors de votre utilisation d'ExpatBrazza, nous pouvons collecter les données suivantes :</p>
     <ul>
-      <li>Titre, description et prix de l'annonce</li>
-      <li>Numéro WhatsApp (pour que les acheteurs vous contactent)</li>
-      <li>Quartier / zone géographique</li>
-      <li>Photos du produit ou service</li>
+      <li><strong>Données d'inscription :</strong> adresse email ou numéro de téléphone (+242)</li>
+      <li><strong>Données de profil :</strong> nom d'utilisateur, photo de profil (optionnel)</li>
+      <li><strong>Données d'annonces :</strong> titre, description, prix, photos, ville, quartier, numéro WhatsApp</li>
+      <li><strong>Données de certification :</strong> nom complet, numéro CNI (uniquement pour les demandes de certification)</li>
+      <li><strong>Données de navigation :</strong> pages visitées, interactions avec les annonces (vues)</li>
     </ul>
   </div>
 
   <div class="section">
-    <h2>2. Utilisation des données</h2>
-    <p>Vos données sont utilisées uniquement pour :</p>
+    <h2><span class="num">3</span> Utilisation des données</h2>
+    <p>Vos données sont utilisées exclusivement pour :</p>
     <ul>
-      <li>Afficher votre annonce sur la plateforme</li>
-      <li>Permettre aux acheteurs de vous contacter via WhatsApp</li>
-      <li>Améliorer nos services</li>
+      <li>Créer et gérer votre compte utilisateur</li>
+      <li>Publier et afficher vos annonces sur la plateforme</li>
+      <li>Vous envoyer des notifications liées à vos annonces (approbation, certification)</li>
+      <li>Assurer la sécurité et la modération de la plateforme</li>
+      <li>Améliorer nos services grâce aux statistiques d'utilisation</li>
     </ul>
-    <p>Nous ne vendons jamais vos données à des tiers.</p>
+    <div class="highlight"><p>Nous ne vendons jamais vos données personnelles à des tiers.</p></div>
   </div>
 
   <div class="section">
-    <h2>3. Conservation des données</h2>
-    <p>Vos annonces sont conservées tant qu'elles sont actives. Vous pouvez nous contacter à tout moment pour supprimer vos données.</p>
-  </div>
-
-  <div class="section">
-    <h2>4. Sécurité</h2>
-    <p>Nous utilisons Supabase, une infrastructure sécurisée, pour stocker vos données. Toutes les communications sont chiffrées via HTTPS.</p>
-  </div>
-
-  <div class="section">
-    <h2>5. Vos droits</h2>
-    <p>Vous avez le droit de :</p>
+    <h2><span class="num">4</span> Partage des données</h2>
+    <p>Certaines informations de vos annonces sont publiques et visibles par tous les visiteurs : titre, description, prix, photos, ville, quartier et numéro WhatsApp.</p>
+    <p>Nous faisons appel à des services tiers de confiance pour faire fonctionner la plateforme :</p>
     <ul>
-      <li>Accéder à vos données</li>
-      <li>Demander la suppression de vos annonces</li>
-      <li>Corriger des informations incorrectes</li>
+      <li><strong>Supabase</strong> — hébergement de la base de données et authentification</li>
+      <li><strong>Formspree</strong> — envoi de notifications par email</li>
+
     </ul>
-    <p>Pour toute demande : <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6d08151d0c190f1f0c17170c2d0a000c0401430e0200">[email&#160;protected]</a></strong></p>
+    <p>Ces prestataires sont soumis à leurs propres politiques de confidentialité et ne sont autorisés à utiliser vos données qu'aux fins nécessaires à la fourniture de leurs services.</p>
   </div>
 
   <div class="section">
-    <h2>6. Cookies</h2>
-    <p>ExpatBrazza n'utilise pas de cookies de tracking ou publicitaires. Nous utilisons uniquement des cookies techniques nécessaires au bon fonctionnement du site.</p>
-  </d
+    <h2><span class="num">5</span> Conservation des données</h2>
+    <p>Vos données sont conservées tant que votre compte est actif. Si vous supprimez votre compte, vos données personnelles sont supprimées dans un délai de 30 jours.</p>
+    <p>Les annonces supprimées sont retirées de l'affichage public immédiatement, mais peuvent être conservées dans nos systèmes de sauvegarde pendant 30 jours supplémentaires.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">6</span> Vos droits</h2>
+    <p>Conformément aux principes généraux de protection des données, vous disposez des droits suivants :</p>
+    <ul>
+      <li><strong>Accès :</strong> obtenir une copie de vos données personnelles</li>
+      <li><strong>Rectification :</strong> corriger des données inexactes</li>
+      <li><strong>Suppression :</strong> demander la suppression de votre compte et de vos données</li>
+      <li><strong>Opposition :</strong> vous opposer à certains traitements de vos données</li>
+    </ul>
+    <p>Pour exercer ces droits, contactez-nous à : <strong>contact@expatbrazza.com</strong></p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">7</span> Sécurité</h2>
+    <p>ExpatBrazza met en œuvre des mesures de sécurité techniques pour protéger vos données :</p>
+    <ul>
+      <li>Chiffrement des données en transit (HTTPS)</li>
+      <li>Authentification sécurisée via Supabase</li>
+      <li>Politiques d'accès aux données (Row Level Security)</li>
+      <li>Accès administrateur restreint et sécurisé</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">8</span> Cookies</h2>
+    <p>ExpatBrazza utilise le stockage local de votre navigateur (localStorage) pour mémoriser votre ville sélectionnée et améliorer votre expérience de navigation. Aucun cookie publicitaire n'est utilisé.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">9</span> Modifications</h2>
+    <p>Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment. Toute modification significative sera signalée sur la plateforme. La date de dernière mise à jour est indiquée en haut de cette page.</p>
+    <p>En continuant à utiliser ExpatBrazza après modification, vous acceptez la nouvelle politique.</p>
+  </div>
+
+  <div class="section">
+    <h2><span class="num">10</span> Contact</h2>
+    <p>Pour toute question relative à cette politique de confidentialité ou à vos données personnelles :</p>
+    <p><strong>Email :</strong> contact@expatbrazza.com<br>
+    <strong>Plateforme :</strong> expatbrazza.com<br>
+    
+  </div>
+
+</div>
+
+<footer>
+  <div>© 2026 ExpatBrazza</div>
+  <div class="footer-links">
+    <a href="index.html">Accueil</a>
+    <a href="privacy.html">Confidentialité</a>
+    <a href="terms.html">Conditions d'utilisation</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
