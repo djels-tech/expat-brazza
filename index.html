@@ -2409,7 +2409,9 @@
     setTimeout(async () => {
       try {
         const { count: totalAnnonces } = await _sb.from('annonces').select('*', { count: 'exact', head: true }).eq('statut', 'actif');
-        const { count: totalVentes } = await _sb.from('annonces').select('*', { count: 'exact', head: true }).eq('statut', 'vendu');
+        // Lire compteur permanent transactions
+        const { data: statData } = await _sb.from('stats').select('value').eq('key', 'total_transactions').single().catch(() => ({ data: null }));
+        const totalVentes = statData ? statData.value : 0;
         const { count: totalUsers } = await _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('banned', false);
         animateCounter('counter1', totalAnnonces || 0);
         animateCounter('counter2', totalUsers || 0);

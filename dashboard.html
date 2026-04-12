@@ -313,8 +313,31 @@ async function markVenduUser(id) {
 
 async function delAnn(id) {
   if (!confirm("Supprimer cette annonce définitivement ?")) return;
+  // Récupérer les photos avant suppression
+  const { data: annonce } = await sb.from("annonces").select("images_urls, image_url").eq("id", id).single();
+  // Supprimer la ligne en base
   const { error } = await sb.from("annonces").delete().eq("id", id);
-  if (!error) { document.getElementById("row-" + id)?.remove(); showNotif("Annonce supprimée."); loadDashboard(); }
+  if (!error) {
+    // Supprimer les photos du storage
+    if (annonce) {
+      const paths = [];
+      if (annonce.images_urls && annonce.images_urls.length > 0) {
+        annonce.images_urls.forEach(url => {
+          const match = url.match(/annonces-images\/(.+)$/);
+          if (match) paths.push(match[1]);
+        });
+      } else if (annonce.image_url) {
+        const match = annonce.image_url.match(/annonces-images\/(.+)$/);
+        if (match) paths.push(match[1]);
+      }
+      if (paths.length > 0) {
+        await sb.storage.from("annonces-images").remove(paths);
+      }
+    }
+    document.getElementById("row-" + id)?.remove();
+    showNotif("Annonce et photos supprimées.");
+    loadDashboard();
+  }
 }
 
 async function handleLogout() {
