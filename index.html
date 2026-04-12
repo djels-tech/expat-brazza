@@ -13,11 +13,11 @@
 <meta name="robots" content="index, follow">
 <meta name="language" content="French">
 
-<!-- Open Graph -->
+<!-- Open Graph (WhatsApp, Facebook) -->
 <meta property="og:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
 <meta property="og:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
-<meta property="og:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
-<meta property="og:url" content="https://djels-tech.github.io/expat-brazza/">
+<meta property="og:image" content="https://expatbrazza.com/favicon.png">
+<meta property="og:url" content="https://expatbrazza.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_CG">
 <meta property="og:site_name" content="ExpatBrazza">
@@ -26,9 +26,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ExpatBrazza — Acheter et vendre au Congo | Annonces gratuites">
 <meta name="twitter:description" content="La plateforme d'annonces N°1 au Congo. Trouvez immobilier, véhicules, emploi, électronique à Brazzaville, Pointe-Noire et partout au Congo.">
-<meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
+<meta name="twitter:image" content="https://expatbrazza.com/favicon.png">
 
-<link rel="canonical" href="https://djels-tech.github.io/expat-brazza/">
+<!-- Canonical -->
+<link rel="canonical" href="https://expatbrazza.com/">
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -320,14 +321,14 @@
   /* ANNONCES */
   .annonces-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
   }
 
   .annonce-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.25s;
@@ -336,25 +337,19 @@
 
   .annonce-card:hover {
     border-color: var(--green);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
 
   .annonce-img {
     width: 100%;
-    height: 130px;
+    height: 180px;
     object-fit: cover;
     background: linear-gradient(135deg, #e8f5ee, #f0f9f4);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
-  }
-
-  .annonce-card-img {
-    width: 100%;
-    height: 130px;
-    object-fit: cover;
+    font-size: 48px;
   }
 
   .badge-une {
@@ -383,66 +378,65 @@
     border-radius: 6px;
   }
 
-  .annonce-body { padding: 10px 12px; }
+  .annonce-body { padding: 16px; }
 
   .annonce-cat {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--green);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .annonce-title {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 6px;
-    line-height: 1.3;
+    margin-bottom: 8px;
+    line-height: 1.4;
     color: var(--text);
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
   }
 
   .annonce-price {
     font-family: 'Syne', sans-serif;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 700;
     color: var(--green);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
 
   .annonce-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 8px;
+    padding-top: 12px;
     border-top: 1px solid var(--border);
   }
 
   .annonce-location {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .annonce-actions {
     display: flex;
-    gap: 4px;
+    gap: 8px;
   }
 
   .action-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--dark);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     transition: all 0.2s;
     color: var(--muted);
     text-decoration: none;
@@ -503,17 +497,17 @@
   .modal-overlay.active { display: flex; }
 
   .modal {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 85vh;
-    overflow-y: auto;
-    position: relative;
-    animation: modalIn 0.3s ease;
-  }
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalIn 0.3s ease;
+}
 
   @keyframes modalIn {
     from { opacity: 0; transform: scale(0.95) translateY(20px); }
@@ -761,6 +755,14 @@
     background: rgba(0,165,80,0.08);
   }
 
+  #photoInput { color: var(--text); }
+  .annonce-card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+
   /* CITY SELECTOR */
   .city-overlay {
     position: fixed;
@@ -796,7 +798,7 @@
     margin-bottom: 20px;
   }
   .city-btn {
-    background: var(--dark);
+    background: var(--bg);
     border: 2px solid var(--border);
     border-radius: 12px;
     padding: 14px 12px;
@@ -846,6 +848,7 @@
   }
   .city-indicator:hover { background: rgba(0,165,80,0.15); }
 
+
   @media (max-width: 900px) {
     .logo-text { font-size: 16px; }
     .logo-icon { width: 32px; height: 32px; font-size: 16px; }
@@ -856,6 +859,7 @@
     .logo-text { font-size: 14px; }
     .city-indicator { max-width: 85px; font-size: 11px; }
   }
+
 
   /* FEATURED ANNONCES - Horizontal */
   .featured-annonces {
@@ -888,8 +892,6 @@
     flex-direction: row;
     height: 130px;
     position: relative;
-    min-width: 300px;
-    flex-shrink: 0;
   }
 
   .annonce-card-featured:hover {
@@ -960,6 +962,116 @@
     color: var(--muted);
   }
 
+  /* NORMAL ANNONCES - Compact grid */
+  .annonces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .annonce-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .annonce-card:hover {
+    border-color: var(--green);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+
+  .annonce-card .annonce-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #e8f5ee, #f0f9f4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .annonce-card-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+  }
+
+  .annonce-card .annonce-body {
+    padding: 10px 12px;
+  }
+
+  .annonce-card .annonce-cat {
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .annonce-card .annonce-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    color: var(--text);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .annonce-card .annonce-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .annonce-card .annonce-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .annonce-card .annonce-location {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .annonce-card .annonce-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .action-btn:hover { border-color: var(--green); color: var(--green); }
+  .action-btn.whatsapp:hover { border-color: #25D366; color: #25D366; }
+
   /* BLOG SECTION */
   .blog-preview-grid {
     display: grid;
@@ -992,7 +1104,7 @@
     flex-shrink: 0;
     width: 56px;
     height: 56px;
-    background: var(--dark);
+    background: var(--bg);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -1019,18 +1131,13 @@
     .annonces-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .featured-annonces { grid-template-columns: 1fr; }
     .blog-preview-grid { grid-template-columns: 1fr; }
-    .modal {
-      padding: 16px;
-      max-width: 95%;
-      max-height: 90vh;
-    }
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
-      font-size: 16px;
-    }
   }
 
+</style>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
   /* Safari fixes */
   * { -webkit-tap-highlight-color: transparent; }
   input, select, textarea, button { -webkit-appearance: none; border-radius: inherit; }
@@ -1039,6 +1146,296 @@
     .hamburger { display: flex !important; }
     .nav-links { display: none !important; }
   }
+
+  @media (max-width: 900px) {
+    .logo-text { font-size: 16px; }
+    .logo-icon { width: 32px; height: 32px; font-size: 16px; }
+    .city-indicator { padding: 5px 8px; font-size: 12px; max-width: 110px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    nav { padding: 0 12px; }
+  }
+  @media (max-width: 380px) {
+    .logo-text { font-size: 14px; }
+    .city-indicator { max-width: 85px; font-size: 11px; }
+  }
+
+
+  /* FEATURED ANNONCES - Horizontal */
+  .featured-annonces {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+    100% { transform: translateX(-50%); }
+  }
+
+  .annonce-card-featured {
+    background: var(--card);
+    border: 2px solid var(--yellow);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: row;
+    height: 130px;
+    position: relative;
+  }
+
+  .annonce-card-featured:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(249,192,3,0.2);
+  }
+
+  .annonce-card-featured .feat-img {
+    width: 130px;
+    min-width: 130px;
+    height: 100%;
+    object-fit: cover;
+    background: linear-gradient(135deg, #f0f9f4, #e8f5ee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .annonce-card-featured .feat-body {
+    padding: 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .badge-une-top {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--yellow);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 1;
+  }
+
+  .feat-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-top: 16px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .feat-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  .feat-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* NORMAL ANNONCES - Compact grid */
+  .annonces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .annonce-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .annonce-card:hover {
+    border-color: var(--green);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  }
+
+  .annonce-card .annonce-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #e8f5ee, #f0f9f4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .annonce-card-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+  }
+
+  .annonce-card .annonce-body {
+    padding: 10px 12px;
+  }
+
+  .annonce-card .annonce-cat {
+    font-size: 10px;
+    color: var(--green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .annonce-card .annonce-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    color: var(--text);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .annonce-card .annonce-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .annonce-card .annonce-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  .annonce-card .annonce-location {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .annonce-card .annonce-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .action-btn:hover { border-color: var(--green); color: var(--green); }
+  .action-btn.whatsapp:hover { border-color: #25D366; color: #25D366; }
+
+  /* BLOG SECTION */
+  .blog-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .blog-preview-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .blog-preview-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .blog-preview-emoji {
+    font-size: 36px;
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    background: var(--bg);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .blog-preview-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .blog-preview-tag {
+    font-size: 11px;
+    color: var(--green);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 600px) {
+    .annonces-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .featured-annonces { grid-template-columns: 1fr; }
+    .blog-preview-grid { grid-template-columns: 1fr; }
+  }
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 16px;
+    max-width: 95%;
+    max-height: 90vh;
+  }
+  .form-group input, 
+  .form-group select, 
+  .form-group textarea {
+    font-size: 16px;
+  }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1235,7 +1632,7 @@
   <div class="footer-grid">
     <div class="footer-brand">
       <div class="logo">
-        <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
+<img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
       </div>
       <p>La plateforme d'annonces pour tous les Congolais — achetez, vendez et échangez partout au Congo.</p>
     </div>
@@ -1275,7 +1672,7 @@
   </div>
 </footer>
 
-<!-- MODAL DEPOSER ANNONCE -->
+<!-- MODAL DEPOSER ANNONCE (MULTIPLE PHOTOS) -->
 <div class="modal-overlay" id="modalPost">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('post')">✕</button>
@@ -1304,7 +1701,7 @@
     <div class="form-group">
       <label>Photos (max 5)</label>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <label for="photoInput" style="flex:1;background:var(--dark);border:1px dashed var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s" id="photoLabel">
+        <label for="photoInput" style="flex:1;background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:13px;color:var(--muted);transition:all 0.2s" id="photoLabel">
           📷 Choisir jusqu'à 5 photos
         </label>
         <div id="photoPreview" style="display:none;width:60px;height:60px;border-radius:8px;overflow:hidden;flex-shrink:0">
@@ -1379,8 +1776,10 @@
   </div>
 </div>
 
+
 <!-- CITY SELECTOR -->
 <script>
+  // Bridge: ensures selectCity works even before main script loads
   window._pendingCity = null;
   window.selectCity = function(city, btn) {
     document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
@@ -1416,10 +1815,10 @@
   // SUPABASE
   const SUPABASE_URL = 'https://zpoitnronthawiovlnkm.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpwb2l0bnJvbnRoYXdpb3ZsbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjkzNzgsImV4cCI6MjA5MDA0NTM3OH0.kLIWKReNwqpG-VYf_tN14P9cQq-0z3fsIQffaFvOeUA';
-  let _sb = null;
+  var _sb;
 
-  // Annonces de fallback
-  const annoncesFallback = [
+  // ANNONCES DATA (fallback)
+  const annonces = [
     { id:1, titre:"Appartement F3 meublé", cat:"Immobilier", prix:"250 000 FCFA/mois", lieu:"Poto-Poto", emoji:"🏠", badge:"une", desc:"Beau F3 entièrement meublé avec climatisation, eau et électricité incluses." },
     { id:2, titre:"Toyota RAV4 2019 - Excellent état", cat:"Véhicules", prix:"18 500 000 FCFA", lieu:"Bacongo", emoji:"🚗", badge:"new", desc:"RAV4 en parfait état, faible kilométrage, première main." },
     { id:3, titre:"iPhone 15 Pro Max 256GB", cat:"Électronique", prix:"850 000 FCFA", lieu:"Centre-ville", emoji:"📱", badge:"une", desc:"iPhone 15 Pro Max neuf sous blister, garantie 1 an." },
@@ -1432,47 +1831,7 @@
 
   let currentFilter = 'all';
 
-  function isNew(dateStr) {
-    if (!dateStr) return false;
-    const diff = (new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24);
-    return diff < 3;
-  }
-
-  function getCatEmoji(cat) {
-    const emojis = { 'Immobilier': '🏠', 'Véhicules': '🚗', 'Emploi': '💼', 'Électronique': '📱', 'Services': '🛠️', 'Mode': '👗', 'Alimentation': '🍽️', 'Loisirs': '🎮' };
-    return emojis[cat] || '📦';
-  }
-
-  function renderFallbackAnnonces(filter) {
-    const grid = document.getElementById('annoncesGrid');
-    const filtered = filter === 'all' ? annoncesFallback : annoncesFallback.filter(a => a.cat === filter);
-    grid.innerHTML = filtered.map(a => `
-      <div class="annonce-card fade-up" onclick="showAnnonce(${a.id})">
-        <div class="annonce-img">${a.emoji}</div>
-        ${a.badge === 'une' ? '<div class="badge-une">⭐ À la une</div>' : ''}
-        ${a.badge === 'new' ? '<div class="badge-new">Nouveau</div>' : ''}
-        <div class="annonce-body">
-          <div class="annonce-cat">${a.cat}</div>
-          <div class="annonce-title">${a.titre}</div>
-          <div class="annonce-price">${a.prix}</div>
-          <div class="annonce-footer">
-            <div class="annonce-location">📍 ${a.lieu}</div>
-            <div class="annonce-actions">
-              <a class="action-btn whatsapp" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Redirection WhatsApp...')">💬</a>
-              <a class="action-btn" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Annonce sauvegardée !')">🔖</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
   async function loadFromSupabase(filter) {
-    if (!_sb) {
-      console.warn('Supabase non initialisé, fallback');
-      renderFallbackAnnonces(filter);
-      return;
-    }
     const grid = document.getElementById('annoncesGrid');
     const featuredGrid = document.getElementById('featuredGrid');
     grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px">⏳ Chargement...</p>';
@@ -1495,13 +1854,15 @@
 
       window._annoncesData = data;
 
+      // Split: une=true → featured, rest → normal
       const featured = data.filter(a => a.une === true);
       const normal = data.filter(a => !a.une);
 
+      // Render featured horizontal (avec fallback images)
       if (featuredGrid) {
         if (featured.length > 0 && filter === 'all') {
           const cardHTML = (a) => `
-            <div class="annonce-card-featured" onclick="window.location.href='annonce.html?id=${a.id}'">
+            <div class="annonce-card-featured" onclick="window.location.href='annonce.html?id=${a.id}'" style="min-width:300px;flex-shrink:0;">
               <div class="badge-une-top">⭐ À la une</div>
               ${(a.images_urls && a.images_urls[0]) || a.image_url
                 ? `<img src="${(a.images_urls && a.images_urls[0]) || a.image_url}" class="feat-img" style="object-fit:cover" alt="${a.titre || ''}">`
@@ -1519,15 +1880,19 @@
           `;
           const allCards = featured.map(cardHTML).join('');
           featuredGrid.innerHTML = allCards + allCards;
-          document.getElementById('featuredTitle').style.display = 'flex';
+          const featTitle = document.getElementById('featuredTitle');
+          if (featTitle) featTitle.style.display = 'flex';
         } else {
           featuredGrid.innerHTML = '';
-          document.getElementById('featuredTitle').style.display = 'none';
+          const featTitle = document.getElementById('featuredTitle');
+          if (featTitle) featTitle.style.display = 'none';
         }
       }
 
+      // Render normal cards (avec fallback images)
       const displayData = (filter === 'all') ? normal : data;
       grid.innerHTML = displayData.length > 0 ? displayData.map((a) => {
+        const realIdx = data.indexOf(a);
         const newBadge = isNew(a.created_at) ? '<span style="background:#00A550;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px">Nouveau</span>' : '';
         const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
         const isVendu = a.statut === 'vendu';
@@ -1561,8 +1926,52 @@
 
     } catch(e) {
       console.error(e);
-      renderFallbackAnnonces(filter);
+      renderAnnonces(filter);
     }
+  }
+
+
+  function isNew(dateStr) {
+    if (!dateStr) return false;
+    const diff = (new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24);
+    return diff < 3;
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    const diff = Math.floor((new Date() - new Date(dateStr)) / (1000 * 60));
+    if (diff < 60) return diff + ' min';
+    if (diff < 1440) return Math.floor(diff/60) + 'h';
+    return Math.floor(diff/1440) + 'j';
+  }
+
+  function getCatEmoji(cat) {
+    const emojis = { 'Immobilier': '🏠', 'Véhicules': '🚗', 'Emploi': '💼', 'Électronique': '📱', 'Services': '🛠️', 'Mode': '👗', 'Alimentation': '🍽️', 'Loisirs': '🎮' };
+    return emojis[cat] || '📦';
+  }
+
+  function renderAnnonces(filter) {
+    const grid = document.getElementById('annoncesGrid');
+    const filtered = filter === 'all' ? annonces : annonces.filter(a => a.cat === filter);
+    grid.innerHTML = filtered.map(a => `
+      <div class="annonce-card fade-up" onclick="showAnnonce(${a.id})">
+        <div class="annonce-img">${a.emoji}</div>
+        ${a.badge === 'une' ? '<div class="badge-une">⭐ À la une</div>' : ''}
+        ${a.badge === 'new' ? '<div class="badge-new">Nouveau</div>' : ''}
+        <div class="annonce-body">
+          <div class="annonce-cat">${a.cat}</div>
+          <div class="annonce-title">${a.titre}</div>
+          <div class="annonce-price">${a.prix}</div>
+          <div class="annonce-footer">
+            <div class="annonce-location">📍 ${a.lieu}</div>
+            <div class="annonce-actions">
+              <a class="action-btn whatsapp" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Redirection WhatsApp...')">💬</a>
+              <a class="action-btn" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Annonce sauvegardée !')">🔖</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
   }
 
   function setFilter(el, filter) {
@@ -1577,7 +1986,7 @@
     document.querySelectorAll('.filter-tab').forEach(t => {
       t.classList.toggle('active', t.textContent === cat);
     });
-    loadFromSupabase(cat);
+    renderAnnonces(cat);
     document.getElementById('annoncesGrid').scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1588,11 +1997,6 @@
     const grid = document.getElementById('annoncesGrid');
     grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px">🔍 Recherche en cours...</p>';
     document.getElementById('annoncesGrid').scrollIntoView({ behavior: 'smooth' });
-
-    if (!_sb) {
-      grid.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px">❌ Impossible de rechercher (connexion perdue)</p>';
-      return;
-    }
 
     try {
       const { data, error } = await _sb
@@ -1605,7 +2009,7 @@
       if (error) throw error;
 
       window._annoncesData = data;
-      grid.innerHTML = data.length ? data.map((a) => {
+      grid.innerHTML = data.length ? data.map((a, idx) => {
         const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
         return `
           <div class="annonce-card fade-up" onclick="window.location.href='annonce.html?id=${a.id}'">
@@ -1637,9 +2041,9 @@
     if (e.key === 'Enter') handleSearch();
   });
 
+  // MODAL
   async function openModal(type) {
     if (type === 'post') {
-      if (!_sb) { showToast("⚠️ Connexion perdue, veuillez rafraîchir."); return; }
       const { data: { session } } = await _sb.auth.getSession();
       if (!session) {
         showToast("⚠️ Connectez-vous d'abord pour déposer une annonce !");
@@ -1657,8 +2061,6 @@
   }
 
   async function submitAnnonce() {
-    if (!_sb) { showToast("❌ Connexion perdue."); return; }
-
     const data = {
       titre: document.getElementById('inputTitre')?.value || '',
       categorie: document.getElementById('inputCategorie')?.value || '',
@@ -1700,6 +2102,8 @@
         if (!uploadError) {
           const { data: urlData } = _sb.storage.from('annonces-images').getPublicUrl(filePath);
           images_urls.push(urlData.publicUrl);
+        } else {
+          console.warn('Upload error:', uploadError);
         }
       }
 
@@ -1735,10 +2139,11 @@
   }
 
   function showAnnonce(id) {
-    const a = annoncesFallback.find(x => x.id === id);
+    const a = annonces.find(x => x.id === id);
     showToast(`📋 ${a.titre} — ${a.prix}`);
   }
 
+  // TOAST
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -1746,6 +2151,7 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
+  // COUNTERS
   function animateCounter(id, target, suffix='') {
     let current = 0;
     const step = Math.ceil(target / 60);
@@ -1756,8 +2162,13 @@
     }, 30);
   }
 
+  // INIT
+
+  // OPEN DETAIL MODAL
+
+
+
   async function loadCategoryCounts() {
-    if (!_sb) return;
     const categories = ['Immobilier', 'Véhicules', 'Emploi', 'Électronique', 'Services', 'Mode', 'Alimentation', 'Loisirs'];
     try {
       const city = getCurrentCity();
@@ -1778,15 +2189,17 @@
     }
   }
 
+
+  // CITY MANAGEMENT
   let selectedCity = null;
 
-  window.selectCity = function(city, btn) {
+  function selectCity(city, btn) {
     document.querySelectorAll('.city-btn').forEach(b => b.classList.remove('selected'));
     if(btn) btn.classList.add('selected');
     selectedCity = city;
     window._pendingCity = city;
     document.getElementById('cityConfirmBtn').disabled = false;
-  };
+  }
 
   function confirmCity() {
     if (!selectedCity) return;
@@ -1821,22 +2234,25 @@
     try { return localStorage.getItem('expatbrazza_city') || null; } catch(e) { return null; }
   }
 
+
+  // AUTH CHECK
   async function checkAuthState() {
-    if (!_sb) return;
     try {
       const { data: { session } } = await _sb.auth.getSession();
+      const btn = document.getElementById('authNavBtn');
       const mobileBtn = document.getElementById('authMobileBtn');
       if (session) {
         const name = session.user.user_metadata?.name || session.user.email.split('@')[0];
+        if (btn) { btn.textContent = '👤 ' + name; }
         if (mobileBtn) { mobileBtn.textContent = '👤 Mon espace'; }
       } else {
+        if (btn) btn.textContent = 'Connexion';
         if (mobileBtn) mobileBtn.textContent = '👤 Connexion';
       }
     } catch(e) {}
   }
 
   async function handleAuthNav() {
-    if (!_sb) { window.location.href = 'auth.html'; return; }
     const { data: { session } } = await _sb.auth.getSession();
     if (session) {
       window.location.href = 'dashboard.html';
@@ -1844,6 +2260,8 @@
       window.location.href = 'auth.html';
     }
   }
+
+  // Link user_id when submitting annonce
 
   async function getVendorName() {
     try {
@@ -1856,7 +2274,6 @@
   }
 
   async function getUserId() {
-    if (!_sb) return null;
     const { data: { session } } = await _sb.auth.getSession();
     return session ? session.user.id : null;
   }
@@ -1868,6 +2285,7 @@
     ham.classList.toggle('active');
   }
 
+  // Close menu on outside click
   document.addEventListener('click', function(e) {
     const menu = document.getElementById('mobileMenu');
     const ham = document.getElementById('hamburger');
@@ -1875,6 +2293,7 @@
       menu.classList.remove('active');
     }
   });
+
 
   function reportAnnonce() {
     const titre = document.getElementById('detailTitre').textContent;
@@ -1887,7 +2306,7 @@
     const titre = document.getElementById('detailTitre').textContent;
     const prix = document.getElementById('detailPrix').textContent;
     const quartier = document.getElementById('detailQuartier').textContent;
-    const siteUrl = 'https://djels-tech.github.io/expat-brazza';
+    const siteUrl = 'https://expatbrazza.com';
     const text = `🔥 *${titre}*\n💰 ${prix}\n${quartier}\n\n👉 Voir sur ExpatBrazza : ${siteUrl}\n\n_Trouvé sur ExpatBrazza — La plateforme d'annonces N°1 au Congo 🇨🇬_`;
     
     if (navigator.share) {
@@ -1902,12 +2321,11 @@
     const a = window._annoncesData[idx];
     if (!a) return;
     
-    if (_sb) {
-      try {
-        await _sb.rpc('increment_vues', { annonce_id: parseInt(a.id, 10) });
-        a.vues = (a.vues || 0) + 1;
-      } catch(e) {}
-    }
+    // Increment vue counter using RPC (sécurisé)
+    try {
+      await _sb.rpc('increment_vues', { annonce_id: parseInt(a.id, 10) });
+      a.vues = (a.vues || 0) + 1;
+    } catch(e) { console.warn("Erreur incrément vues:", e); }
     
     document.getElementById('detailTitre').textContent = a.titre || '';
     document.getElementById('detailPrix').textContent = (a.prix || '') + ' FCFA';
@@ -1928,6 +2346,7 @@
     const wa = document.getElementById('detailWhatsapp');
     wa.href = a.whatsapp ? `https://wa.me/${a.whatsapp.replace(/[^0-9]/g, '')}` : '#';
     
+    // Show vendor info - name only
     const vendeurNom = document.getElementById('vendeurNom');
     const vendeurInitial = document.getElementById('vendeurInitial');
     const vendeurBadge = document.getElementById('vendeurBadge');
@@ -1946,6 +2365,7 @@
     openModal('detail');
   }
 
+  // IMAGE PREVIEW (multiple)
   document.addEventListener('DOMContentLoaded', () => {
     const photoInput = document.getElementById('photoInput');
     if (photoInput) {
@@ -1969,26 +2389,19 @@
     }
   });
 
+
   window.onload = () => {
-    try {
-      _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    } catch(e) {
-      console.error('Supabase init error:', e);
-    }
+    // Init Supabase after page load
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     initCity();
     checkAuthState();
     loadFromSupabase('all');
     loadCategoryCounts();
-    
+    // Real-time counters from Supabase
     setTimeout(async () => {
-      if (!_sb) {
-        animateCounter('counter1', 0);
-        animateCounter('counter2', 0);
-        animateCounter('counter3', 0);
-        return;
-      }
       try {
         const { count: totalAnnonces } = await _sb.from('annonces').select('*', { count: 'exact', head: true }).eq('statut', 'actif');
+        // Lire compteur permanent transactions
         const { data: statData } = await _sb.from('stats').select('value').eq('key', 'total_transactions').single().catch(() => ({ data: null }));
         const totalVentes = statData ? statData.value : 0;
         const { count: totalUsers } = await _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('banned', false);
@@ -2003,6 +2416,7 @@
     }, 500);
   };
 
+  // Close modal on overlay click
   document.getElementById('modalPost').addEventListener('click', function(e) {
     if (e.target === this) closeModal('post');
   });
