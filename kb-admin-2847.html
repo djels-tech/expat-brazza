@@ -333,7 +333,21 @@
     <div class="fg"><label>Titre</label><input type="text" id="blogTitle" placeholder="Titre de l'article"></div>
     <div class="fg"><label>Slug (URL)</label><input type="text" id="blogSlug" placeholder="ex: mon-article"></div>
     <div class="fg"><label>Résumé (extrait)</label><textarea id="blogExcerpt" rows="2" placeholder="Brève description"></textarea></div>
-    <div class="fg"><label>Image (URL)</label><input type="text" id="blogImage" placeholder="https://expatbrazza.com/images/article.jpg"></div>
+    <div class="fg">
+      <label>Image de l'article</label>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="background:var(--bg);border:1px dashed var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;font-size:13px;color:var(--muted);" for="blogImageFile">
+          📷 Choisir une image depuis votre téléphone
+        </label>
+        <input type="file" id="blogImageFile" accept="image/*" style="display:none" onchange="previewBlogImage(this)">
+        <div id="blogImagePreview" style="display:none;margin-top:4px;">
+          <img id="blogImagePreviewImg" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;" src="" alt="Aperçu">
+        </div>
+        <input type="hidden" id="blogImage" value="">
+        <div style="font-size:11px;color:var(--muted);text-align:center;">— ou —</div>
+        <input type="text" id="blogImageUrl" placeholder="https://... (lien image existant)" style="font-size:12px;" oninput="document.getElementById('blogImage').value=this.value">
+      </div>
+    </div>
     <div class="fg"><label>Contenu (HTML)</label><textarea id="blogContent" rows="12" placeholder="Écrivez votre article ici. Vous pouvez utiliser du HTML : &lt;p&gt;, &lt;h3&gt;, &lt;ul&gt;, &lt;li&gt;, etc."></textarea></div>
     <div class="fg">
       <label><input type="checkbox" id="blogPublished"> Publié</label>
@@ -643,10 +657,37 @@
     document.getElementById('blogSlug').value = data.slug;
     document.getElementById('blogExcerpt').value = data.excerpt || '';
     document.getElementById('blogImage').value = data.image_url || '';
+    document.getElementById('blogImageUrl').value = data.image_url || '';
+    if (data.image_url) {
+      document.getElementById('blogImagePreview').style.display = 'block';
+      document.getElementById('blogImagePreviewImg').src = data.image_url;
+    } else {
+      document.getElementById('blogImagePreview').style.display = 'none';
+    }
     document.getElementById('blogPublished').checked = data.published;
     document.getElementById('blogContent').value = data.content || '';
     document.getElementById('blogModal').classList.add('active');
     document.getElementById('blogModalTitle').innerText = 'Modifier l\'article';
+  }
+
+  function previewBlogImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      document.getElementById('blogImagePreviewImg').src = e.target.result;
+      document.getElementById('blogImagePreview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function uploadBlogImage(file) {
+    const ext = file.name.split('.').pop();
+    const path = `blog/${Date.now()}.${ext}`;
+    const { error } = await sb.storage.from('annonces-images').upload(path, file, { cacheControl: '3600', upsert: true });
+    if (error) { console.warn('Upload error:', error); return null; }
+    const { data } = sb.storage.from('annonces-images').getPublicUrl(path);
+    return data.publicUrl;
   }
 
   async function saveBlogPost() {
@@ -654,7 +695,13 @@
     const title = document.getElementById('blogTitle').value.trim();
     let slug = document.getElementById('blogSlug').value.trim();
     const excerpt = document.getElementById('blogExcerpt').value.trim();
-    const image_url = document.getElementById('blogImage').value.trim();
+    let image_url = document.getElementById('blogImage').value.trim();
+    const imageFile = document.getElementById('blogImageFile').files[0];
+    if (imageFile) {
+      showToastAdmin('📷 Upload image en cours...');
+      const uploaded = await uploadBlogImage(imageFile);
+      if (uploaded) image_url = uploaded;
+    }
     const published = document.getElementById('blogPublished').checked;
     const content = document.getElementById('blogContent').value;
     if (!title || !slug || !content) { alert('Titre, slug et contenu sont obligatoires'); return; }
@@ -665,7 +712,15 @@
     if (id) { const { error: e } = await sb.from('blog_posts').update(postData).eq('id', id); error = e; }
     else { postData.created_at = new Date(); if (published) postData.published_at = new Date(); const { error: e } = await sb.from('blog_posts').insert([postData]); error = e; }
     if (error) alert('Erreur: ' + error.message);
-    else { alert('Article enregistré'); closeBlogModal(); loadBlogPosts(); }
+    else {
+      alert('Article enregistré');
+      document.getElementById('blogImageFile').value = '';
+      document.getElementById('blogImage').value = '';
+      document.getElementById('blogImageUrl').value = '';
+      document.getElementById('blogImagePreview').style.display = 'none';
+      closeBlogModal();
+      loadBlogPosts();
+    }
   }
 
   async function deleteBlogPost(id) {
