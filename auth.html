@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connexion | ExpatBrazza</title>
+  <link rel="canonical" href="https://expatbrazza.com/auth.html">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
@@ -44,6 +45,16 @@
   .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
   footer { background:#1A1F2E; color:#fff; text-align:center; padding:16px; font-size:13px; }
   footer a { color:var(--green); text-decoration:none; }
+
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  
+
 </style>
 </head>
 <body>
@@ -53,6 +64,8 @@
   </a>
   <a href="index.html" class="btn-back">← Accueil</a>
 </nav>
+
+
 
 <div class="main">
   <div class="auth-card">
@@ -311,5 +324,6 @@
     }
   });
 </script>
+
 </body>
 </html>

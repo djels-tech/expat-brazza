@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mon Espace | ExpatBrazza</title>
+  <link rel="canonical" href="https://expatbrazza.com/dashboard.html">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; --red:#CE1126; --blue:#1DA1F2; }
@@ -77,6 +78,16 @@
   /* NOTIF */
   .notif { position:fixed; top:72px; right:16px; background:var(--green); color:#fff; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,165,80,0.4); transform:translateX(200%); transition:transform 0.3s; max-width:280px; }
   .notif.show { transform:translateX(0); }
+
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  
+
 </style>
 </head>
 <body>
@@ -93,6 +104,8 @@
     <button class="btn-logout" onclick="handleLogout()">Quitter</button>
   </div>
 </nav>
+
+
 
 <div class="section">
   <h1>Mon Espace 👤</h1>
@@ -461,5 +474,6 @@ async function submitVerif() {
 
 window.onload = loadDashboard;
 </script>
+
 </body>
 </html>

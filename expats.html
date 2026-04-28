@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Guide Expatriés — ExpatBrazza Congo</title>
+  <link rel="canonical" href="https://expatbrazza.com/expats.html">
 <meta name="description" content="Tout ce qu'il faut savoir pour s'installer à Brazzaville. Infos pratiques, quiz d'intégration, simulateur de budget et guide de vie au Congo.">
 <meta property="og:title" content="Guide Expatriés — ExpatBrazza">
 <meta property="og:description" content="Votre guide complet pour vivre et s'installer au Congo.">
@@ -576,22 +577,152 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   .qf-grid { grid-template-columns:1fr 1fr; }
   .hero { padding:44px 5% 60px; }
 }
+
+  
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    
+    .nav-links { display: none; }
+  }
+
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .nav-links { display: none; }
+  }
+
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="navbar">
+<nav style="display:flex; align-items:center; justify-content:space-between;">
   <a class="nav-logo" href="index.html">
     <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
   </a>
-  <div class="nav-links">
-    <a href="index.html">Annonces</a>
-    <a href="#" class="active">Guide Expats</a>
-    <a href="index.html#poster" class="nav-cta">Publier une annonce</a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Accueil</a>
+    <a href="blog.html">Blog</a>
+    <a href="expats.html"class='active'>Guide Expats</a>
+    <a href="about.html">À propos</a>
+    <a href="index.html#poster" class="nav-cta">+ Déposer une annonce</a>
   </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
+</div>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
+</div>
 <!-- HERO -->
 <div class="hero">
   <div class="hero-content">
@@ -1291,5 +1422,43 @@ function showToast(msg) {
 // ── INIT ──
 updateSim();
 </script>
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
 </body>
 </html>

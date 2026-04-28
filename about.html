@@ -26,13 +26,37 @@
 <meta name="twitter:image" content="https://djels-tech.github.io/expat-brazza/og-image.png">
 
 <!-- Canonical -->
-<link rel="canonical" href="https://djels-tech.github.io/expat-brazza/about.html">
+<link rel="canonical" href="https://expatbrazza.com/about.html">
 
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  :root { --green:#00A550; --green2:#00C060; --green3:#E8FFF2; --yellow:#F9C003; --red:#CE1126; --bg:#F4F7F5; --white:#FFFFFF; --border:#E2EDE8; --text:#0F1F16; --muted:#5A7A68; --dark:#1A3025; --card:#FFFFFF; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+  /* NAVBAR */
+  nav { background:var(--white); border-bottom:1px solid var(--border); padding:0 5%; height:58px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; box-shadow:0 1px 8px rgba(0,0,0,0.05); }
+  .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+  .nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--text); }
+  .nav-brand span { color:var(--green); }
+  .nav-links { display:flex; align-items:center; gap:6px; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:13px; font-weight:500; padding:7px 12px; border-radius:6px; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { background:var(--green3); color:var(--green); }
+  .nav-cta { background:var(--green) !important; color:white !important; font-weight:600 !important; border-radius:6px; }
+  /* HERO */
+  .hero { background:linear-gradient(135deg, var(--dark) 0%, #0A2518 50%, #072010 100%); padding:64px 5% 80px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-100px; right:-100px; width:500px; height:500px; background:radial-gradient(circle, rgba(0,165,80,0.15) 0%, transparent 70%); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:-80px; left:10%; width:300px; height:300px; background:radial-gradient(circle, rgba(249,192,3,0.08) 0%, transparent 70%); pointer-events:none; }
+  .hero-content { position:relative; z-index:2; max-width:680px; }
+  .hero-flag { display:flex; gap:0; margin-bottom:20px; }
+  .flag-stripe { width:22px; height:6px; border-radius:3px; }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(0,165,80,0.15); border:1px solid rgba(0,165,80,0.25); border-radius:20px; padding:5px 14px; font-size:11px; font-weight:600; color:#6EF0A8; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:20px; }
+  .hero-title { font-family:'Syne',sans-serif; font-size:clamp(28px,6vw,48px); font-weight:800; color:white; line-height:1.1; margin-bottom:18px; }
+  .hero-title span { color:#6EF0A8; }
+  .hero-desc { font-size:16px; color:rgba(255,255,255,0.6); line-height:1.7; margin-bottom:0; max-width:520px; font-weight:300; }
+  .date-badge { display:inline-block; background:rgba(0,165,80,0.2); color:#6EF0A8; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; margin-top:12px; }
+  
+  
   nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
   .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
   .logo-icon { width:36px; height:36px; background:var(--green); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
@@ -80,21 +104,181 @@
     .hero { padding:32px 16px !important; }
   }
 
+
+  /* MOBILE NAV */
+  
+  .hamburger span { width:22px; height:2px; background:var(--text); border-radius:2px; transition:all 0.3s; display:block; }
+  
+  
+  
+
+  @media(max-width:768px) {
+    .nav-links { display:none; position:fixed; top:58px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); flex-direction:column; padding:12px 5%; gap:4px; box-shadow:0 8px 24px rgba(0,0,0,0.1); z-index:199; }
+    .nav-links.open { display:flex; }
+    .nav-links a { padding:12px 16px; border-radius:8px; font-size:15px; }
+    .nav-cta { text-align:center; margin-top:4px; }
+    
+    .hero { padding:48px 5% 60px; }
+    .hero-title { font-size:clamp(24px,7vw,36px); }
+    .hero-desc { font-size:14px; }
+  }
+
+
+  
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    
+    .nav-links { display: none; }
+  }
+
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .nav-links { display: none; }
+  }
+
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="logo">
+<nav style="display:flex; align-items:center; justify-content:space-between;">
+  <a class="nav-logo" href="index.html">
     <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
   </a>
-  <a href="index.html" class="btn-back">← Accueil</a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Accueil</a>
+    <a href="blog.html">Blog</a>
+    <a href="expats.html">Guide Expats</a>
+    <a href="about.html"class='active'>À propos</a>
+    <a href="index.html#poster" class="nav-cta">+ Déposer une annonce</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<div class="hero">
-  <h1>Qui sommes-<span>nous</span> ?</h1>
-  <p>ExpatBrazza est la première plateforme d'annonces pour tous les Congolais — acheter, vendre et échanger partout au Congo.</p>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
 </div>
-
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
+</div>
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-flag">
+      <div class="flag-stripe" style="background:#00A550"></div>
+      <div class="flag-stripe" style="background:#F9C003; margin:0 2px"></div>
+      <div class="flag-stripe" style="background:#CE1126"></div>
+    </div>
+    <div class="hero-eyebrow">À propos</div>
+    <h1 class="hero-title">À propos d'<span>ExpatBrazza</span></h1>
+    <p class="hero-desc">La plateforme d'annonces 100% congolaise, créée par et pour les habitants de Brazzaville.</p>
+  </div>
+</div>
 <div class="section">
   <div class="card">
     <h2>🌍 Notre mission</h2>
@@ -145,8 +329,49 @@
   </div>
 </div>
 
-<footer>
-  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+<footer style="background:#1A3025; color:#fff; text-align:center; padding:24px 20px; font-size:13px; margin-top:60px;">
+  <p>© 2026 <a href="index.html" style="color:#6EF0A8; text-decoration:none;">ExpatBrazza</a> — La plateforme d'annonces gratuite au Congo 🇨🇬</p>
 </footer>
+
+
+
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
 </body>
 </html>

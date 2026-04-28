@@ -4,34 +4,55 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog | Guides & Conseils | ExpatBrazza</title>
+  <link rel="canonical" href="https://expatbrazza.com/blog.html">
 <meta name="description" content="Guides pratiques, conseils et actualités pour les expatriés et résidents à Brazzaville et au Congo.">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root { --green:#00A550; --text:#1A1F2E; --muted:#6B7280; --border:#DDE1E7; --bg:#F5F7FA; --card:#fff; }
+  :root { --green:#00A550; --green2:#00C060; --green3:#E8FFF2; --yellow:#F9C003; --red:#CE1126; --bg:#F4F7F5; --white:#FFFFFF; --border:#E2EDE8; --text:#0F1F16; --muted:#5A7A68; --dark:#1A3025; --card:#FFFFFF; }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); }
-  nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
-  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
-  .logo-icon { width:34px; height:34px; background:linear-gradient(135deg,#00A550,#00c764); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:17px; }
-  .logo-text { font-family:'Syne',sans-serif; font-weight:800; font-size:18px; color:var(--text); }
-  .logo-text span { color:var(--green); }
-  .btn-back { color:var(--muted); text-decoration:none; font-size:13px; display:flex; align-items:center; gap:4px; padding:6px 12px; border-radius:8px; border:1px solid var(--border); transition:all 0.2s; }
-  .btn-back:hover { color:var(--green); border-color:var(--green); }
-  .hero { background:linear-gradient(135deg,rgba(0,165,80,0.08),rgba(0,165,80,0.02)); padding:48px 24px; text-align:center; }
-  .hero h1 { font-family:'Syne',sans-serif; font-size:clamp(28px,5vw,42px); font-weight:800; margin-bottom:12px; }
-  .hero h1 span { color:var(--green); }
-  .hero p { color:var(--muted); font-size:16px; max-width:560px; margin:0 auto; line-height:1.6; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+
+  /* NAVBAR */
+  .navbar { background:var(--white); border-bottom:1px solid var(--border); padding:0 5%; height:58px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; box-shadow:0 1px 8px rgba(0,0,0,0.05); }
+  .nav-logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+  .nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--text); }
+  .nav-brand span { color:var(--green); }
+  .nav-links { display:flex; align-items:center; gap:6px; }
+  .nav-links a { color:var(--muted); text-decoration:none; font-size:13px; font-weight:500; padding:7px 12px; border-radius:6px; transition:all 0.2s; }
+  .nav-links a:hover, .nav-links a.active { background:var(--green3); color:var(--green); }
+  .nav-cta { background:var(--green) !important; color:white !important; font-weight:600 !important; border-radius:6px; }
+
+  /* HERO */
+  .hero { background:linear-gradient(135deg, var(--dark) 0%, #0A2518 50%, #072010 100%); padding:64px 5% 80px; position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; top:-100px; right:-100px; width:500px; height:500px; background:radial-gradient(circle, rgba(0,165,80,0.15) 0%, transparent 70%); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:-80px; left:10%; width:300px; height:300px; background:radial-gradient(circle, rgba(249,192,3,0.08) 0%, transparent 70%); pointer-events:none; }
+  .hero-content { position:relative; z-index:2; max-width:680px; }
+  .hero-flag { display:flex; gap:0; margin-bottom:20px; }
+  .flag-stripe { width:22px; height:6px; border-radius:3px; }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(0,165,80,0.15); border:1px solid rgba(0,165,80,0.25); border-radius:20px; padding:5px 14px; font-size:11px; font-weight:600; color:#6EF0A8; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:20px; }
+  .hero-title { font-family:'Syne',sans-serif; font-size:clamp(28px,6vw,48px); font-weight:800; color:white; line-height:1.1; margin-bottom:18px; }
+  .hero-title span { color:#6EF0A8; }
+  .hero-desc { font-size:16px; color:rgba(255,255,255,0.6); line-height:1.7; margin-bottom:0; max-width:520px; font-weight:300; }
   .section { max-width:1100px; margin:0 auto; padding:48px 20px; }
-  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer; transition:all 0.25s; }
-  .card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.1); border-color:var(--green); }
-  .card-img { height:110px; display:flex; align-items:center; justify-content:center; font-size:36px; background:linear-gradient(135deg,#E8F5EE,#F0F9F4); overflow:hidden; }
-  .card-body { padding:12px; }
-  .card-body h3 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:6px; line-height:1.3; }
-  .card-body p { color:var(--muted); font-size:12px; line-height:1.5; margin-bottom:8px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
-  .card-meta { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); padding-top:8px; border-top:1px solid var(--border); }
-  .tag { display:inline-block; background:rgba(0,165,80,0.1); color:var(--green); font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; cursor:pointer; transition:all 0.3s ease; display:flex; flex-direction:column; }
+  .card:hover { transform:translateY(-6px); box-shadow:0 20px 48px rgba(0,165,80,0.15); border-color:var(--green); }
+  .card-img { height:140px; display:flex; align-items:center; justify-content:center; font-size:48px; background:linear-gradient(135deg,#00A550,#00c764); overflow:hidden; }
+  .card:nth-child(2) .card-img { background:linear-gradient(135deg,#1A1F2E,#2d3748); }
+  .card:nth-child(3) .card-img { background:linear-gradient(135deg,#F9C003,#f5a623); }
+  .card:nth-child(4) .card-img { background:linear-gradient(135deg,#CE1126,#e53935); }
+  .card:nth-child(5) .card-img { background:linear-gradient(135deg,#009A44,#00c764); }
+  .card:nth-child(6) .card-img { background:linear-gradient(135deg,#0a1628,#102240); }
+  .card-body { padding:20px; display:flex; flex-direction:column; flex:1; }
+  .card-body h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:10px; line-height:1.4; color:var(--text); }
+  .card-body p { color:var(--muted); font-size:13px; line-height:1.65; margin-bottom:16px; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden; flex:1; }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:14px; border-top:1px solid var(--border); margin-top:auto; }
+  .card-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+  .btn-read { background:var(--green); color:white; font-size:12px; font-weight:600; padding:6px 14px; border-radius:20px; border:none; cursor:pointer; transition:all 0.2s; }
+  .btn-read:hover { background:#00c764; transform:scale(1.05); }
+  .tag { display:inline-block; background:rgba(0,165,80,0.1); color:var(--green); font-size:11px; font-weight:700; padding:4px 10px; border-radius:6px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
   .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(8px); z-index:1000; display:none; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto; }
   .overlay.active { display:flex; }
   .article-modal { background:var(--card); border-radius:20px; max-width:720px; width:100%; margin:auto; animation:up 0.3s ease; }
@@ -55,19 +76,180 @@
   footer a { color:var(--green); text-decoration:none; }
   @media(max-width:768px){ .grid{grid-template-columns:1fr;} .article-header{padding:40px 20px 24px;} .article-body{padding:0 20px 32px;} }
   @media(max-width:600px){ .grid{grid-template-columns:repeat(2,1fr);gap:10px;} }
+
+  /* MOBILE NAV */
+  
+  .hamburger span { width:22px; height:2px; background:var(--text); border-radius:2px; transition:all 0.3s; display:block; }
+  
+  
+  
+
+  @media(max-width:768px) {
+    .nav-links { display:none; position:fixed; top:58px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); flex-direction:column; padding:12px 5%; gap:4px; box-shadow:0 8px 24px rgba(0,0,0,0.1); z-index:199; }
+    .nav-links.open { display:flex; }
+    .nav-links a { padding:12px 16px; border-radius:8px; font-size:15px; }
+    .nav-cta { text-align:center; margin-top:4px; }
+    
+    .hero { padding:48px 5% 60px; }
+    .hero-title { font-size:clamp(24px,7vw,36px); }
+    .hero-desc { font-size:14px; }
+  }
+
+
+  
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    
+    .nav-links { display: none; }
+  }
+
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 99;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .mobile-menu a:hover { background: rgba(0,165,80,0.08); color: var(--green); }
+  .mobile-menu .btn-post-mobile {
+    background: var(--green);
+    color: white !important;
+    text-align: center;
+    margin-top: 8px;
+    border-radius: 10px;
+  }
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .nav-links { display: none; }
+  }
+
 </style>
 </head>
 <body>
-<nav>
-  <a href="index.html" class="logo">
+<nav style="display:flex; align-items:center; justify-content:space-between;">
+  <a class="nav-logo" href="index.html">
     <img src="EB_globe_logo_blanc.png" alt="ExpatBrazza" style="height:38px;">
   </a>
-  <a href="index.html" class="btn-back">← Accueil</a>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Accueil</a>
+    <a href="blog.html"class='active'>Blog</a>
+    <a href="expats.html">Guide Expats</a>
+    <a href="about.html">À propos</a>
+    <a href="index.html#poster" class="nav-cta">+ Déposer une annonce</a>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
+</div>
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="index.html#annoncesGrid">📋 Annonces</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="expats.html">🌍 Guide Expats</a>
+  <a href="faq.html">❓ FAQ</a>
+  <a href="about.html">👥 Qui sommes-nous</a>
+  <a href="contact.html">✉️ Contact</a>
+  <a href="index.html#poster" class="btn-post-mobile">+ Déposer une annonce</a>
+</div>
 <div class="hero">
-  <h1>Blog <span>ExpatBrazza</span></h1>
-  <p>Guides pratiques, conseils et bons plans pour les expatriés et résidents au Congo</p>
+  <div class="hero-content">
+    <div class="hero-flag">
+      <div class="flag-stripe" style="background:#00A550"></div>
+      <div class="flag-stripe" style="background:#F9C003; margin:0 2px"></div>
+      <div class="flag-stripe" style="background:#CE1126"></div>
+    </div>
+    <div class="hero-eyebrow">Blog ExpatBrazza</div>
+    <h1 class="hero-title">Guides & Conseils<br>pour vivre au <span>Congo.</span></h1>
+    <p class="hero-desc">Guides pratiques, conseils et bons plans pour les expatriés et résidents à Brazzaville.</p>
+  </div>
 </div>
 
 <div class="section">
@@ -90,8 +272,8 @@
   </div>
 </div>
 
-<footer>
-  <p>© 2026 ExpatBrazza — <a href="index.html">Retour à l'accueil</a></p>
+<footer style="background:#1A3025; color:#fff; text-align:center; padding:24px 20px; font-size:13px; margin-top:60px;">
+  <p>© 2026 <a href="index.html" style="color:#6EF0A8; text-decoration:none;">ExpatBrazza</a> — La plateforme d'annonces gratuite au Congo 🇨🇬</p>
 </footer>
 
 <script>
@@ -133,14 +315,14 @@
     }
     grid.innerHTML = articlesData.map(article => `
       <div class="card" data-id="${article.id}">
-        <div class="card-img" style="background:linear-gradient(135deg,#E8F5EE,#F0F9F4)">${getEmojiFromTitle(article.title)}</div>
+        <div class="card-img">${getEmojiFromTitle(article.title)}</div>
         <div class="card-body">
-          <span class="tag">Article</span>
+          <span class="tag">Guide</span>
           <h3>${escapeHtml(article.title)}</h3>
-          <p>${escapeHtml(article.excerpt || article.content.substring(0, 100).replace(/<[^>]*>/g, ''))}...</p>
-          <div class="card-meta">
-            <span>✍️ ExpatBrazza</span>
-            <span>${new Date(article.published_at || article.created_at).toLocaleDateString('fr-FR')}</span>
+          <p>${escapeHtml(article.excerpt || article.content.substring(0, 120).replace(/<[^>]*>/g, ''))}...</p>
+          <div class="card-footer">
+            <span class="card-meta">📅 ${new Date(article.published_at || article.created_at).toLocaleDateString('fr-FR')}</span>
+            <button class="btn-read">Lire →</button>
           </div>
         </div>
       </div>
@@ -258,5 +440,46 @@
 
   window.onload = loadArticles;
 </script>
+
+
+
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
+
+<script>
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('active');
+    btn.classList.toggle('open');
+  }
+  // Fermer si clic extérieur
+  document.addEventListener('click', function(e) {
+    const menu = document.getElementById('mobileMenu');
+    const btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('active');
+      btn.classList.remove('open');
+    }
+  });
+</script>
+
 </body>
 </html>

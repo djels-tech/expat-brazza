@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Annonce — ExpatBrazza</title>
+  <link rel="canonical" href="https://expatbrazza.com/annonce.html">
 <meta name="description" content="Détail annonce ExpatBrazza">
 
 <!-- Open Graph pour partage WhatsApp -->
@@ -728,6 +729,16 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   .vendeur-card { padding:16px; }
   .similaires-section { padding:0 4% 40px; }
 }
+
+  .hamburger span {
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  
+
 </style>
 </head>
 <body>
@@ -742,6 +753,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
     Retour aux annonces
   </a>
 </nav>
+
+
 
 <!-- BREADCRUMB -->
 <div class="breadcrumb" id="breadcrumb">
@@ -1301,5 +1314,6 @@ loadAnnonce();
 // Fermer modal avec Escape
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeImgModal(); });
 </script>
+
 </body>
 </html>

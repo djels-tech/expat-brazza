@@ -604,7 +604,26 @@
 
     currentAdminEmail = data.user.email;
     isSuperAdmin = (data.user.email === SUPER_ADMIN_EMAIL);
+
+    // Notification de connexion
+    const adminName = ADMIN_NAMES[currentAdminEmail] || currentAdminEmail;
+    showToast(`👋 ${adminName} connecté`);
+
     showPanel();
+  }
+
+  // ══════ TOAST NOTIFICATION ══════
+  function showToast(msg) {
+    let toast = document.getElementById('eb-toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'eb-toast';
+      toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1A3025;color:white;padding:14px 28px;border-radius:50px;font-size:15px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);transition:opacity 0.4s;opacity:0;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 3000);
   }
 
   // ══════════════════ PRESENCE ADMINS ══════════════════
@@ -628,10 +647,12 @@
   async function updatePresence() {
     if (!currentAdminEmail) return;
     try {
-      await sb.from('admin_sessions')
-        .update({ last_seen: new Date().toISOString() })
-        .eq('admin_email', currentAdminEmail);
-    } catch(e) {}
+      await sb.from('admin_sessions').upsert({
+        admin_email: currentAdminEmail,
+        connected_at: new Date().toISOString(),
+        last_seen: new Date().toISOString()
+      }, { onConflict: 'admin_email' });
+    } catch(e) { console.warn('Presence update error:', e); }
   }
 
   async function removePresence() {
@@ -675,9 +696,57 @@
   }
   // ══════════════════════════════════════════════════════
 
+  // ══════════════════ SESSION EXPIRATION ══════════════════
+  const SESSION_DURATION = 4 * 60 * 60 * 1000; // 4 heures en ms
+  const SESSION_KEY = 'eb_admin_last_active';
+
+  function refreshSessionTimer() {
+    localStorage.setItem(SESSION_KEY, Date.now().toString());
+  }
+
+  function checkSessionExpiry() {
+    const lastActive = localStorage.getItem(SESSION_KEY);
+    if (!lastActive) {
+      expireSession();
+      return;
+    }
+    const elapsed = Date.now() - parseInt(lastActive);
+    if (elapsed > SESSION_DURATION) {
+      expireSession();
+    }
+  }
+
+  async function expireSession() {
+    await removePresence();
+    await sb.auth.signOut();
+    localStorage.removeItem(SESSION_KEY);
+    // Afficher message d'expiration
+    const loginScreen = document.getElementById('loginScreen');
+    const panel = document.getElementById('adminPanel');
+    if (panel) panel.style.display = 'none';
+    if (loginScreen) {
+      loginScreen.style.display = 'flex';
+      const errorEl = document.getElementById('loginError');
+      if (errorEl) {
+        errorEl.textContent = 'Session expirée. Reconnecte-toi.';
+        errorEl.style.display = 'block';
+      }
+    }
+  }
+
+  // Rafraîchir le timer à chaque interaction
+  ['click', 'keydown', 'mousemove', 'touchstart', 'scroll'].forEach(event => {
+    document.addEventListener(event, refreshSessionTimer, { passive: true });
+  });
+
   function showPanel() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminPanel').style.display = 'block';
+
+    // Démarrer le timer de session
+    refreshSessionTimer();
+    // Vérifier l'expiration toutes les minutes
+    setInterval(checkSessionExpiry, 60000);
 
     // Charger notifs existantes
     renderNotifs();
@@ -1115,18 +1184,27 @@
   // =========================================================
 
   window.onload = async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) return;
-
-    // Verification role admin en base au reload
-    const { data: profile } = await sb
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single();
-
-    if (profile && profile.role === 'admin') showPanel();
+    // Pas de reconnexion automatique — toujours afficher le login
+    await sb.auth.signOut();
   };
+
+  // Déconnexion immédiate quand on quitte la page
+  window.addEventListener('pagehide', () => {
+    if (currentAdminEmail) {
+      // Utiliser sendBeacon pour être sûr que ça s'envoie même en fermant
+      const url = `https://zpoitnronthawiovlnkm.supabase.co/rest/v1/admin_sessions?admin_email=eq.${encodeURIComponent(currentAdminEmail)}`;
+      navigator.sendBeacon(url);
+      removePresence();
+      sb.auth.signOut();
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (currentAdminEmail) {
+      removePresence();
+      sb.auth.signOut();
+    }
+  });
 
   // Ajout de l'écouteur pour le bouton de login (remplace le onclick)
   document.addEventListener('DOMContentLoaded', () => {
