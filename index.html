@@ -1532,7 +1532,7 @@
                             <div class="annonce-location">📍 ${a.lieu}</div>
                             <div class="annonce-actions">
                                 <a class="action-btn whatsapp" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Redirection WhatsApp...')">💬</a>
-                                <a class="action-btn" href="javascript:void(0)" onclick="event.stopPropagation(); showToast('Annonce sauvegardée !')">🔖</a>
+                                <a class="action-btn save-btn" href="javascript:void(0)" onclick="event.stopPropagation();toggleSaveCard('${a.id}', this)">🔖</a>
                             </div>
                         </div>
                     </div>
@@ -1620,7 +1620,8 @@
                                     <div class="annonce-location">📍 ${a.quartier || a.ville || 'Brazzaville'}</div>
                                     <div style="display:flex;align-items:center;gap:4px">
                                         <span style="font-size:10px;color:var(--muted)">👁️ ${a.vues || 0}</span>
-                                        ${!isVendu ? `<a class="action-btn whatsapp" href="https://wa.me/${a.whatsapp}" target="_blank" onclick="event.stopPropagation()">💬</a>` : ''}
+                                        ${!isVendu ? `<a class="action-btn whatsapp" href="https://wa.me/${a.whatsapp}" target="_blank" onclick="event.stopPropagation()">💬</a>
+                                        <a class="action-btn save-btn" href="javascript:void(0)" onclick="event.stopPropagation();toggleSaveCard('${a.id}', this)" style="font-size:14px">🔖</a>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -1690,7 +1691,7 @@
                                     <div class="annonce-location">📍 ${a.quartier || 'Brazzaville'}</div>
                                     <div class="annonce-actions">
                                         <a class="action-btn whatsapp" href="https://wa.me/${a.whatsapp}" target="_blank" onclick="event.stopPropagation()">💬</a>
-                                        <a class="action-btn" href="javascript:void(0)" onclick="event.stopPropagation();showToast('Sauvegardé !')">🔖</a>
+                                        <a class="action-btn save-btn" href="javascript:void(0)" onclick="event.stopPropagation();toggleSaveCard('${a.id}', this)" style="font-size:14px">🔖</a>
                                     </div>
                                 </div>
                             </div>
@@ -1823,6 +1824,25 @@
                 document.getElementById(id).textContent = current.toLocaleString() + suffix;
                 if (current >= target) clearInterval(interval);
             }, 30);
+        }
+
+        async function toggleSaveCard(annonceId, btn) {
+            if (!_sb) { showToast('Connexion perdue'); return; }
+            const { data: { session } } = await _sb.auth.getSession();
+            if (!session) { showToast('Connectez-vous pour sauvegarder'); return; }
+
+            const { data: existing } = await _sb.from('saved_annonces')
+                .select('id').eq('user_id', session.user.id).eq('annonce_id', annonceId).single();
+
+            if (existing) {
+                await _sb.from('saved_annonces').delete().eq('id', existing.id);
+                if (btn) { btn.textContent = '🔖'; btn.style.color = 'var(--muted)'; }
+                showToast('Retiré des favoris');
+            } else {
+                await _sb.from('saved_annonces').insert({ user_id: session.user.id, annonce_id: annonceId });
+                if (btn) { btn.textContent = '⭐'; btn.style.color = 'var(--yellow)'; }
+                showToast('Ajouté aux favoris');
+            }
         }
 
         async function loadCategoryCounts() {

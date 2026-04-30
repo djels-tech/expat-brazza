@@ -75,19 +75,8 @@
   .msg-box { border-radius:8px; padding:10px 12px; font-size:13px; margin-bottom:12px; display:none; }
   .msg-err { background:rgba(206,17,38,0.08); border:1px solid rgba(206,17,38,0.2); color:var(--red); }
   .msg-ok { background:rgba(0,165,80,0.08); border:1px solid rgba(0,165,80,0.2); color:var(--green); }
-  /* NOTIF */
   .notif { position:fixed; top:72px; right:16px; background:var(--green); color:#fff; padding:12px 16px; border-radius:10px; font-size:13px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,165,80,0.4); transform:translateX(200%); transition:transform 0.3s; max-width:280px; }
   .notif.show { transform:translateX(0); }
-
-  .hamburger span {
-    width: 22px;
-    height: 2px;
-    background: var(--text);
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-  
-
 </style>
 </head>
 <body>
@@ -104,8 +93,6 @@
     <button class="btn-logout" onclick="handleLogout()">Quitter</button>
   </div>
 </nav>
-
-
 
 <div class="section">
   <h1>Mon Espace 👤</h1>
@@ -135,9 +122,13 @@
 
   <div class="section-title">Mes annonces</div>
   <div id="annoncesList"><div class="loading">⏳ Chargement...</div></div>
+
+  <!-- ⭐ NOUVEAU : Mes favoris -->
+  <div class="section-title" style="margin-top:32px">⭐ Mes favoris</div>
+  <div id="favList"><div class="loading">⏳ Chargement...</div></div>
 </div>
 
-<!-- MODAL ANNONCE (multi-upload) -->
+<!-- MODAL ANNONCE -->
 <div class="overlay" id="overlayAnnonce" onclick="overlayClick(event,'annonce')">
   <div class="modal">
     <h2>📝 Déposer une annonce</h2>
@@ -220,7 +211,6 @@ function overlayClick(e, type) {
   if (e.target === e.currentTarget) closeModal(type);
 }
 
-// Aperçu des photos sélectionnées (multi)
 document.getElementById("dPhoto").addEventListener("change", function() {
   const files = this.files;
   if (files.length > 0) {
@@ -243,7 +233,6 @@ async function loadDashboard() {
   try {
     const { data: { session }, error: sessionError } = await sb.auth.getSession();
     if (sessionError || !session) {
-      console.error('❌ Erreur session:', sessionError);
       showNotif('❌ Erreur de session. Reconnexion...');
       setTimeout(() => window.location.href = 'auth.html', 1500);
       return;
@@ -268,48 +257,90 @@ async function loadDashboard() {
       document.getElementById('sAttente').textContent = '0';
       document.getElementById('sVues').textContent = '0';
       document.getElementById('annoncesList').innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>Aucune annonce pour le moment.<br>Publiez votre première annonce !</p></div>';
+    } else {
+      document.getElementById('sTotal').textContent = annonces.length;
+      document.getElementById('sActif').textContent = annonces.filter(a => a.statut === 'actif').length;
+      document.getElementById('sAttente').textContent = annonces.filter(a => a.statut === 'en_attente').length;
+      document.getElementById('sVues').textContent = annonces.reduce((s, a) => s + (a.vues || 0), 0);
+
+      document.getElementById('annoncesList').innerHTML = annonces.map(a => {
+        const certBadge = a.verified ? '<span class="certified"><span class="cert-icon">✓</span> Certifié</span>' : '';
+        const statusClass = a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : a.statut === 'vendu' ? 'vendu' : 'refuse';
+        const statusText = a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : a.statut === 'vendu' ? '🏷️ Vendu' : '❌ Refusé';
+        const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
+        return `<div class='annonce-row' id='row-${a.id}'>
+          ${imgUrl ? `<img src='${imgUrl}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
+          <div class='annonce-info'>
+            <div class='annonce-title'>${a.titre || '-'}</div>
+            <div class='annonce-meta'>
+              <span>${a.prix || '0'} FCFA</span>
+              <span>📍 ${a.quartier || a.ville || 'Brazzaville'}</span>
+              <span class='badge badge-${statusClass}'>${statusText}</span>
+              <span>👁️ ${a.vues || 0}</span>
+              ${certBadge}
+            </div>
+          </div>
+          <div style='display:flex;gap:6px;flex-shrink:0;'>
+            ${a.statut === 'actif' ? `<button class='btn-vendu-user' onclick="markVenduUser('${a.id}')">🏷️ Vendu</button>` : ''}
+            <button class='btn-del' onclick="delAnn('${a.id}')">🗑️</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {
+    console.error('❌ Erreur:', e);
+    showNotif(`❌ Erreur: ${e.message}`);
+  }
+}
+
+// ⭐ NOUVEAU : Favoris
+async function loadFavoris() {
+  const container = document.getElementById('favList');
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { container.innerHTML = '<div class="empty-state"><p>Connectez-vous pour voir vos favoris.</p></div>'; return; }
+
+    const { data: saved, error } = await sb
+      .from('saved_annonces')
+      .select('id, annonce_id, annonces(id, titre, prix, ville, quartier, images_urls, image_url)')
+      .eq('user_id', session.user.id)
+      .order('created_at', { ascending: false });
+
+    if (error || !saved || saved.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">⭐</div><p>Aucun favori pour le moment.<br>Sauvegardez des annonces depuis la page d\'accueil !</p></div>';
       return;
     }
 
-    document.getElementById('sTotal').textContent = annonces.length;
-    document.getElementById('sActif').textContent = annonces.filter(a => a.statut === 'actif').length;
-    document.getElementById('sAttente').textContent = annonces.filter(a => a.statut === 'en_attente').length;
-    document.getElementById('sVues').textContent = annonces.reduce((s, a) => s + (a.vues || 0), 0);
-
-    // Vérifier les annonces nouvellement approuvées
-    annonces.filter(a => a.statut === 'actif' && !sessionStorage.getItem('notif_' + a.id)).forEach(a => {
-      sessionStorage.setItem('notif_' + a.id, '1');
-      showNotif('✅ Votre annonce est maintenant active !');
-    });
-
-    document.getElementById('annoncesList').innerHTML = annonces.map(a => {
-      const certBadge = a.verified ? '<span class="certified"><span class="cert-icon">✓</span> Certifié</span>' : '';
-      const statusClass = a.statut === 'actif' ? 'actif' : a.statut === 'en_attente' ? 'attente' : a.statut === 'vendu' ? 'vendu' : 'refuse';
-      const statusText = a.statut === 'actif' ? '✅ Actif' : a.statut === 'en_attente' ? '⏳ En attente' : a.statut === 'vendu' ? '🏷️ Vendu' : '❌ Refusé';
-      const imgUrl = (a.images_urls && a.images_urls[0]) || a.image_url;
-      return `<div class='annonce-row' id='row-${a.id}'>
-        ${imgUrl ? `<img src='${imgUrl}' class='annonce-img-thumb' alt=''>` : `<div class='annonce-img-thumb'>${emojis[a.categorie] || '📦'}</div>`}
-        <div class='annonce-info'>
-          <div class='annonce-title'>${a.titre || '-'}</div>
-          <div class='annonce-meta'>
+    container.innerHTML = saved.map(s => {
+      const a = s.annonces;
+      if (!a) return '';
+      const img = (a.images_urls && a.images_urls[0]) || a.image_url;
+      const emoji = emojis[a.categorie] || '📦';
+      return `<div class="annonce-row" id="fav-${s.id}">
+        ${img ? `<img src="${img}" class="annonce-img-thumb" alt="">` : `<div class="annonce-img-thumb">${emoji}</div>`}
+        <div class="annonce-info">
+          <div class="annonce-title">${a.titre || '-'}</div>
+          <div class="annonce-meta">
             <span>${a.prix || '0'} FCFA</span>
             <span>📍 ${a.quartier || a.ville || 'Brazzaville'}</span>
-            <span class='badge badge-${statusClass}'>${statusText}</span>
-            <span>👁️ ${a.vues || 0}</span>
-            ${certBadge}
           </div>
         </div>
-        <div style='display:flex;gap:6px;flex-shrink:0;'>
-          ${a.statut === 'actif' ? `<button class='btn-vendu-user' onclick="markVenduUser('${a.id}')">🏷️ Vendu</button>` : ''}
-          <button class='btn-del' onclick="delAnn('${a.id}')">🗑️</button>
+        <div style="display:flex;gap:6px;flex-shrink:0;align-items:center">
+          <a href="annonce.html?id=${a.id}" style="color:var(--green);text-decoration:none;font-size:13px;font-weight:600;padding:6px 10px">Voir</a>
+          <button class="btn-del" onclick="removeFav(${s.id})">🗑️</button>
         </div>
       </div>`;
     }).join('');
-
   } catch(e) {
-    console.error('❌ Erreur complète:', e);
-    showNotif(`❌ Erreur: ${e.message}`);
-    document.getElementById('annoncesList').innerHTML = `<div class="empty-state"><div class="empty-icon">🚨</div><p>Une erreur est survenue.<br>${e.message}</p></div>`;
+    container.innerHTML = '<div class="empty-state"><p>Erreur de chargement des favoris.</p></div>';
+  }
+}
+
+async function removeFav(savedId) {
+  const { error } = await sb.from('saved_annonces').delete().eq('id', savedId);
+  if (!error) {
+    document.getElementById('fav-' + savedId)?.remove();
+    showNotif('Retiré des favoris');
   }
 }
 
@@ -326,12 +357,9 @@ async function markVenduUser(id) {
 
 async function delAnn(id) {
   if (!confirm("Supprimer cette annonce définitivement ?")) return;
-  // Récupérer les photos avant suppression
   const { data: annonce } = await sb.from("annonces").select("images_urls, image_url").eq("id", id).single();
-  // Supprimer la ligne en base
   const { error } = await sb.from("annonces").delete().eq("id", id);
   if (!error) {
-    // Supprimer les photos du storage
     if (annonce) {
       const paths = [];
       if (annonce.images_urls && annonce.images_urls.length > 0) {
@@ -343,9 +371,7 @@ async function delAnn(id) {
         const match = annonce.image_url.match(/annonces-images\/(.+)$/);
         if (match) paths.push(match[1]);
       }
-      if (paths.length > 0) {
-        await sb.storage.from("annonces-images").remove(paths);
-      }
+      if (paths.length > 0) await sb.storage.from("annonces-images").remove(paths);
     }
     document.getElementById("row-" + id)?.remove();
     showNotif("Annonce et photos supprimées.");
@@ -395,8 +421,6 @@ async function submitAnn() {
       if (!upErr) {
         const { data: urlData } = sb.storage.from("annonces-images").getPublicUrl(filePath);
         images_urls.push(urlData.publicUrl);
-      } else {
-        console.warn("Upload error:", upErr);
       }
     }
 
@@ -408,7 +432,7 @@ async function submitAnn() {
       quartier: document.getElementById("dQuartier").value.trim(),
       description: document.getElementById("dDesc").value.trim(),
       whatsapp: "+242" + phone.replace(/[^0-9]/g, ""),
-      images_urls: images_urls,
+      images_urls,
       user_id: session.user.id,
       vendor_name: session.user.user_metadata && session.user.user_metadata.name ? session.user.user_metadata.name : null,
       statut: "en_attente"
@@ -426,8 +450,6 @@ async function submitAnn() {
   }
 }
 
-// ==================== CORRECTION ICI ====================
-// La fonction submitVerif envoie maintenant vers Supabase (table certification_requests)
 async function submitVerif() {
   const nom = document.getElementById("vNom").value.trim();
   const cni = document.getElementById("vCNI").value.trim();
@@ -448,7 +470,6 @@ async function submitVerif() {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = "auth.html"; return; }
 
-    // Insertion dans Supabase
     const { error } = await sb.from("certification_requests").insert([{
       user_id: session.user.id,
       full_name: nom,
@@ -470,10 +491,11 @@ async function submitVerif() {
     btn.disabled = false; btn.textContent = "Envoyer";
   }
 }
-// =======================================================
 
-window.onload = loadDashboard;
+window.onload = () => {
+  loadDashboard();
+  loadFavoris();
+};
 </script>
-
 </body>
 </html>
